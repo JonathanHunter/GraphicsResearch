@@ -206,6 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 221739659}
   - component: {fileID: 221739658}
+  - component: {fileID: 221739660}
   m_Layer: 0
   m_Name: DartThrower
   m_TagString: Untagged
@@ -226,11 +227,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   center: {fileID: 221739659}
   dimensions: {x: 18, y: 10}
-  numberOfDarts: 50
-  numberOfAttempts: 100
-  circleRadius: 1
+  numberOfDarts: 200
+  numberOfAttempts: 500
+  circleRadius: 0.5
   circleTemplet: {fileID: 114194699498897538, guid: 103489cca3db11b41ab15a84f7d0220e,
     type: 2}
+  rectDimensions: {x: 1, y: 1}
+  rectTemplet: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
+    type: 2}
+  rotate: 0
+  resize: 0
+  sizeBound: {x: 1, y: 3}
+  onlyCircles: 1
 --- !u!4 &221739659
 Transform:
   m_ObjectHideFlags: 0
@@ -238,9 +246,23 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 221739657}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: -0.03, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &221739660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 221739657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 919c1062cb3545a47bd2f9ec61809c40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dartThrower: {fileID: 221739658}
+  edgeAmount: 0.5
+  showArrows: 1

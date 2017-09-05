@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23962407555592736}
   - component: {fileID: 114194699498897538}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: CircleDart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
