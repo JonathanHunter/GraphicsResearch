@@ -9,6 +9,8 @@
 
         public Vector2 Dimentions { get { return this.dimentions; } internal set { this.dimentions = value; } }
 
+        public Vector3 OriginalPosition { get; set; }
+
         public bool IsOverlapping(RectangleDart rect)
         {
 

@@ -9,6 +9,8 @@
 
         public float Radius { get { return this.radius; } internal set { this.radius = value; } }
 
+        public Vector3 OriginalPosition { get; set; }
+
         public bool IsOverlapping(CircleDart circle)
         {
             Vector3 edge = Vector3.MoveTowards(circle.transform.position, this.transform.position, circle.Radius);

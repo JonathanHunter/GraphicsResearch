@@ -52,7 +52,7 @@
 
         private void OnDrawGizmos()
         {
-            if(showArrows && this.Edges != null)
+            if(showArrows && this.Edges != null && this.rejectedEdges != null)
             {
                 foreach(GraphEdge edge in this.Edges)
                     DrawArrow(edge);
@@ -68,9 +68,9 @@
             Vector3 start = edge.Start.transform.position;
             Vector3 end = edge.End.transform.position;
             Vector3 es = Vector3.Normalize(start - end);
-            Vector3 left = new Vector3(-es.y, es.x);
-            Vector3 leftDiagonal = Vector3.Normalize(es + left / 2f) / 3f;
-            Vector3 rightDiagonal = Vector3.Normalize(es - left / 2f) / 3f;
+            //Vector3 left = new Vector3(-es.y, es.x);
+            //Vector3 leftDiagonal = Vector3.Normalize(es + left / 2f) / 3f;
+            //Vector3 rightDiagonal = Vector3.Normalize(es - left / 2f) / 3f;
             end += .5f * es;
             Gizmos.DrawLine(start, end);
             //Gizmos.DrawLine(end, end + leftDiagonal);
