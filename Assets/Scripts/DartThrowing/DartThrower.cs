@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using UnityEngine;
+    using Util;
 
     public class DartThrower : MonoBehaviour
     {
@@ -87,19 +88,19 @@
 
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Alpha1))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Circle))
             {
                 RayCastDart(true, this.globalVerticalBounds, this.globalHorizontalBounds);
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha2))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Rect))
             {
                 RayCastDart(false, this.globalVerticalBounds, this.globalHorizontalBounds);
             }
-            else if (Input.GetKey(KeyCode.A))
+            if (CustomInput.BoolHeld(CustomInput.UserInput.DartThrow_Repulse))
             {
                 Repulse();
             }
-            else if (Input.GetKeyUp(KeyCode.A))
+            else if (CustomInput.BoolUp(CustomInput.UserInput.DartThrow_Repulse))
             {
                 foreach (CircleDart d in this.Circles)
                 {
@@ -113,7 +114,7 @@
                     d.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                 }
             }
-            else if (Input.GetKeyUp(KeyCode.J))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Jittered))
             {
                 for (int r = 0; r < this.gridCount.x; r++)
                 {
@@ -133,7 +134,7 @@
                     }
                 }
             }
-            else if (Input.GetKeyUp(KeyCode.Space))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_ShowObjects))
             {
                 foreach(CircleDart c in this.Circles)
                     c.gameObject.SetActive(!c.gameObject.activeSelf);

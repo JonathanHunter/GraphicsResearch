@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using UnityEngine;
     using MST;
+    using Util;
 
     public class Rasterize : MonoBehaviour
     {
@@ -32,13 +33,13 @@
 
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.X))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Rasterize_Rasterize))
             {
                 RasterizeCircles(this.dartThrower.Circles);
-                RasterizeLines(this.vst.Edges);
+                RasterizeLines(this.vst.TotalLines);
             }
 
-            if (Input.GetKeyUp(KeyCode.Z))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Rasterize_GenMesh))
             {
                 GenerateMesh();
             }
@@ -53,7 +54,7 @@
                     for (int c = 0; c < this.numCols; c++)
                     {
                         Vector2 boxCenter = GetPos(r, c);
-                        if (this.Rasterized[r, c] == 1)
+                        if (this.Rasterized != null && this.Rasterized[r, c] == 1)
                             Gizmos.DrawCube(boxCenter, new Vector2(this.boxSize, this.boxSize));
                         else
                             Gizmos.DrawWireCube(boxCenter, new Vector2(this.boxSize, this.boxSize));

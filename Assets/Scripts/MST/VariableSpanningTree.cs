@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using UnityEngine;
     using DartThrowing;
+    using Util;
 
     public class VariableSpanningTree : MonoBehaviour
     {
@@ -14,6 +15,8 @@
         [SerializeField]
         private bool showArrows;
 
+        public List<GraphEdge> TotalLines { get; private set; }
+
         public List<GraphEdge> Edges { get; private set; }
 
         private List<GraphEdge> rejectedEdges;
@@ -21,15 +24,22 @@
         private void Start()
         {
             this.Edges = new List<GraphEdge>();
+            this.TotalLines = new List<GraphEdge>();
         }
 
         private void Update()
         {
-            if(Input.GetKeyUp(KeyCode.M))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Calculate))
             {
                 CreateGraph();
+                foreach (GraphEdge e in this.Edges)
+                    this.TotalLines.Add(e);
+
+                int numToAdd = (int)(rejectedEdges.Count * this.edgeAmount);
+                for (int i = 0; i < numToAdd; i++)
+                    this.TotalLines.Add(this.rejectedEdges[i]);
             }
-            if(Input.GetKeyUp(KeyCode.R))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Randomized))
             {
                 if(this.rejectedEdges != null)
                 {
@@ -44,7 +54,7 @@
                     }
                 }
             }
-            if(Input.GetKeyUp(KeyCode.S))
+            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Ordered))
             {
                 this.rejectedEdges.Sort((x, y) => x.Weight.CompareTo(y.Weight));
             }

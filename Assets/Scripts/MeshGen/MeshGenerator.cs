@@ -21,7 +21,7 @@
 
         private void Update()
         {
-            if(Input.GetKeyUp(KeyCode.M))
+            if(Input.GetKeyUp(KeyCode.Alpha0))
             {
                 GenerateMesh();
             }
