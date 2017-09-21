@@ -6,7 +6,6 @@
     {
         private void OnCollisionEnter(Collision collision)
         {
-
             if (collision.gameObject.GetComponent<DartThrowing.CircleDart>() != null)
             {
                 Rigidbody rgbdy = collision.gameObject.GetComponent<Rigidbody>();

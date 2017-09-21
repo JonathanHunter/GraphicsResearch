@@ -104,6 +104,13 @@
                 foreach (CircleDart d in this.Circles)
                 {
                     d.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    d.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                }
+
+                foreach (RectangleDart d in this.Rects)
+                {
+                    d.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    d.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                 }
             }
             else if (Input.GetKeyUp(KeyCode.J))
@@ -113,7 +120,7 @@
                     for (int c = 0; c < this.gridCount.y; c++)
                     {
                         Vector2 boxCenter = this.topLeft + new Vector2(this.boxSize.x * r, this.boxSize.y * c);
-                        if (this.Samples[r,c].GetComponent<CircleDart>() != null)
+                        if (this.Samples[r, c].GetComponent<CircleDart>() != null)
                         {
                             CircleDart circle = this.Samples[r, c].GetComponent<CircleDart>();
                             circle.transform.position = Vector3.Lerp(circle.OriginalPosition, boxCenter, this.pullToCenter);
@@ -125,6 +132,14 @@
                         }
                     }
                 }
+            }
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                foreach(CircleDart c in this.Circles)
+                    c.gameObject.SetActive(!c.gameObject.activeSelf);
+
+                foreach(RectangleDart r in this.Rects)
+                    r.gameObject.SetActive(!r.gameObject.activeSelf);
             }
         }
 
