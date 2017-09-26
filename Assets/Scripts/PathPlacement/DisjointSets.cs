@@ -1,4 +1,4 @@
-﻿namespace GraphicsResearch.MST
+﻿namespace GraphicsResearch.PathPlacement
 {
     using System.Collections.Generic;
 

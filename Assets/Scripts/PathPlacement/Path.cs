@@ -1,8 +1,8 @@
-﻿namespace GraphicsResearch.MST
+﻿namespace GraphicsResearch.PathPlacement
 {
     using UnityEngine;
 
-    public class GraphEdge
+    public class Path
     {
         public GameObject Start { get; private set; }
 
@@ -10,7 +10,7 @@
 
         public float Weight { get; private set; }
 
-        public GraphEdge(GameObject start, GameObject end, float weight)
+        public Path(GameObject start, GameObject end, float weight)
         {
             this.Start = start;
             this.End = end;

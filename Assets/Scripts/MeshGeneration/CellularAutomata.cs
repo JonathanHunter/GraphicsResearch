@@ -1,4 +1,4 @@
-﻿namespace GraphicsResearch.MeshGen
+﻿namespace GraphicsResearch.MeshGeneration
 {
     using UnityEngine;
 

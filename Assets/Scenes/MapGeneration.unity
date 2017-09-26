@@ -178,7 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 23819996}
   topLeft: {x: -9, y: 5}
-  gridSize: 0.1
+  gridSize: 0.01
 --- !u!4 &23819998
 Transform:
   m_ObjectHideFlags: 0
@@ -289,13 +289,14 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 221739659}
+  - component: {fileID: 221739664}
   - component: {fileID: 221739658}
   - component: {fileID: 221739660}
   - component: {fileID: 221739661}
   - component: {fileID: 221739663}
   - component: {fileID: 221739662}
   m_Layer: 0
-  m_Name: DartThrower
+  m_Name: MapGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -314,22 +315,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   center: {fileID: 221739659}
   dimensions: {x: 18, y: 10}
-  numberOfDarts: 200
-  numberOfAttempts: 500
-  circleRadius: 0.5
   circleTemplet: {fileID: 114194699498897538, guid: 103489cca3db11b41ab15a84f7d0220e,
     type: 2}
+  circleRadius: 0.5
+  rectangleTemplet: {fileID: 0}
   rectDimensions: {x: 1, y: 1}
-  rectTemplet: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
-    type: 2}
   rotate: 0
   resize: 0
   sizeBound: {x: 1, y: 3}
   onlyCircles: 1
-  jitteredSampling: 1
-  gridCount: {x: 9, y: 5}
-  pullToCenter: 0.5
-  showGrid: 0
+  numberOfDarts: 200
+  numberOfAttempts: 500
 --- !u!4 &221739659
 Transform:
   m_ObjectHideFlags: 0
@@ -355,9 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919c1062cb3545a47bd2f9ec61809c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dartThrower: {fileID: 221739658}
   edgeAmount: 0.25
-  showArrows: 1
+  showLines: 0
 --- !u!114 &221739661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,14 +364,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5950546ae971d644a8828309a07d572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshFilter: {fileID: 221739663}
   showGrid: 0
-  dartThrower: {fileID: 221739658}
-  vst: {fileID: 221739660}
   topLeft: {fileID: 1202425529}
   numRows: 180
   numCols: 101
   boxSize: 0.1
-  meshFilter: {fileID: 221739663}
 --- !u!23 &221739662
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -416,6 +409,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 221739657}
   m_Mesh: {fileID: 0}
+--- !u!114 &221739664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 221739657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15d685267a8ab2749a6fa5ff1e87f367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomManager: {fileID: 221739658}
+  pathManager: {fileID: 221739660}
+  meshManager: {fileID: 221739661}
 --- !u!1 &646667179
 GameObject:
   m_ObjectHideFlags: 0

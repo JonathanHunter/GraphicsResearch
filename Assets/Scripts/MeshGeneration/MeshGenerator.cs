@@ -1,4 +1,4 @@
-﻿namespace GraphicsResearch.MeshGen
+﻿namespace GraphicsResearch.MeshGeneration
 {
     using System.Collections.Generic;
     using UnityEngine;
@@ -16,7 +16,7 @@
 
         private void Start()
         {
-           this.ca = new CellularAutomata(100);
+           this.ca = new CellularAutomata(500);
         }
 
         private void Update()
