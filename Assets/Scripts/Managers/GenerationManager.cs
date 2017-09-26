@@ -8,6 +8,16 @@
 
     public class GenerationManager : MonoBehaviour
     {
+        [SerializeField]
+        private bool placeRoomsOnStart = false;
+        [SerializeField]
+        private bool placePathsOnStart = false;
+        [SerializeField]
+        private bool placeMeshOnStart = false;
+        [SerializeField]
+        private bool toggleRoomsOnStart = false;
+
+
         public RoomManager roomManager;
         public PathManager pathManager;
         public MeshManager meshManager;
@@ -17,6 +27,18 @@
             this.roomManager.Init();
             this.pathManager.Init();
             this.meshManager.Init();
+
+            if(this.placeRoomsOnStart)
+                this.roomManager.PlaceRooms();
+
+            if (this.placePathsOnStart)
+                this.pathManager.PlacePaths(this.roomManager);
+
+            if (this.placeMeshOnStart)
+                this.meshManager.GenerateMesh(this.roomManager, this.pathManager);
+
+            if (this.toggleRoomsOnStart)
+                this.roomManager.ToggleRooms();
         }
         
         private void Update()

@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114194699498897538}
   - component: {fileID: 54840643269047772}
   m_Layer: 0
-  m_Name: CircleDart
+  m_Name: CircleRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

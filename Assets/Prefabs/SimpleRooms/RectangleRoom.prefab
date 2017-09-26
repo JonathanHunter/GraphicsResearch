@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114358055616750682}
   - component: {fileID: 54282360063338324}
   m_Layer: 0
-  m_Name: RectangleDart
+  m_Name: RectangleRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

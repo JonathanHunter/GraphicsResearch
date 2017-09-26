@@ -19,8 +19,8 @@
 
         protected override void LocalInit()
         {
-            this.globalVerticalBounds = new Vector2(this.center.position.y + this.dimensions.y / 2, this.center.position.y - this.dimensions.y / 2);
-            this.globalHorizontalBounds = new Vector2(this.center.position.x - this.dimensions.x / 2, this.center.position.x + this.dimensions.x / 2);
+            this.globalVerticalBounds = new Vector2(this.topLeft.position.y - this.dimensions.y, this.topLeft.position.y);
+            this.globalHorizontalBounds = new Vector2(this.topLeft.position.x, this.topLeft.position.x + this.dimensions.x);
         }
 
         protected override void LocalPlaceRooms()

@@ -5,9 +5,9 @@
 
     public abstract class RoomManager : MonoBehaviour
     {
-        /// <summary> The center of the box where rooms will be placed. </summary>
+        /// <summary> The top left of the box where rooms will be placed. </summary>
         [SerializeField]
-        protected Transform center = null;
+        protected Transform topLeft = null;
         /// <summary> The dimensions of the box where rooms will be placed. </summary>
         [SerializeField]
         protected Vector2 dimensions = Vector2.zero;
