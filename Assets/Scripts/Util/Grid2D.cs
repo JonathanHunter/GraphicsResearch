@@ -31,34 +31,17 @@
 
         public int GetRow(Vector2 position)
         {
-            Vector2 pos = this.topLeft.position;
-            float dist = position.x - pos.x + this.boxSize.x / 2f;
-            int row = (int)(dist / this.boxSize.x);
-            if (row < 0)
-                return 0;
-            else if (row >= this.numRows)
-                return this.numRows - 1;
-            else
-                return row;
+            return GridUtil.GetRow(position, this.topLeft.position, this.boxSize, this.numRows);
         }
 
         public int GetCol(Vector2 position)
         {
-            Vector2 pos = this.topLeft.position;
-            float dist = pos.y - position.y + this.boxSize.y / 2f;
-            int col = (int)(dist / this.boxSize.y);
-            if (col < 0)
-                return 0;
-            else if (col >= this.numCols)
-                return this.numCols - 1;
-            else
-                return col;
+            return GridUtil.GetCol(position, this.topLeft.position, this.boxSize, this.numCols);
         }
 
         public Vector2 GetPos(int r, int c)
         {
-            Vector2 pos = this.topLeft.position;
-            return pos + new Vector2(this.boxSize.x * r, -this.boxSize.y * c);
+            return GridUtil.GetPos(r, c, this.topLeft.position, this.boxSize);
         }
     }
 }

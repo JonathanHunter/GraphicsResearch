@@ -9,7 +9,7 @@
     public class Rasterize : MeshManager
     {
         [SerializeField]
-        private bool showGrid;
+        private bool showGrid = false;
         [SerializeField]
         private Transform topLeft = null;
         [SerializeField]
@@ -17,10 +17,12 @@
         [SerializeField]
         private int numCols = 0;
         [SerializeField]
-        private float boxSize;
+        private float boxSize = 0;
+        [SerializeField]
+        private bool extrudeMesh = false;
 
-        public Grid2D<int> Rasterized { get; private set; }
-        
+        public MeshGrid Rasterized { get; private set; }
+
         private void OnDrawGizmos()
         {
             if (this.showGrid)
@@ -29,8 +31,8 @@
                 {
                     for (int c = 0; c < this.numCols; c++)
                     {
-                        Vector2 boxCenter = this.Rasterized.GetPos(r, c);
-                        if (this.Rasterized != null && this.Rasterized.Get(r,c) == 1)
+                        Vector2 boxCenter = this.Rasterized.Squares[r, c].Center;
+                        if (this.Rasterized != null && this.Rasterized.Squares[r, c].Filled)
                             Gizmos.DrawCube(boxCenter, new Vector2(this.boxSize, this.boxSize));
                         else
                             Gizmos.DrawWireCube(boxCenter, new Vector2(this.boxSize, this.boxSize));
@@ -42,7 +44,7 @@
 
         protected override void LocalInit()
         {
-            this.Rasterized = new Grid2D<int>(this.numRows, this.numCols, this.topLeft, new Vector2(this.boxSize, this.boxSize));
+            this.Rasterized = new MeshGrid(this.numRows, this.numCols, this.topLeft.position, new Vector2(this.boxSize, this.boxSize));
         }
 
         protected override void LocalCalculateMesh(RoomManager rooms, PathManager paths)
@@ -53,27 +55,53 @@
 
         protected override void LocalCreateMesh()
         {
+            // Floor
             for (int r = 0; r < this.numRows; r++)
             {
                 for (int c = 0; c < this.numCols; c++)
                 {
-                    if (this.Rasterized.Get(r, c) != 0)
+                    if (this.Rasterized.Squares[r, c].Filled)
                     {
-                        Vector2 boxCenter = this.Rasterized.GetPos(r, c);
-                        Vector3 tl = new Vector3(boxCenter.x - this.boxSize / 2f, boxCenter.y + this.boxSize / 2f);
-                        Vector3 tr = new Vector3(boxCenter.x + this.boxSize / 2f, boxCenter.y + this.boxSize / 2f);
-                        Vector3 bl = new Vector3(boxCenter.x - this.boxSize / 2f, boxCenter.y - this.boxSize / 2f);
-                        Vector3 br = new Vector3(boxCenter.x + this.boxSize / 2f, boxCenter.y - this.boxSize / 2f);
-                        this.Vertices.Add(tl);
-                        this.Vertices.Add(tr);
-                        this.Vertices.Add(br);
-                        this.Vertices.Add(bl);
-                        this.Triangles.Add(this.Vertices.Count - 4);
-                        this.Triangles.Add(this.Vertices.Count - 3);
-                        this.Triangles.Add(this.Vertices.Count - 2);
-                        this.Triangles.Add(this.Vertices.Count - 4);
-                        this.Triangles.Add(this.Vertices.Count - 2);
-                        this.Triangles.Add(this.Vertices.Count - 1);
+
+                        Square square = this.Rasterized.Squares[r, c];
+                        int tl = this.Rasterized.Corners[(int)square.TopLeft.x, (int)square.TopLeft.y].VertexIndex;
+                        int tr = this.Rasterized.Corners[(int)square.TopRight.x, (int)square.TopRight.y].VertexIndex;
+                        int bl = this.Rasterized.Corners[(int)square.BottomLeft.x, (int)square.BottomLeft.y].VertexIndex;
+                        int br = this.Rasterized.Corners[(int)square.BottomRight.x, (int)square.BottomRight.y].VertexIndex;
+                        AddTriangles(tl, tr, bl, br);
+                    }
+                }
+            }
+
+            if (this.extrudeMesh)
+            {
+                // Ceiling
+                MeshGrid dupe = this.Rasterized.Duplicate(1, this.Vertices);
+                for (int r = 0; r < this.numRows; r++)
+                {
+                    for (int c = 0; c < this.numCols; c++)
+                    {
+                        if (dupe.Squares[r, c].Filled)
+                        {
+                            Square square = dupe.Squares[r, c];
+                            int tl = dupe.Corners[(int)square.TopLeft.x, (int)square.TopLeft.y].VertexIndex;
+                            int tr = dupe.Corners[(int)square.TopRight.x, (int)square.TopRight.y].VertexIndex;
+                            int bl = dupe.Corners[(int)square.BottomLeft.x, (int)square.BottomLeft.y].VertexIndex;
+                            int br = dupe.Corners[(int)square.BottomRight.x, (int)square.BottomRight.y].VertexIndex;
+                            AddTriangles(tl, tr, bl, br);
+                        }
+                    }
+                }
+
+                // Walls
+                for (int r = 0; r < this.numRows; r++)
+                {
+                    for (int c = 0; c < this.numCols; c++)
+                    {
+                        if (this.Rasterized.Squares[r, c].Filled)
+                        {
+                            AddWalls(r, c, this.Rasterized, dupe);
+                        }
                     }
                 }
             }
@@ -81,7 +109,7 @@
 
         protected override void LocalClear()
         {
-            this.Rasterized = new Grid2D<int>(this.numRows, this.numCols, this.topLeft, new Vector2(this.boxSize, this.boxSize));
+            this.Rasterized = new MeshGrid(this.numRows, this.numCols, this.topLeft.position, new Vector2(this.boxSize, this.boxSize));
         }
 
         private void RasterizeCircles(List<CircleRoom> circles)
@@ -90,17 +118,17 @@
             {
                 Vector2 topLeft = new Vector2(circle.transform.position.x - circle.Radius, circle.transform.position.y + circle.Radius);
                 Vector2 bottomRight = new Vector2(circle.transform.position.x + circle.Radius, circle.transform.position.y - circle.Radius);
-                int r1 = this.Rasterized.GetRow(topLeft);
-                int r2 = this.Rasterized.GetRow(bottomRight);
-                int c1 = this.Rasterized.GetCol(topLeft);
-                int c2 = this.Rasterized.GetCol(bottomRight);
+                int r1 = GridUtil.GetRow(topLeft, this.topLeft.position, new Vector2(this.boxSize, this.boxSize), this.numRows);
+                int r2 = GridUtil.GetRow(bottomRight, this.topLeft.position, new Vector2(this.boxSize, this.boxSize), this.numRows);
+                int c1 = GridUtil.GetCol(topLeft, this.topLeft.position, new Vector2(this.boxSize, this.boxSize), this.numCols);
+                int c2 = GridUtil.GetCol(bottomRight, this.topLeft.position, new Vector2(this.boxSize, this.boxSize), this.numCols);
                 for (int r = r1; r < r2; r++)
                 {
                     for (int c = c1; c < c2; c++)
                     {
-                        Vector2 pos = this.Rasterized.GetPos(r, c);
+                        Vector2 pos = GridUtil.GetPos(r, c, this.topLeft.position, new Vector2(this.boxSize, this.boxSize));
                         if (Vector2.Distance(pos, circle.transform.position) <= circle.Radius)
-                            this.Rasterized.Set(r,c, 1);
+                            this.Rasterized.Fill(pos, this.Vertices);
                     }
                 }
             }
@@ -108,17 +136,71 @@
 
         private void RasterizeLines(List<Path> lines)
         {
-            foreach(Path e in lines)
+            foreach (Path e in lines)
             {
                 float change = this.boxSize / Vector2.Distance(e.Start.transform.position, e.End.transform.position);
                 float lerp = 0;
-                while(lerp <= 1)
+                while (lerp <= 1)
                 {
                     Vector2 pos = Vector2.Lerp(e.Start.transform.position, e.End.transform.position, lerp);
-                    this.Rasterized.Set(this.Rasterized.GetRow(pos), this.Rasterized.GetCol(pos), 1);
+                    this.Rasterized.Fill(pos, this.Vertices);
                     lerp += change;
                 }
             }
+        }
+
+        private void AddWalls(int r, int c, MeshGrid top, MeshGrid bottom)
+        {
+            bool left = r == 0 || !top.Squares[r - 1, c].Filled;
+            bool right = r == this.numRows - 1 || !top.Squares[r + 1, c].Filled;
+            bool up = c == 0 || !top.Squares[r, c - 1].Filled;
+            bool down = c == this.numCols - 1 || !top.Squares[r, c + 1].Filled;
+
+            if (left)
+            {
+                int tl = top.Corners[(int)top.Squares[r, c].TopLeft.x, (int)top.Squares[r, c].TopLeft.y].VertexIndex;
+                int tr = bottom.Corners[(int)bottom.Squares[r, c].TopLeft.x, (int)bottom.Squares[r, c].TopLeft.y].VertexIndex;
+                int bl = top.Corners[(int)top.Squares[r, c].TopRight.x, (int)top.Squares[r, c].TopRight.y].VertexIndex;
+                int br = bottom.Corners[(int)bottom.Squares[r, c].TopRight.x, (int)bottom.Squares[r, c].TopRight.y].VertexIndex;
+                AddTriangles(tl, tr, bl, br);
+            }
+
+            if (right)
+            {
+                int tl = bottom.Corners[(int)bottom.Squares[r, c].BottomLeft.x, (int)bottom.Squares[r, c].BottomLeft.y].VertexIndex;
+                int tr = top.Corners[(int)top.Squares[r, c].BottomLeft.x, (int)top.Squares[r, c].BottomLeft.y].VertexIndex;
+                int bl = bottom.Corners[(int)bottom.Squares[r, c].BottomRight.x, (int)bottom.Squares[r, c].BottomRight.y].VertexIndex;
+                int br = top.Corners[(int)top.Squares[r, c].BottomRight.x, (int)top.Squares[r, c].BottomRight.y].VertexIndex;
+                AddTriangles(tl, tr, bl, br);
+            }
+
+            if (up)
+            {
+                int tl = top.Corners[(int)top.Squares[r, c].TopLeft.x, (int)top.Squares[r, c].TopLeft.y].VertexIndex;
+                int tr = top.Corners[(int)top.Squares[r, c].BottomLeft.x, (int)top.Squares[r, c].BottomLeft.y].VertexIndex;
+                int bl = bottom.Corners[(int)bottom.Squares[r, c].TopLeft.x, (int)bottom.Squares[r, c].TopLeft.y].VertexIndex;
+                int br = bottom.Corners[(int)bottom.Squares[r, c].BottomLeft.x, (int)bottom.Squares[r, c].BottomLeft.y].VertexIndex;
+                AddTriangles(tl, tr, bl, br);
+            }
+
+            if (down)
+            {
+                int tl = top.Corners[(int)top.Squares[r, c].BottomRight.x, (int)top.Squares[r, c].BottomRight.y].VertexIndex;
+                int tr = top.Corners[(int)top.Squares[r, c].TopRight.x, (int)top.Squares[r, c].TopRight.y].VertexIndex;
+                int bl = bottom.Corners[(int)bottom.Squares[r, c].BottomRight.x, (int)bottom.Squares[r, c].BottomRight.y].VertexIndex;
+                int br = bottom.Corners[(int)bottom.Squares[r, c].TopRight.x, (int)bottom.Squares[r, c].TopRight.y].VertexIndex;
+                AddTriangles(tl, tr, bl, br);
+            }
+        }
+
+        private void AddTriangles(int tl, int tr, int bl, int br)
+        {
+            this.Triangles.Add(tl);
+            this.Triangles.Add(br);
+            this.Triangles.Add(tr);
+            this.Triangles.Add(tl);
+            this.Triangles.Add(bl);
+            this.Triangles.Add(br);
         }
     }
 }
