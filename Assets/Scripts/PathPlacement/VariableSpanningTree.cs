@@ -7,7 +7,9 @@
     public class VariableSpanningTree : PathManager
     {
         [SerializeField]
-        private bool showLines;
+        private bool showLines = false;
+        [SerializeField]
+        private float pathWidth = .5f;
 
         private void OnDrawGizmos()
         {
@@ -27,8 +29,9 @@
             Vector3 start = edge.Start.transform.position;
             Vector3 end = edge.End.transform.position;
             Vector3 es = Vector3.Normalize(start - end);
-            end += .5f * es;
-            Gizmos.DrawLine(start, end);
+            Vector3 left = new Vector3(-es.y, es.x, es.z);
+            Gizmos.DrawLine(start + left * this.pathWidth / 2f, end + left * this.pathWidth / 2f);
+            Gizmos.DrawLine(start - left * this.pathWidth / 2f, end - left * this.pathWidth / 2f);
         }
 
         protected override void LocalInit()
@@ -77,9 +80,18 @@
         private bool IsBlocked(CircleRoom c1, CircleRoom c2)
         {
             Vector3 c12 = c2.transform.position - c1.transform.position;
-            RaycastHit[] hits = Physics.RaycastAll(c1.transform.position, c12.normalized, c12.magnitude);
+            Vector3 left = new Vector3(-c12.y, c12.x, c12.z).normalized;
+            RaycastHit[] hits = Physics.RaycastAll(c1.transform.position + left * this.pathWidth / 2f, c12.normalized, c12.magnitude);
             int hitCount = hits.Length;
             foreach(RaycastHit hit in hits)
+            {
+                if (hit.collider.gameObject == c1.gameObject || hit.collider.gameObject == c2.gameObject)
+                    hitCount--;
+            }
+
+            hits = Physics.RaycastAll(c1.transform.position - left * this.pathWidth / 2f, c12.normalized, c12.magnitude);
+            hitCount += hits.Length;
+            foreach (RaycastHit hit in hits)
             {
                 if (hit.collider.gameObject == c1.gameObject || hit.collider.gameObject == c2.gameObject)
                     hitCount--;
@@ -92,7 +104,7 @@
         {
             float dist = Vector3.Distance(c1.transform.position, c2.transform.position);
             dist -= c1.Radius + c2.Radius;
-            return new Path(c1.gameObject, c2.gameObject, dist);
+            return new Path(c1.gameObject, c2.gameObject, dist, this.pathWidth);
         }
 
         private void Kruskals(List<Path> baseEdges, List<GameObject> objects)

@@ -10,6 +10,9 @@
         /// <summary> The MeshFilter used to store the generated mesh. </summary>
         [SerializeField]
         protected MeshFilter meshFilter;
+        /// <summary> The collider to use with the generated mesh. </summary>
+        [SerializeField]
+        protected MeshCollider meshCollider;
 
         /// <summary> The generated mesh. </summary>
         public Mesh DungeonMesh { get; protected set; }
@@ -43,6 +46,7 @@
             this.DungeonMesh.triangles = this.Triangles.ToArray();
             this.DungeonMesh.RecalculateNormals();
             this.meshFilter.mesh = this.DungeonMesh;
+            this.meshCollider.sharedMesh = this.DungeonMesh;
         }
 
         /// <summary> Generates a mesh from the given rooms and paths. </summary>

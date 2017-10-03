@@ -20,12 +20,14 @@
         private float boxSize = 0;
         [SerializeField]
         private bool extrudeMesh = false;
+        [SerializeField]
+        private bool invertTriangles = false;
 
         public MeshGrid Rasterized { get; private set; }
 
         private void OnDrawGizmos()
         {
-            if (this.showGrid)
+            if (this.showGrid && this.Rasterized != null)
             {
                 for (int r = 0; r < this.numRows; r++)
                 {
@@ -68,14 +70,14 @@
                         int tr = this.Rasterized.Corners[(int)square.TopRight.x, (int)square.TopRight.y].VertexIndex;
                         int bl = this.Rasterized.Corners[(int)square.BottomLeft.x, (int)square.BottomLeft.y].VertexIndex;
                         int br = this.Rasterized.Corners[(int)square.BottomRight.x, (int)square.BottomRight.y].VertexIndex;
-                        AddTriangles(tl, tr, bl, br);
+                        AddTriangles(tl, tr, bl, br, this.invertTriangles);
                     }
                 }
             }
 
             if (this.extrudeMesh)
             {
-                // Ceiling
+                // Ceiling triangles are inverted from floor
                 MeshGrid dupe = this.Rasterized.Duplicate(1, this.Vertices);
                 for (int r = 0; r < this.numRows; r++)
                 {
@@ -88,7 +90,7 @@
                             int tr = dupe.Corners[(int)square.TopRight.x, (int)square.TopRight.y].VertexIndex;
                             int bl = dupe.Corners[(int)square.BottomLeft.x, (int)square.BottomLeft.y].VertexIndex;
                             int br = dupe.Corners[(int)square.BottomRight.x, (int)square.BottomRight.y].VertexIndex;
-                            AddTriangles(tl, tr, bl, br);
+                            AddTriangles(tl, tr, bl, br, !this.invertTriangles);
                         }
                     }
                 }
@@ -138,12 +140,25 @@
         {
             foreach (Path e in lines)
             {
-                float change = this.boxSize / Vector2.Distance(e.Start.transform.position, e.End.transform.position);
+                Vector3 start = e.Start.transform.position;
+                Vector3 end = e.End.transform.position;
+                Vector3 es = Vector3.Normalize(start - end);
+                Vector3 left = new Vector3(-es.y, es.x, es.z);
+                float change = this.boxSize / Vector2.Distance(start, end) / 2f;
+                float change2 = this.boxSize / e.Width / 2f;
                 float lerp = 0;
+                float lerp2 = 0;
                 while (lerp <= 1)
                 {
-                    Vector2 pos = Vector2.Lerp(e.Start.transform.position, e.End.transform.position, lerp);
-                    this.Rasterized.Fill(pos, this.Vertices);
+                    Vector3 pos = Vector2.Lerp(start - left * e.Width / 2f, end - left * e.Width / 2f, lerp);
+                    lerp2 = 0;
+                    while(lerp2 <= 1)
+                    {
+                        Vector3 cell = Vector2.Lerp(pos, pos + left * e.Width, lerp2);
+                        this.Rasterized.Fill(cell, this.Vertices);
+                        lerp2 += change2;
+                    }
+
                     lerp += change;
                 }
             }
@@ -162,7 +177,7 @@
                 int tr = bottom.Corners[(int)bottom.Squares[r, c].TopLeft.x, (int)bottom.Squares[r, c].TopLeft.y].VertexIndex;
                 int bl = top.Corners[(int)top.Squares[r, c].TopRight.x, (int)top.Squares[r, c].TopRight.y].VertexIndex;
                 int br = bottom.Corners[(int)bottom.Squares[r, c].TopRight.x, (int)bottom.Squares[r, c].TopRight.y].VertexIndex;
-                AddTriangles(tl, tr, bl, br);
+                AddTriangles(tl, tr, bl, br, this.invertTriangles);
             }
 
             if (right)
@@ -171,7 +186,7 @@
                 int tr = top.Corners[(int)top.Squares[r, c].BottomLeft.x, (int)top.Squares[r, c].BottomLeft.y].VertexIndex;
                 int bl = bottom.Corners[(int)bottom.Squares[r, c].BottomRight.x, (int)bottom.Squares[r, c].BottomRight.y].VertexIndex;
                 int br = top.Corners[(int)top.Squares[r, c].BottomRight.x, (int)top.Squares[r, c].BottomRight.y].VertexIndex;
-                AddTriangles(tl, tr, bl, br);
+                AddTriangles(tl, tr, bl, br, this.invertTriangles);
             }
 
             if (up)
@@ -180,7 +195,7 @@
                 int tr = top.Corners[(int)top.Squares[r, c].BottomLeft.x, (int)top.Squares[r, c].BottomLeft.y].VertexIndex;
                 int bl = bottom.Corners[(int)bottom.Squares[r, c].TopLeft.x, (int)bottom.Squares[r, c].TopLeft.y].VertexIndex;
                 int br = bottom.Corners[(int)bottom.Squares[r, c].BottomLeft.x, (int)bottom.Squares[r, c].BottomLeft.y].VertexIndex;
-                AddTriangles(tl, tr, bl, br);
+                AddTriangles(tl, tr, bl, br, this.invertTriangles);
             }
 
             if (down)
@@ -189,18 +204,30 @@
                 int tr = top.Corners[(int)top.Squares[r, c].TopRight.x, (int)top.Squares[r, c].TopRight.y].VertexIndex;
                 int bl = bottom.Corners[(int)bottom.Squares[r, c].BottomRight.x, (int)bottom.Squares[r, c].BottomRight.y].VertexIndex;
                 int br = bottom.Corners[(int)bottom.Squares[r, c].TopRight.x, (int)bottom.Squares[r, c].TopRight.y].VertexIndex;
-                AddTriangles(tl, tr, bl, br);
+                AddTriangles(tl, tr, bl, br, this.invertTriangles);
             }
         }
 
-        private void AddTriangles(int tl, int tr, int bl, int br)
+        private void AddTriangles(int tl, int tr, int bl, int br, bool invert)
         {
-            this.Triangles.Add(tl);
-            this.Triangles.Add(br);
-            this.Triangles.Add(tr);
-            this.Triangles.Add(tl);
-            this.Triangles.Add(bl);
-            this.Triangles.Add(br);
+            if (invert)
+            {
+                this.Triangles.Add(br);
+                this.Triangles.Add(bl);
+                this.Triangles.Add(tl);
+                this.Triangles.Add(tr);
+                this.Triangles.Add(br);
+                this.Triangles.Add(tl);
+            }
+            else
+            {
+                this.Triangles.Add(tl);
+                this.Triangles.Add(br);
+                this.Triangles.Add(tr);
+                this.Triangles.Add(tl);
+                this.Triangles.Add(bl);
+                this.Triangles.Add(br);
+            }
         }
     }
 }

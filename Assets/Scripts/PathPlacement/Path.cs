@@ -10,11 +10,14 @@
 
         public float Weight { get; private set; }
 
-        public Path(GameObject start, GameObject end, float weight)
+        public float Width { get; private set; }
+
+        public Path(GameObject start, GameObject end, float weight, float width)
         {
             this.Start = start;
             this.End = end;
             this.Weight = weight;
+            this.Width = width;
         }
     }
 }

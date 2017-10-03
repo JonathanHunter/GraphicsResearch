@@ -274,13 +274,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 49835516}
-  m_LocalRotation: {x: -0.4548461, y: 0.27059376, z: -0.04251518, w: 0.8473999}
-  m_LocalPosition: {x: -7.374, y: -11.471, z: -5.303}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -48.406002, y: 48.511, z: -28.642002}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &221739657
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,6 +467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgeAmount: 0.25
   showLines: 0
+  pathWidth: 0.5
 --- !u!1 &690197389
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,6 +585,7 @@ GameObject:
   - component: {fileID: 1077251125}
   - component: {fileID: 1077251127}
   - component: {fileID: 1077251126}
+  - component: {fileID: 1077251128}
   m_Layer: 0
   m_Name: Rasterizer
   m_TagString: Untagged
@@ -597,13 +599,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1077251123}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 221739659}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1077251125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,12 +618,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 1077251127}
+  meshCollider: {fileID: 1077251128}
   showGrid: 0
   topLeft: {fileID: 1948788545}
-  numRows: 600
-  numCols: 300
-  boxSize: 0.033333335
+  numRows: 400
+  numCols: 200
+  boxSize: 0.05
   extrudeMesh: 1
+  invertTriangles: 1
 --- !u!23 &1077251126
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -660,6 +664,20 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1077251123}
+  m_Mesh: {fileID: 0}
+--- !u!64 &1077251128
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1077251123}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
   m_Mesh: {fileID: 0}
 --- !u!1 &1851636388
 GameObject:
