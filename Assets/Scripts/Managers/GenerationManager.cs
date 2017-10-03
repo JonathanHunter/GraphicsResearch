@@ -17,6 +17,11 @@
         [SerializeField]
         private bool toggleRoomsOnStart = false;
 
+        [SerializeField]
+        private GameObject player;
+        [SerializeField]
+        private bool disableInput;
+
 
         public RoomManager roomManager;
         public PathManager pathManager;
@@ -39,10 +44,15 @@
 
             if (this.toggleRoomsOnStart)
                 this.roomManager.ToggleRooms();
+
+            this.player.transform.position = roomManager.CircleRooms[0].transform.position;
         }
         
         private void Update()
         {
+            if (this.disableInput)
+                return;
+
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Circle))
                 this.roomManager.PlaceRoom(true);
 
