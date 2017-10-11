@@ -33,21 +33,9 @@
             this.pathManager.Init();
             this.meshManager.Init();
 
-            if(this.placeRoomsOnStart)
-                this.roomManager.PlaceRooms();
-
-            if (this.placePathsOnStart)
-                this.pathManager.PlacePaths(this.roomManager);
-
-            if (this.placeMeshOnStart)
-                this.meshManager.GenerateMesh(this.roomManager, this.pathManager);
-
-            if (this.toggleRoomsOnStart)
-                this.roomManager.ToggleRooms();
-
-            this.player.transform.position = roomManager.CircleRooms[0].transform.position;
+            StartUp();
         }
-        
+
         private void Update()
         {
             if (this.disableInput)
@@ -84,6 +72,32 @@
 
             if (CustomInput.BoolFreshPress(CustomInput.UserInput.Rasterize_GenMesh))
                 this.meshManager.CreateMesh();
+        }
+
+        private void StartUp()
+        {
+            if (this.placeRoomsOnStart)
+            {
+                this.roomManager.PlaceRooms();
+            }
+
+            if (this.placePathsOnStart)
+            {
+                this.pathManager.PlacePaths(this.roomManager);
+            }
+
+            if (this.placeMeshOnStart)
+            {
+                this.meshManager.GenerateMesh(this.roomManager, this.pathManager);
+            }
+
+            if (this.toggleRoomsOnStart)
+            {
+                this.roomManager.ToggleRooms();
+            }
+
+            if (placeMeshOnStart)
+                this.player.transform.position = roomManager.CircleRooms[0].transform.position;
         }
     }
 }

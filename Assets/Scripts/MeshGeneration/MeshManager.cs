@@ -7,26 +7,44 @@
 
     public abstract class MeshManager : MonoBehaviour
     {
-        /// <summary> The MeshFilter used to store the generated mesh. </summary>
         [SerializeField]
-        protected MeshFilter meshFilter;
-        /// <summary> The collider to use with the generated mesh. </summary>
+        private int gridRows = 0;
         [SerializeField]
-        protected MeshCollider meshCollider;
+        private int gridCols = 0;
+        [SerializeField]
+        private GameObject meshPrefab = null;
 
-        /// <summary> The generated mesh. </summary>
-        public Mesh DungeonMesh { get; protected set; }
-        /// <summary> The vertices of the generated mesh. </summary>
-        public List<Vector3> Vertices { get; protected set; }
-        /// <summary> The triangles of the generated mesh. </summary>
-        public List<int> Triangles { get; protected set; }
+        /// <summary> The generated meshes. </summary>
+        public Mesh[,] Meshes { get; protected set; }
+        /// <summary> The vertices of the generated meshes. </summary>
+        public List<Vector3>[,] Vertices { get; protected set; }
+        /// <summary> The triangles of the generated meshes. </summary>
+        public List<int>[,] Triangles { get; protected set; }
+        /// <summary> The number of rows in the mesh matrix. </summary>
+        public int GridRows { get { return this.gridRows; } }
+        /// <summary> The number of cols in the mesh matrix. </summary>
+        public int GridCols { get { return this.gridCols; } }
+
+        private List<GameObject> spawnedMeshes;
+
 
         /// <summary> Initializes this mesh manager. </summary>
         public void Init()
         {
-            this.DungeonMesh = new Mesh();
-            this.Vertices= new List<Vector3>();
-            this.Triangles = new List<int>();
+            this.Meshes = new Mesh[this.GridRows, this.GridCols];
+            this.Vertices= new List<Vector3>[this.GridRows, this.GridCols];
+            this.Triangles = new List<int>[this.GridRows, this.GridCols];
+            for (int r = 0; r < this.GridRows; r++)
+            {
+                for (int c = 0; c < this.GridCols; c++)
+                {
+                    this.Meshes[r, c] = new Mesh();
+                    this.Vertices[r, c] = new List<Vector3>();
+                    this.Triangles[r, c] = new List<int>();
+                }
+            }
+
+            this.spawnedMeshes = new List<GameObject>();
             LocalInit();
         }
 
@@ -42,11 +60,25 @@
         public void CreateMesh()
         {
             LocalCreateMesh();
-            this.DungeonMesh.vertices = this.Vertices.ToArray();
-            this.DungeonMesh.triangles = this.Triangles.ToArray();
-            this.DungeonMesh.RecalculateNormals();
-            this.meshFilter.mesh = this.DungeonMesh;
-            this.meshCollider.sharedMesh = this.DungeonMesh;
+            for(int r = 0; r < this.GridRows; r++)
+            {
+                for(int c = 0; c < this.GridCols; c++)
+                {
+                    GameObject mesh = Instantiate(this.meshPrefab);
+                    MeshFilter filter = mesh.GetComponent<MeshFilter>();
+                    MeshCollider collider = mesh.GetComponent<MeshCollider>();
+                    this.Meshes[r, c].vertices = this.Vertices[r, c].ToArray();
+                    this.Meshes[r, c].triangles = this.Triangles[r, c].ToArray();
+                    this.Meshes[r, c].RecalculateNormals();
+                    filter.mesh = this.Meshes[r, c];
+                    collider.sharedMesh = this.Meshes[r, c];
+                    mesh.transform.parent = this.gameObject.transform;
+                    mesh.transform.localPosition = Vector3.zero;
+                    mesh.transform.localRotation = Quaternion.identity;
+                    mesh.transform.localScale = Vector3.one;
+                    this.spawnedMeshes.Add(mesh);
+                }
+            }
         }
 
         /// <summary> Generates a mesh from the given rooms and paths. </summary>
@@ -62,10 +94,20 @@
         /// <summary> Clears the current mesh. </summary>
         public void Clear()
         {
-            this.meshFilter.mesh = null;
-            this.DungeonMesh.Clear();
-            this.Vertices.Clear();
-            this.Triangles.Clear();
+            foreach (GameObject g in spawnedMeshes)
+                Destroy(g);
+
+            spawnedMeshes.Clear();
+            for (int r = 0; r < this.GridRows; r++)
+            {
+                for (int c = 0; c < this.GridCols; c++)
+                {
+                    this.Meshes[r, c].Clear();
+                    this.Vertices[r, c].Clear();
+                    this.Triangles[r, c].Clear();
+                }
+            }
+
             LocalClear();
         }
 
