@@ -784,10 +784,10 @@ MonoBehaviour:
   rectangleTemplet: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
     type: 2}
   rectDimensions: {x: 1, y: 1}
-  rotate: 0
-  resize: 0
+  rotate: 1
+  resize: 1
   sizeBound: {x: 1, y: 3}
-  onlyCircles: 1
+  onlyCircles: 0
   gridCount: {x: 5, y: 5}
   numberOfAttempts: 100
   showGrid: 0

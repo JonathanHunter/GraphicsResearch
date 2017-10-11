@@ -79,6 +79,7 @@
         protected override void LocalCalculateMesh(RoomManager rooms, PathManager paths)
         {
             RasterizeCircles(rooms.CircleRooms);
+            RasterizeSquares(rooms.RectangleRooms);
             RasterizeLines(paths.GetPaths());
         }
 
@@ -145,6 +146,36 @@
                             }
                         }
                     }
+                }
+            }
+        }
+
+        private void RasterizeSquares(List<RectangleRoom> rectangles)
+        {
+            foreach (RectangleRoom rect in rectangles)
+            {
+                Vector3 start = rect.transform.position - rect.transform.up * rect.Dimentions.y / 2f;
+                Vector3 end = rect.transform.position + rect.transform.up * rect.Dimentions.y / 2f;
+                Vector3 es = Vector3.Normalize(start - end);
+                Vector3 left = new Vector3(-es.y, es.x, es.z);
+                float change = this.boxSize / Vector2.Distance(start, end) / 2f;
+                float change2 = this.boxSize / rect.Dimentions.x / 2f;
+                float lerp = 0;
+                float lerp2 = 0;
+                while (lerp <= 1)
+                {
+                    Vector3 pos = Vector2.Lerp(start - left * rect.Dimentions.x / 2f, end - left * rect.Dimentions.x / 2f, lerp);
+                    lerp2 = 0;
+                    while (lerp2 <= 1)
+                    {
+                        Vector3 cell = Vector2.Lerp(pos, pos + left * rect.Dimentions.x, lerp2);
+                        int row = this.Grids.GetRow(cell);
+                        int col = this.Grids.GetCol(cell);
+                        this.Grids.Get(row, col).Fill(cell, this.Vertices[row, col]);
+                        lerp2 += change2;
+                    }
+
+                    lerp += change;
                 }
             }
         }

@@ -42,9 +42,16 @@
         {
             List<Path> baseEdges = new List<Path>();
             List<GameObject> objects = new List<GameObject>();
-            foreach (CircleRoom c1 in rooms.CircleRooms)
+            List<GameObject> roomLists = new List<GameObject>();
+            foreach (CircleRoom c in rooms.CircleRooms)
+                roomLists.Add(c.gameObject);
+
+            foreach (RectangleRoom r in rooms.RectangleRooms)
+                roomLists.Add(r.gameObject);
+
+            foreach (GameObject c1 in roomLists)
             {
-                AddUnobstructedEdges(baseEdges, c1, rooms.CircleRooms);
+                AddUnobstructedEdges(baseEdges, c1, roomLists);
                 objects.Add(c1.gameObject);
             }
 
@@ -55,9 +62,9 @@
         {
         }
 
-        private void AddUnobstructedEdges(List<Path> baseEdges, CircleRoom c1, List<CircleRoom> circles)
+        private void AddUnobstructedEdges(List<Path> baseEdges, GameObject c1, List<GameObject> circles)
         {
-            foreach (CircleRoom c2 in circles)
+            foreach (GameObject c2 in circles)
             {
                 if (c1 != c2)
                 {
@@ -77,7 +84,7 @@
             }
         }
 
-        private bool IsBlocked(CircleRoom c1, CircleRoom c2)
+        private bool IsBlocked(GameObject c1, GameObject c2)
         {
             Vector3 c12 = c2.transform.position - c1.transform.position;
             Vector3 left = new Vector3(-c12.y, c12.x, c12.z).normalized;
@@ -100,10 +107,9 @@
             return hitCount > 0;
         }
 
-        private Path CreateEdge(CircleRoom c1, CircleRoom c2)
+        private Path CreateEdge(GameObject c1, GameObject c2)
         {
             float dist = Vector3.Distance(c1.transform.position, c2.transform.position);
-            dist -= c1.Radius + c2.Radius;
             return new Path(c1.gameObject, c2.gameObject, dist, this.pathWidth);
         }
 
