@@ -97,7 +97,13 @@
             }
 
             if (placeMeshOnStart)
-                this.player.transform.position = roomManager.CircleRooms[0].transform.position;
+            {
+                this.player.transform.parent = this.meshManager.gameObject.transform;
+                this.player.transform.localPosition = roomManager.CircleRooms[0].transform.position;
+                this.player.transform.parent = null;
+                this.player.transform.rotation = Quaternion.identity;
+                this.player.transform.localScale = Vector3.one;
+            }
         }
     }
 }

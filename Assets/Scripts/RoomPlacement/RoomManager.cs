@@ -189,7 +189,7 @@
                         rect.OriginalPosition = rect.transform.position;
                         rect.transform.rotation = rotation;
                         rect.transform.localScale = new Vector3(this.rectDimensions.x * sizeX, this.rectDimensions.y * sizeY, 1);
-                        rect.Dimentions = this.rectDimensions;
+                        rect.Dimentions = rect.transform.localScale;
                         this.RectangleRooms.Add(rect);
                         return rect.gameObject;
                     }
