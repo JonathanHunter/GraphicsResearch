@@ -2,13 +2,11 @@
 {
     using UnityEngine;
 
-    public class CircleRoom : MonoBehaviour
+    public class CircleRoom : Room
     {
         [SerializeField]
         private float radius;
 
         public float Radius { get { return this.radius; } internal set { this.radius = value; } }
-
-        public Vector3 OriginalPosition { get; set; }
     }
 }

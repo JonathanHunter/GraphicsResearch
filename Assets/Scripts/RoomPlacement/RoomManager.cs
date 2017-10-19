@@ -36,6 +36,8 @@
         [SerializeField]
         protected bool onlyCircles;
 
+        /// <summary> The list of rooms currently placed. </summary>
+        public List<Room> Rooms { get; protected set; }
         /// <summary> The list of circle rooms currently placed. </summary>
         public List<CircleRoom> CircleRooms { get; protected set; }
         /// <summary> The list of rectangle rooms currently placed. </summary>
@@ -44,6 +46,7 @@
         /// <summary> Initializes this room manager. </summary>
         public void Init()
         {
+            this.Rooms = new List<Room>();
             this.CircleRooms = new List<CircleRoom>();
             this.RectangleRooms = new List<RectangleRoom>();
             LocalInit();
@@ -54,6 +57,11 @@
         {
             Clear();
             LocalPlaceRooms();
+            foreach (CircleRoom c in this.CircleRooms)
+                this.Rooms.Add(c);
+
+            foreach (RectangleRoom r in this.RectangleRooms)
+                this.Rooms.Add(r);
         }
 
         /// <summary> Clears all current rooms. </summary>
@@ -65,6 +73,9 @@
             foreach (RectangleRoom r in this.RectangleRooms)
                 Destroy(r.gameObject);
 
+            this.CircleRooms.Clear();
+            this.RectangleRooms.Clear();
+            this.Rooms.Clear();
             LocalClear();
         }
 
@@ -103,13 +114,7 @@
         /// <summary> Causes all rooms to stop moving. </summary>
         public void Halt()
         {
-            foreach (CircleRoom c in this.CircleRooms)
-            {
-                c.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                c.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            }
-
-            foreach (RectangleRoom r in this.RectangleRooms)
+            foreach (Room r in this.Rooms)
             {
                 r.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 r.gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -119,20 +124,14 @@
         /// <summary> Returns all rooms to their original positions. </summary>
         public void ResetRooms()
         {
-            foreach (CircleRoom c in this.CircleRooms)
-                c.transform.position = c.OriginalPosition;
-
-            foreach (RectangleRoom r in this.RectangleRooms)
+            foreach (Room r in this.Rooms)
                 r.transform.position = r.OriginalPosition;
         }
 
         /// <summary> Turns all of the room gameobjects on or off. </summary>
         public void ToggleRooms()
         {
-            foreach (CircleRoom c in this.CircleRooms)
-                c.gameObject.SetActive(!c.gameObject.activeSelf);
-
-            foreach (RectangleRoom r in this.RectangleRooms)
+            foreach (Room r in this.Rooms)
                 r.gameObject.SetActive(!r.gameObject.activeSelf);
         }
 

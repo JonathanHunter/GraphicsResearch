@@ -117,36 +117,7 @@
         {
             foreach (CircleRoom circle in circles)
             {
-                Vector2 topLeft = new Vector2(circle.transform.position.x - circle.Radius, circle.transform.position.y + circle.Radius);
-                Vector2 bottomRight = new Vector2(circle.transform.position.x + circle.Radius, circle.transform.position.y - circle.Radius);
-                Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-                Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
-                int gridRowLeft = GridUtil.GetRow(topLeft, this.topLeft.position, size, this.GridRows);
-                int gridRowRight = GridUtil.GetRow(bottomRight, this.topLeft.position, size, this.GridRows);
-                int gridColTop = GridUtil.GetCol(topLeft, this.topLeft.position, size, this.GridCols);
-                int gridColBottom = GridUtil.GetCol(bottomRight, this.topLeft.position, size, this.GridCols);
-                for (int r = gridRowLeft; r <= gridRowRight; r++)
-                {
-                    for (int c = gridColTop; c <= gridColBottom; c++)
-                    {
-                        MeshGrid mesh = this.Grids.Get(r, c);
-                        int r1 = GridUtil.GetRow(topLeft, mesh.TopLeft, gridSize, this.subGridRows);
-                        int r2 = GridUtil.GetRow(bottomRight, mesh.TopLeft, gridSize, this.subGridRows);
-                        int c1 = GridUtil.GetCol(topLeft, mesh.TopLeft, gridSize, this.subGridCols);
-                        int c2 = GridUtil.GetCol(bottomRight, mesh.TopLeft, gridSize, this.subGridCols);
-                        for (int sr = r1; sr <= r2; sr++)
-                        {
-                            for (int sc = c1; sc <= c2; sc++)
-                            {
-                                Vector2 pos = mesh.Squares[sr, sc].Center;
-                                if (Vector2.Distance(pos, circle.transform.position) <= circle.Radius)
-                                {
-                                    mesh.Fill(pos, this.Vertices[r, c]);
-                                }
-                            }
-                        }
-                    }
-                }
+                RasterizeCircle(circle.transform.position, circle.Radius);
             }
         }
 
@@ -154,29 +125,11 @@
         {
             foreach (RectangleRoom rect in rectangles)
             {
-                Vector3 start = rect.transform.position - rect.transform.up * rect.Dimentions.y / 2f;
-                Vector3 end = rect.transform.position + rect.transform.up * rect.Dimentions.y / 2f;
-                Vector3 es = Vector3.Normalize(start - end);
-                Vector3 left = new Vector3(-es.y, es.x, es.z);
-                float change = this.boxSize / Vector2.Distance(start, end) / 2f;
-                float change2 = this.boxSize / rect.Dimentions.x / 2f;
-                float lerp = 0;
-                float lerp2 = 0;
-                while (lerp <= 1)
-                {
-                    Vector3 pos = Vector2.Lerp(start - left * rect.Dimentions.x / 2f, end - left * rect.Dimentions.x / 2f, lerp);
-                    lerp2 = 0;
-                    while (lerp2 <= 1)
-                    {
-                        Vector3 cell = Vector2.Lerp(pos, pos + left * rect.Dimentions.x, lerp2);
-                        int row = this.Grids.GetRow(cell);
-                        int col = this.Grids.GetCol(cell);
-                        this.Grids.Get(row, col).Fill(cell, this.Vertices[row, col]);
-                        lerp2 += change2;
-                    }
+                RasterizeBox(
+                    rect.transform.position - rect.transform.up * rect.Dimentions.y / 2f,
+                    rect.transform.position + rect.transform.up * rect.Dimentions.y / 2f,
+                    rect.Dimentions.x / 2f);
 
-                    lerp += change;
-                }
             }
         }
 
@@ -184,29 +137,68 @@
         {
             foreach (Path e in lines)
             {
-                Vector3 start = e.Start.transform.position;
-                Vector3 end = e.End.transform.position;
-                Vector3 es = Vector3.Normalize(start - end);
-                Vector3 left = new Vector3(-es.y, es.x, es.z);
-                float change = this.boxSize / Vector2.Distance(start, end) / 2f;
-                float change2 = this.boxSize / e.Width / 2f;
-                float lerp = 0;
-                float lerp2 = 0;
-                while (lerp <= 1)
-                {
-                    Vector3 pos = Vector2.Lerp(start - left * e.Width / 2f, end - left * e.Width / 2f, lerp);
-                    lerp2 = 0;
-                    while (lerp2 <= 1)
-                    {
-                        Vector3 cell = Vector2.Lerp(pos, pos + left * e.Width, lerp2);
-                        int row = this.Grids.GetRow(cell);
-                        int col = this.Grids.GetCol(cell);
-                        this.Grids.Get(row, col).Fill(cell, this.Vertices[row, col]);
-                        lerp2 += change2;
-                    }
+                RasterizeBox(e.Start, e.End, e.Width);
+                if (e.EndRoom == null)
+                    RasterizeCircle(e.End, e.Width / 2f);
+            }
+        }
 
-                    lerp += change;
+        private void RasterizeCircle(Vector3 center, float radius)
+        {
+            Vector2 topLeft = new Vector2(center.x - radius, center.y + radius);
+            Vector2 bottomRight = new Vector2(center.x + radius, center.y - radius);
+            Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
+            Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
+            int gridRowLeft = GridUtil.GetRow(topLeft, this.topLeft.position, size, this.GridRows);
+            int gridRowRight = GridUtil.GetRow(bottomRight, this.topLeft.position, size, this.GridRows);
+            int gridColTop = GridUtil.GetCol(topLeft, this.topLeft.position, size, this.GridCols);
+            int gridColBottom = GridUtil.GetCol(bottomRight, this.topLeft.position, size, this.GridCols);
+            for (int r = gridRowLeft; r <= gridRowRight; r++)
+            {
+                for (int c = gridColTop; c <= gridColBottom; c++)
+                {
+                    MeshGrid mesh = this.Grids.Get(r, c);
+                    int r1 = GridUtil.GetRow(topLeft, mesh.TopLeft, gridSize, this.subGridRows);
+                    int r2 = GridUtil.GetRow(bottomRight, mesh.TopLeft, gridSize, this.subGridRows);
+                    int c1 = GridUtil.GetCol(topLeft, mesh.TopLeft, gridSize, this.subGridCols);
+                    int c2 = GridUtil.GetCol(bottomRight, mesh.TopLeft, gridSize, this.subGridCols);
+                    for (int sr = r1; sr <= r2; sr++)
+                    {
+                        for (int sc = c1; sc <= c2; sc++)
+                        {
+                            Vector2 pos = mesh.Squares[sr, sc].Center;
+                            if (Vector2.Distance(pos, center) <= radius)
+                            {
+                                mesh.Fill(pos, this.Vertices[r, c]);
+                            }
+                        }
+                    }
                 }
+            }
+        }
+
+        private void RasterizeBox(Vector3 start, Vector3 end, float width)
+        {
+            Vector3 es = Vector3.Normalize(start - end);
+            Vector3 left = new Vector3(-es.y, es.x, es.z);
+            float change = this.boxSize / Vector2.Distance(start, end) / 2f;
+            float change2 = this.boxSize / width / 2f;
+            float lerp = 0;
+            float lerp2 = 0;
+            while (lerp <= 1)
+            {
+                Vector3 pos = Vector2.Lerp(start - left * width / 2f, end - left * width / 2f, lerp);
+                lerp2 = 0;
+                while (lerp2 <= 1)
+                {
+                    Vector3 cell = Vector2.Lerp(pos, pos + left * width, lerp2);
+                    int row = this.Grids.GetRow(cell);
+                    int col = this.Grids.GetCol(cell);
+                    this.Grids.Get(row, col).Fill(cell, this.Vertices[row, col]);
+                    lerp2 += change2;
+                }
+
+                lerp += change;
             }
         }
 
