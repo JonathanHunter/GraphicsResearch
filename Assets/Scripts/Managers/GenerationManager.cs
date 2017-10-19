@@ -22,7 +22,6 @@
         [SerializeField]
         private bool disableInput;
 
-
         public RoomManager roomManager;
         public PathManager pathManager;
         public MeshManager meshManager;
@@ -99,7 +98,7 @@
             if (placeMeshOnStart)
             {
                 this.player.transform.parent = this.meshManager.gameObject.transform;
-                this.player.transform.localPosition = roomManager.CircleRooms[0].transform.position;
+                this.player.transform.localPosition = roomManager.Rooms[0].transform.position;
                 this.player.transform.parent = null;
                 this.player.transform.rotation = Quaternion.identity;
                 this.player.transform.localScale = Vector3.one;

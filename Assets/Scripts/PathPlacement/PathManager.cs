@@ -12,15 +12,15 @@
         protected float edgeAmount;
 
         /// <summary> The minimum edges generated inorder to connect the rooms. </summary>
-        public List<Path> Edges { get; protected set; }
+        public List<Path> Paths { get; protected set; }
         /// <summary> Extra edges created during path generation. </summary>
-        public List<Path> ExtraEdges { get; protected set; }
+        public List<Path> ExtraPaths { get; protected set; }
 
         /// <summary> Initializes this path manager. </summary>
         public void Init()
         {
-            this.Edges = new List<Path>();
-            this.ExtraEdges = new List<Path>();
+            this.Paths = new List<Path>();
+            this.ExtraPaths = new List<Path>();
             LocalInit();
         }
 
@@ -35,8 +35,8 @@
         /// <summary> Clears all of the current paths. </summary>
         public void Clear()
         {
-            this.Edges.Clear();
-            this.ExtraEdges.Clear();
+            this.Paths.Clear();
+            this.ExtraPaths.Clear();
             LocalClear();
         }
 
@@ -45,12 +45,12 @@
         public List<Path> GetPaths()
         {
             List<Path> paths = new List<Path>();
-            foreach (Path e in this.Edges)
+            foreach (Path e in this.Paths)
                 paths.Add(e);
 
-            int numToAdd = (int)(this.ExtraEdges.Count * this.edgeAmount);
+            int numToAdd = (int)(this.ExtraPaths.Count * this.edgeAmount);
             for (int i = 0; i < numToAdd; i++)
-                paths.Add(this.ExtraEdges[i]);
+                paths.Add(this.ExtraPaths[i]);
 
             return paths;
         }
@@ -58,16 +58,16 @@
         /// <summary> Randomizes the extra path edges. </summary>
         public void RandomizeExtraEdges()
         {
-            if (this.ExtraEdges != null)
+            if (this.ExtraPaths != null)
             {
-                int n = this.ExtraEdges.Count;
+                int n = this.ExtraPaths.Count;
                 while (n > 1)
                 {
                     n--;
                     int k = Random.Range(0, n + 1);
-                    Path edge = this.ExtraEdges[k];
-                    this.ExtraEdges[k] = this.ExtraEdges[n];
-                    this.ExtraEdges[n] = edge;
+                    Path path = this.ExtraPaths[k];
+                    this.ExtraPaths[k] = this.ExtraPaths[n];
+                    this.ExtraPaths[n] = path;
                 }
             }
         }
@@ -75,7 +75,7 @@
         /// <summary> Sorts the extra path edges. </summary>
         public void SortExtraEdges()
         {
-            this.ExtraEdges.Sort((x, y) => x.Weight.CompareTo(y.Weight));
+            this.ExtraPaths.Sort((x, y) => x.Weight.CompareTo(y.Weight));
         }
 
         /// <summary> Local handler for initialization. </summary>

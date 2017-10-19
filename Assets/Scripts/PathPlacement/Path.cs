@@ -1,13 +1,11 @@
 ﻿namespace GraphicsResearch.PathPlacement
 {
-    using UnityEngine;
+    using System.Collections.Generic;
     using RoomPlacement;
 
     public class Path
     {
-        public Vector3 Start { get; private set; }
-
-        public Vector3 End { get; private set; }
+        public Edge[] Edges { get; private set; }
 
         public Room StartRoom { get; private set; }
 
@@ -15,16 +13,24 @@
 
         public float Weight { get; private set; }
 
-        public float Width { get; private set; }
-
-        public Path(Vector3 start, Vector3 end, Room startRoom, Room endRoom, float weight, float width)
+        public Path(List<Edge> edges)
         {
-            this.Start = start;
-            this.End = end;
-            this.StartRoom = startRoom;
-            this.EndRoom = endRoom;
+            this.Edges = edges.ToArray();
+            float weight = 0;
+            foreach (Edge e in edges)
+                weight += e.Weight;
+
             this.Weight = weight;
-            this.Width = width;
+            this.StartRoom = edges[0].StartRoom;
+            this.EndRoom = edges[edges.Count - 1].EndRoom;
+        }
+
+        public void Draw()
+        {
+            foreach (Edge edge in this.Edges)
+            {
+                edge.Draw();
+            }
         }
     }
 }

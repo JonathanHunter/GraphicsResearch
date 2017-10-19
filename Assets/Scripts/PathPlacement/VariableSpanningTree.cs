@@ -13,25 +13,15 @@
 
         private void OnDrawGizmos()
         {
-            if (showLines && this.Edges != null && this.ExtraEdges != null)
+            if (showLines && this.Paths != null && this.ExtraPaths != null)
             {
-                foreach(Path edge in this.Edges)
-                    DrawPath(edge);
+                foreach (Path path in this.Paths)
+                    path.Draw();
 
-                int numToAdd = (int)(this.ExtraEdges.Count * this.edgeAmount);
+                int numToAdd = (int)(this.ExtraPaths.Count * this.edgeAmount);
                 for (int i = 0; i < numToAdd; i++)
-                    DrawPath(this.ExtraEdges[i]);
+                    this.ExtraPaths[i].Draw();
             }
-        }
-
-        private void DrawPath(Path edge)
-        {
-            Vector3 start = edge.Start;
-            Vector3 end = edge.End;
-            Vector3 es = Vector3.Normalize(start - end);
-            Vector3 left = new Vector3(-es.y, es.x, es.z);
-            Gizmos.DrawLine(start + left * this.pathWidth / 2f, end + left * this.pathWidth / 2f);
-            Gizmos.DrawLine(start - left * this.pathWidth / 2f, end - left * this.pathWidth / 2f);
         }
 
         protected override void LocalInit()
@@ -40,16 +30,16 @@
 
         protected override void LocalPlacePaths(RoomManager rooms)
         {
-            List<Path> baseEdges = new List<Path>();
+            List<Path> basePaths = new List<Path>();
             List<Room> objects = new List<Room>();
 
             foreach (Room r1 in rooms.Rooms)
             {
-                AddUnobstructedEdges(baseEdges, r1, rooms.Rooms);
+                AddUnobstructedEdges(basePaths, r1, rooms.Rooms);
                 objects.Add(r1);
             }
 
-            Kruskals(baseEdges, objects);
+            Kruskals(basePaths, objects);
         }
 
         protected override void LocalClear()
@@ -72,7 +62,7 @@
                                 duplicate = true;
                         }
                         if(!duplicate)
-                            baseEdges.Add(CreateEdge(r1, r2));
+                            baseEdges.Add(CreatePath(r1, r2));
                     }
                 }
             }
@@ -101,25 +91,26 @@
             return hitCount > 0;
         }
 
-        private Path CreateEdge(Room r1, Room r2)
+        private Path CreatePath(Room r1, Room r2)
         {
             float dist = Vector3.Distance(r1.transform.position, r2.transform.position);
-            return new Path(r1.transform.position, r2.transform.position, r1, r2, dist, this.pathWidth);
+            Edge e = new Edge(r1.transform.position, r2.transform.position, r1, r2, dist, this.pathWidth);
+            return new Path(new List<Edge> { e });
         }
 
-        private void Kruskals(List<Path> baseEdges, List<Room> objects)
+        private void Kruskals(List<Path> basePaths, List<Room> objects)
         {
             DisjointSets<Room> disjointSets = new DisjointSets<Room>(objects);
-            baseEdges.Sort((x, y) => x.Weight.CompareTo(y.Weight));
-            foreach(Path edge in baseEdges)
+            basePaths.Sort((x, y) => x.Weight.CompareTo(y.Weight));
+            foreach(Path path in basePaths)
             {
-                if (!disjointSets.IsSameSet(edge.StartRoom, edge.EndRoom))
+                if (!disjointSets.IsSameSet(path.StartRoom, path.EndRoom))
                 {
-                    disjointSets.Merge(edge.StartRoom, edge.EndRoom);
-                    this.Edges.Add(edge);
+                    disjointSets.Merge(path.StartRoom, path.EndRoom);
+                    this.Paths.Add(path);
                 }
                 else
-                    this.ExtraEdges.Add(edge);
+                    this.ExtraPaths.Add(path);
             }
         }
     }

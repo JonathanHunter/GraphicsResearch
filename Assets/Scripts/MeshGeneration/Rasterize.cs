@@ -80,7 +80,7 @@
         {
             RasterizeCircles(rooms.CircleRooms);
             RasterizeSquares(rooms.RectangleRooms);
-            RasterizeLines(paths.GetPaths());
+            RasterizePaths(paths.GetPaths());
         }
 
         protected override void LocalCreateMesh()
@@ -133,13 +133,16 @@
             }
         }
 
-        private void RasterizeLines(List<Path> lines)
+        private void RasterizePaths(List<Path> paths)
         {
-            foreach (Path e in lines)
+            foreach (Path p in paths)
             {
-                RasterizeBox(e.Start, e.End, e.Width);
-                if (e.EndRoom == null)
-                    RasterizeCircle(e.End, e.Width / 2f);
+                foreach (Edge e in p.Edges)
+                {
+                    RasterizeBox(e.Start, e.End, e.Width);
+                    if (e.EndRoom == null)
+                        RasterizeCircle(e.End, e.Width / 2f);
+                }
             }
         }
 
