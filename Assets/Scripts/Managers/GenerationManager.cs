@@ -113,22 +113,32 @@
 
         private IEnumerator StartUpAsync()
         {
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             if (this.placeRoomsOnStart)
             {
+                stopwatch.Start();
                 yield return StartCoroutine(this.roomManager.PlaceRoomsAsync());
-                Debug.Log("finished placing rooms");
+                stopwatch.Stop();
+                Debug.Log("finished placing rooms in " + stopwatch.Elapsed);
+                stopwatch.Reset();
             }
 
             if (this.placePathsOnStart)
             {
+                stopwatch.Start();
                 yield return StartCoroutine(this.pathManager.PlacePathsAsync(this.roomManager));
-                Debug.Log("finished placing paths");
+                stopwatch.Stop();
+                Debug.Log("finished placing paths in " + stopwatch.Elapsed);
+                stopwatch.Reset();
             }
 
             if (this.placeMeshOnStart)
             {
+                stopwatch.Start();
                 yield return StartCoroutine(this.meshManager.GenerateMeshAsync(this.roomManager, this.pathManager));
-                Debug.Log("finished generating mesh");
+                stopwatch.Stop();
+                Debug.Log("finished generating mesh in " + stopwatch.Elapsed);
+                stopwatch.Reset();
             }
 
             if (this.toggleRoomsOnStart)
