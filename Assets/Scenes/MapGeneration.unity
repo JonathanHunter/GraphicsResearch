@@ -357,6 +357,7 @@ MonoBehaviour:
   placePathsOnStart: 1
   placeMeshOnStart: 1
   toggleRoomsOnStart: 1
+  async: 1
   player: {fileID: 1649337577}
   disableInput: 1
   roomManager: {fileID: 1897790640}

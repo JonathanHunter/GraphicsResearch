@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.PathPlacement
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using RoomPlacement;
@@ -35,35 +36,56 @@
 
             foreach (Room r1 in rooms.Rooms)
             {
-                AddUnobstructedEdges(basePaths, r1, rooms.Rooms);
+                foreach (Room r2 in rooms.Rooms)
+                {
+                    TryAddPath(r1, r2, basePaths);
+                }
+
                 objects.Add(r1);
             }
 
             Kruskals(basePaths, objects);
         }
 
+        protected override IEnumerator LocalPlacePathsAsync(RoomManager rooms)
+        {
+            List<Path> basePaths = new List<Path>();
+            List<Room> objects = new List<Room>();
+
+            foreach (Room r1 in rooms.Rooms)
+            {
+                foreach (Room r2 in rooms.Rooms)
+                {
+                    TryAddPath(r1, r2, basePaths);
+                }
+
+                objects.Add(r1);
+                yield return null;
+            }
+
+            Kruskals(basePaths, objects);
+            yield return null;
+        }
+
         protected override void LocalClear()
         {
         }
 
-        private void AddUnobstructedEdges(List<Path> basePath, Room r1, List<Room> rooms)
+        private void TryAddPath(Room r1, Room r2, List<Path> basePaths)
         {
-            foreach (Room r2 in rooms)
+            if (r1 != r2)
             {
-                if (r1 != r2)
+                if (!IsBlocked(r1, r2))
                 {
-                    if (!IsBlocked(r1, r2))
+                    bool duplicate = false;
+                    foreach (Path e in basePaths)
                     {
-                        bool duplicate = false;
-                        foreach(Path e in basePath)
-                        {
-                            if ((e.StartRoom.gameObject == r1.gameObject && e.EndRoom == r2) ||
-                                (e.StartRoom.gameObject == r2.gameObject && e.EndRoom == r1))
-                                duplicate = true;
-                        }
-                        if(!duplicate)
-                            basePath.Add(CreatePath(r1, r2));
+                        if ((e.StartRoom.gameObject == r1.gameObject && e.EndRoom == r2) ||
+                            (e.StartRoom.gameObject == r2.gameObject && e.EndRoom == r1))
+                            duplicate = true;
                     }
+                    if (!duplicate)
+                        basePaths.Add(CreatePath(r1, r2));
                 }
             }
         }

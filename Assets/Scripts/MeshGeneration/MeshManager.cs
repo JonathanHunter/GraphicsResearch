@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.MeshGeneration
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using PathPlacement;
@@ -56,6 +57,15 @@
             LocalCalculateMesh(rooms, paths);
         }
 
+        /// <summary> Calculates the mesh. </summary>
+        /// <param name="rooms"> The rooms to add to the mesh. </param>
+        /// <param name="paths"> The paths to add to the mesh. </param>
+        public IEnumerator CalculateMeshAsync(RoomManager rooms, PathManager paths)
+        {
+            yield return StartCoroutine(LocalCalculateMeshAsync(rooms, paths));
+
+        }
+
         /// <summary> Creates the calculated mesh. </summary>
         public void CreateMesh()
         {
@@ -64,21 +74,26 @@
             {
                 for(int c = 0; c < this.GridCols; c++)
                 {
-                    GameObject mesh = Instantiate(this.meshPrefab);
-                    MeshFilter filter = mesh.GetComponent<MeshFilter>();
-                    MeshCollider collider = mesh.GetComponent<MeshCollider>();
-                    this.Meshes[r, c].vertices = this.Vertices[r, c].ToArray();
-                    this.Meshes[r, c].triangles = this.Triangles[r, c].ToArray();
-                    this.Meshes[r, c].RecalculateNormals();
-                    filter.mesh = this.Meshes[r, c];
-                    collider.sharedMesh = this.Meshes[r, c];
-                    mesh.transform.parent = this.gameObject.transform;
-                    mesh.transform.localPosition = Vector3.zero;
-                    mesh.transform.localRotation = Quaternion.identity;
-                    mesh.transform.localScale = Vector3.one;
-                    this.spawnedMeshes.Add(mesh);
+                    SpawnMesh(r, c);
                 }
             }
+        }
+
+        /// <summary> Creates the calculated mesh. </summary>
+        public IEnumerator CreateMeshAsync()
+        {
+            yield return StartCoroutine(LocalCreateMeshAsync());
+            for (int r = 0; r < this.GridRows; r++)
+            {
+                for (int c = 0; c < this.GridCols; c++)
+                {
+                    SpawnMesh(r, c);
+                }
+
+                yield return null;
+            }
+
+            yield return null;
         }
 
         /// <summary> Generates a mesh from the given rooms and paths. </summary>
@@ -89,6 +104,16 @@
             Clear();
             CalculateMesh(rooms, paths);
             CreateMesh();
+        }
+
+        /// <summary> Generates a mesh from the given rooms and paths. </summary>
+        /// <param name="rooms"> The rooms to add to the mesh. </param>
+        /// <param name="paths"> The paths to add to the mesh. </param>
+        public IEnumerator GenerateMeshAsync(RoomManager rooms, PathManager paths)
+        {
+            Clear();
+            yield return StartCoroutine(CalculateMeshAsync(rooms, paths));
+            yield return StartCoroutine(CreateMeshAsync());
         }
 
         /// <summary> Clears the current mesh. </summary>
@@ -115,9 +140,30 @@
         protected abstract void LocalInit();
         /// <summary> Local handler for Calculating the mesh. </summary>
         protected abstract void LocalCalculateMesh(RoomManager rooms, PathManager paths);
+        /// <summary> Local async handler for Calculating the mesh. </summary>
+        protected abstract IEnumerator LocalCalculateMeshAsync(RoomManager rooms, PathManager paths);
         /// <summary> Local handler for Creating the mesh. </summary>
         protected abstract void LocalCreateMesh();
+        /// <summary> Local async handler for Creating the mesh. </summary>
+        protected abstract IEnumerator LocalCreateMeshAsync();
         /// <summary> Local handler for mesh clearing. </summary>
         protected abstract void LocalClear();
+
+        private void SpawnMesh(int r, int c)
+        {
+            GameObject mesh = Instantiate(this.meshPrefab);
+            MeshFilter filter = mesh.GetComponent<MeshFilter>();
+            MeshCollider collider = mesh.GetComponent<MeshCollider>();
+            this.Meshes[r, c].vertices = this.Vertices[r, c].ToArray();
+            this.Meshes[r, c].triangles = this.Triangles[r, c].ToArray();
+            this.Meshes[r, c].RecalculateNormals();
+            filter.mesh = this.Meshes[r, c];
+            collider.sharedMesh = this.Meshes[r, c];
+            mesh.transform.parent = this.gameObject.transform;
+            mesh.transform.localPosition = Vector3.zero;
+            mesh.transform.localRotation = Quaternion.identity;
+            mesh.transform.localScale = Vector3.one;
+            this.spawnedMeshes.Add(mesh);
+        }
     }
 }

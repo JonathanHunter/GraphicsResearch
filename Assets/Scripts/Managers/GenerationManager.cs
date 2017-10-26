@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.Managers
 {
+    using System.Collections;
     using UnityEngine;
     using MeshGeneration;
     using PathPlacement;
@@ -16,6 +17,8 @@
         private bool placeMeshOnStart = false;
         [SerializeField]
         private bool toggleRoomsOnStart = false;
+        [SerializeField]
+        private bool async = false;
 
         [SerializeField]
         private GameObject player;
@@ -32,7 +35,10 @@
             this.pathManager.Init();
             this.meshManager.Init();
 
-            StartUp();
+            if (this.async)
+                StartCoroutine(StartUpAsync());
+            else
+                StartUp();
         }
 
         private void Update()
@@ -103,6 +109,44 @@
                 this.player.transform.rotation = Quaternion.identity;
                 this.player.transform.localScale = Vector3.one;
             }
+        }
+
+        private IEnumerator StartUpAsync()
+        {
+            if (this.placeRoomsOnStart)
+            {
+                yield return StartCoroutine(this.roomManager.PlaceRoomsAsync());
+                Debug.Log("finished placing rooms");
+            }
+
+            if (this.placePathsOnStart)
+            {
+                yield return StartCoroutine(this.pathManager.PlacePathsAsync(this.roomManager));
+                Debug.Log("finished placing paths");
+            }
+
+            if (this.placeMeshOnStart)
+            {
+                yield return StartCoroutine(this.meshManager.GenerateMeshAsync(this.roomManager, this.pathManager));
+                Debug.Log("finished generating mesh");
+            }
+
+            if (this.toggleRoomsOnStart)
+            {
+                this.roomManager.ToggleRooms();
+                yield return null;
+            }
+
+            if (placeMeshOnStart)
+            {
+                this.player.transform.parent = this.meshManager.gameObject.transform;
+                this.player.transform.localPosition = roomManager.Rooms[0].transform.position;
+                this.player.transform.parent = null;
+                this.player.transform.rotation = Quaternion.identity;
+                this.player.transform.localScale = Vector3.one;
+            }
+
+            Debug.Log("finished generation");
         }
     }
 }

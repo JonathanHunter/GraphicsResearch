@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.RoomPlacement
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
 
@@ -57,6 +58,18 @@
         {
             Clear();
             LocalPlaceRooms();
+            foreach (CircleRoom c in this.CircleRooms)
+                this.Rooms.Add(c);
+
+            foreach (RectangleRoom r in this.RectangleRooms)
+                this.Rooms.Add(r);
+        }
+
+        /// <summary> Clears any previous rooms and places a new set of rooms asyncronously. </summary>
+        public IEnumerator PlaceRoomsAsync()
+        {
+            Clear();
+            yield return StartCoroutine(LocalPlaceRoomsAsync());
             foreach (CircleRoom c in this.CircleRooms)
                 this.Rooms.Add(c);
 
@@ -142,6 +155,8 @@
         protected abstract void LocalInit();
         /// <summary> Local handler for room placement. </summary>
         protected abstract void LocalPlaceRooms();
+        /// <summary> Local async handler for room placement. </summary>
+        protected abstract IEnumerator LocalPlaceRoomsAsync();
         /// <summary> Local handler for room clearing. </summary>
         protected abstract void LocalClear();
 

@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.PathPlacement
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using RoomPlacement;
@@ -30,6 +31,14 @@
         {
             Clear();
             LocalPlacePaths(rooms);
+        }
+
+        /// <summary> Places paths between the given rooms. </summary>
+        /// <param name="rooms"> The rooms to place paths between. </param>
+        public IEnumerator PlacePathsAsync(RoomManager rooms)
+        {
+            Clear();
+            yield return StartCoroutine(LocalPlacePathsAsync(rooms));
         }
 
         /// <summary> Clears all of the current paths. </summary>
@@ -82,6 +91,8 @@
         protected abstract void LocalInit();
         /// <summary> Local handler for path placement. </summary>
         protected abstract void LocalPlacePaths(RoomManager rooms);
+        /// <summary> Local handler for path placement. </summary>
+        protected abstract IEnumerator LocalPlacePathsAsync(RoomManager rooms);
         /// <summary> Local handler for path clearing. </summary>
         protected abstract void LocalClear();
     }

@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.RoomPlacement
 {
+    using System.Collections;
     using UnityEngine;
 
     public class Manual : RoomManager
@@ -22,6 +23,17 @@
         }
 
         protected override void LocalPlaceRooms()
+        {
+            GetRooms();
+        }
+
+        protected override IEnumerator LocalPlaceRoomsAsync()
+        {
+            GetRooms();
+            yield return null;
+        }
+
+        private void GetRooms()
         {
             foreach (CircleRoom c in this.circles)
             {

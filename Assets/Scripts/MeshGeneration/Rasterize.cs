@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.MeshGeneration
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using PathPlacement;
@@ -83,6 +84,16 @@
             RasterizePaths(paths.GetPaths());
         }
 
+        protected override IEnumerator LocalCalculateMeshAsync(RoomManager rooms, PathManager paths)
+        {
+            RasterizeCircles(rooms.CircleRooms);
+            yield return null;
+            RasterizeSquares(rooms.RectangleRooms);
+            yield return null;
+            RasterizePaths(paths.GetPaths());
+            yield return null;
+        }
+
         protected override void LocalCreateMesh()
         {
             for (int r = 0; r < this.GridRows; r++)
@@ -92,6 +103,20 @@
                     ProcessRasterizedGrid(this.Grids.Get(r, c), r, c);
                 }
             }
+        }
+
+        protected override IEnumerator LocalCreateMeshAsync()
+        {
+            for (int r = 0; r < this.GridRows; r++)
+            {
+                for (int c = 0; c < this.GridCols; c++)
+                {
+                    ProcessRasterizedGrid(this.Grids.Get(r, c), r, c);
+                    yield return null;
+                }
+            }
+
+            yield return null;
         }
 
         protected override void LocalClear()
@@ -225,8 +250,6 @@
                 }
             }
 
-            //SmoothMesh(rasterized, gridRow, gridCol);
-
             if (this.extrudeMesh)
             {
                 // Ceiling triangles are inverted from floor
@@ -246,8 +269,6 @@
                         }
                     }
                 }
-
-                //SmoothMesh(dupe, gridRow, gridCol);
 
                 // Walls
                 for (int r = 0; r < this.subGridRows; r++)
@@ -338,6 +359,45 @@
                 triangles.Add(tl);
                 triangles.Add(bl);
                 triangles.Add(br);
+            }
+        }
+
+        private void SmoothMesh(MeshGrid rasterized, int gridRow, int gridCol)
+        {
+            for (int r = 0; r < this.subGridRows; r++)
+            {
+                for (int c = 0; c < this.subGridCols; c++)
+                {
+                    if (rasterized.Squares[r, c].Filled)
+                    {
+                        bool left = r == 0 || !rasterized.Squares[r - 1, c].Filled;
+                        bool right = r == this.subGridRows - 1 || !rasterized.Squares[r + 1, c].Filled;
+
+                        if (r == 0 && gridRow != 0)
+                            left = !this.Grids.Get(gridRow - 1, gridCol).Squares[this.subGridRows - 1, c].Filled;
+
+                        if (r == this.subGridRows - 1 && gridRow != this.GridRows - 1)
+                            right = !this.Grids.Get(gridRow + 1, gridCol).Squares[0, c].Filled;
+
+                        Square square = rasterized.Squares[r, c];
+                        int tl = rasterized.Corners[(int)square.TopLeft.x, (int)square.TopLeft.y].VertexIndex;
+                        int tr = rasterized.Corners[(int)square.TopRight.x, (int)square.TopRight.y].VertexIndex;
+                        int bl = rasterized.Corners[(int)square.BottomLeft.x, (int)square.BottomLeft.y].VertexIndex;
+                        int br = rasterized.Corners[(int)square.BottomRight.x, (int)square.BottomRight.y].VertexIndex;
+
+                        if (left && !right)
+                        {
+                            this.Vertices[gridRow, gridCol][tl] = Vector3.Lerp(this.Vertices[gridRow, gridCol][tl], this.Vertices[gridRow, gridCol][tr], .5f);
+                            this.Vertices[gridRow, gridCol][bl] = Vector3.Lerp(this.Vertices[gridRow, gridCol][bl], this.Vertices[gridRow, gridCol][br], .5f);
+                        }
+
+                        if(right && !left)
+                        {
+                            this.Vertices[gridRow, gridCol][tr] = Vector3.Lerp(this.Vertices[gridRow, gridCol][tl], this.Vertices[gridRow, gridCol][tr], .5f);
+                            this.Vertices[gridRow, gridCol][br] = Vector3.Lerp(this.Vertices[gridRow, gridCol][bl], this.Vertices[gridRow, gridCol][br], .5f);
+                        }
+                    }
+                }
             }
         }
     }

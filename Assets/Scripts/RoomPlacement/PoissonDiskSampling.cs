@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.RoomPlacement
 {
+    using System.Collections;
     using UnityEngine;
 
     public class PoissonDiskSampling : RoomManager
@@ -27,15 +28,32 @@
         {
             for (int i = 0; i < numberOfDarts; i++)
             {
-                if (this.onlyCircles)
-                    RayCastDart(true, this.numberOfAttempts, this.globalVerticalBounds, this.globalHorizontalBounds);
-                else
-                    RayCastDart(Random.Range(0f, 1f) < .5f, this.numberOfAttempts, this.globalVerticalBounds, this.globalHorizontalBounds);
+                PlaceDart();
             }
+        }
+
+        protected override IEnumerator LocalPlaceRoomsAsync()
+        {
+            for (int i = 0; i < numberOfDarts; i++)
+            {
+                PlaceDart();
+                if (i % 10 == 0)
+                    yield return null;
+            }
+
+            yield return null;
         }
 
         protected override void LocalClear()
         {
+        }
+
+        private void PlaceDart()
+        {
+            if (this.onlyCircles)
+                RayCastDart(true, this.numberOfAttempts, this.globalVerticalBounds, this.globalHorizontalBounds);
+            else
+                RayCastDart(Random.Range(0f, 1f) < .5f, this.numberOfAttempts, this.globalVerticalBounds, this.globalHorizontalBounds);
         }
     }
 }

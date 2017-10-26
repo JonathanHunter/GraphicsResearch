@@ -1,5 +1,6 @@
 ﻿namespace GraphicsResearch.PathPlacement
 {
+    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using GraphicsResearch.RoomPlacement;
@@ -45,49 +46,75 @@
                 int fancyPaths = 0;
                 foreach (Room r2 in rooms.Rooms)
                 {
-                    if (r1 != r2)
-                    {
-                        if (CheckStraightPath(r1.transform.position, r2.transform.position))
-                        {
-                            bool duplicate = false;
-                            foreach (Path e in basePaths)
-                            {
-                                if ((e.StartRoom == r1 && e.EndRoom == r2) ||
-                                    (e.StartRoom == r2 && e.EndRoom == r1))
-                                    duplicate = true;
-                            }
-                            if (!duplicate)
-                                basePaths.Add(CreatePath(r1, r2));
-                        }
-                        else if(fancyPaths < maxFancyPathsPerRoom && CheckForPath(r1.transform.position, r2.transform.position, r1, r2, 0))
-                        {
-                            bool duplicate = false;
-                            foreach (Path e in basePaths)
-                            {
-                                if ((e.StartRoom == r1 && e.EndRoom == r2) ||
-                                    (e.StartRoom == r2 && e.EndRoom == r1))
-                                    duplicate = true;
-                            }
-                            if (!duplicate)
-                            {
-                                fancyPaths++;
-                                List<Edge> edges = FindPath(
-                                    r1.transform.position, 
-                                    r2.transform.position, 
-                                    r1, 
-                                    r2, 
-                                    new List<Edge>(), 
-                                    0);
-                                basePaths.Add(new Path(edges));
-                            }
-                        }
-                    }
+                    TryAddPath(r1, r2, basePaths, ref fancyPaths);
                 }
 
                 objects.Add(r1);
             }
 
             Kruskals(basePaths, objects);
+        }
+
+        protected override IEnumerator LocalPlacePathsAsync(RoomManager rooms)
+        {
+            List<Path> basePaths = new List<Path>();
+            List<Room> objects = new List<Room>();
+
+            foreach (Room r1 in rooms.Rooms)
+            {
+                int fancyPaths = 0;
+                foreach (Room r2 in rooms.Rooms)
+                {
+                    TryAddPath(r1, r2, basePaths, ref fancyPaths);
+                }
+
+                objects.Add(r1);
+                yield return null;
+            }
+
+            Kruskals(basePaths, objects);
+            yield return null;
+        }
+
+        private void TryAddPath(Room r1, Room r2, List<Path> basePaths, ref int fancyPaths)
+        {
+            if (r1 != r2)
+            {
+                if (CheckStraightPath(r1.transform.position, r2.transform.position))
+                {
+                    bool duplicate = false;
+                    foreach (Path e in basePaths)
+                    {
+                        if ((e.StartRoom == r1 && e.EndRoom == r2) ||
+                            (e.StartRoom == r2 && e.EndRoom == r1))
+                            duplicate = true;
+                    }
+                    if (!duplicate)
+                        basePaths.Add(CreatePath(r1, r2));
+                }
+                else if (fancyPaths < maxFancyPathsPerRoom && CheckForPath(r1.transform.position, r2.transform.position, r1, r2, 0))
+                {
+                    bool duplicate = false;
+                    foreach (Path e in basePaths)
+                    {
+                        if ((e.StartRoom == r1 && e.EndRoom == r2) ||
+                            (e.StartRoom == r2 && e.EndRoom == r1))
+                            duplicate = true;
+                    }
+                    if (!duplicate)
+                    {
+                        fancyPaths++;
+                        List<Edge> edges = FindPath(
+                            r1.transform.position,
+                            r2.transform.position,
+                            r1,
+                            r2,
+                            new List<Edge>(),
+                            0);
+                        basePaths.Add(new Path(edges));
+                    }
+                }
+            }
         }
 
         private bool CheckForPath(Vector3 point1, Vector3 point2, Room room1, Room room2, int depth)
