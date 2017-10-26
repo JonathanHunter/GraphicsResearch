@@ -237,6 +237,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
   m_IsPrefabParent: 0
@@ -355,7 +359,7 @@ MonoBehaviour:
   toggleRoomsOnStart: 1
   player: {fileID: 1649337577}
   disableInput: 1
-  roomManager: {fileID: 165928987}
+  roomManager: {fileID: 1897790640}
   pathManager: {fileID: 1268411442}
   meshManager: {fileID: 1077251125}
 --- !u!1 &646667179
@@ -645,12 +649,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5950546ae971d644a8828309a07d572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridRows: 7
-  gridCols: 11
+  gridRows: 20
+  gridCols: 12
   meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
   showGrid: 0
   topLeft: {fileID: 1948788545}
-  subGridRows: 300
+  subGridRows: 100
   subGridCols: 100
   boxSize: 0.01
   extrudeMesh: 1
@@ -697,11 +701,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d0cfe19b5df2478a646fa592ccd9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edgeAmount: 0
+  edgeAmount: 0.1
   showLines: 0
   pathWidth: 0.5
   maxOffsetAttempts: 10
-  maxRecursionDepth: 10
+  maxRecursionDepth: 6
+  maxFancyPathsPerRoom: 3
 --- !u!1001 &1523329816
 Prefab:
   m_ObjectHideFlags: 0
@@ -744,6 +749,10 @@ Prefab:
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalScale.y
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 255430341be06d7458c893da40f7abdb, type: 2}
@@ -937,6 +946,10 @@ Prefab:
       propertyPath: m_Name
       value: RectangleRoom (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 255430341be06d7458c893da40f7abdb, type: 2}
   m_IsPrefabParent: 0
@@ -1125,6 +1138,10 @@ Prefab:
     - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_Name
       value: CircleRoom (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}

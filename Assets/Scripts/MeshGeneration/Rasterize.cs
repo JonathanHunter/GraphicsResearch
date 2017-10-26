@@ -225,6 +225,7 @@
                 }
             }
 
+            //SmoothMesh(rasterized, gridRow, gridCol);
 
             if (this.extrudeMesh)
             {
@@ -245,6 +246,8 @@
                         }
                     }
                 }
+
+                //SmoothMesh(dupe, gridRow, gridCol);
 
                 // Walls
                 for (int r = 0; r < this.subGridRows; r++)

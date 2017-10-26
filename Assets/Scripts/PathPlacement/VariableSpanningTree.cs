@@ -46,7 +46,7 @@
         {
         }
 
-        private void AddUnobstructedEdges(List<Path> baseEdges, Room r1, List<Room> rooms)
+        private void AddUnobstructedEdges(List<Path> basePath, Room r1, List<Room> rooms)
         {
             foreach (Room r2 in rooms)
             {
@@ -55,14 +55,14 @@
                     if (!IsBlocked(r1, r2))
                     {
                         bool duplicate = false;
-                        foreach(Path e in baseEdges)
+                        foreach(Path e in basePath)
                         {
                             if ((e.StartRoom.gameObject == r1.gameObject && e.EndRoom == r2) ||
                                 (e.StartRoom.gameObject == r2.gameObject && e.EndRoom == r1))
                                 duplicate = true;
                         }
                         if(!duplicate)
-                            baseEdges.Add(CreatePath(r1, r2));
+                            basePath.Add(CreatePath(r1, r2));
                     }
                 }
             }
