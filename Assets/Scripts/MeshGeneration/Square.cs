@@ -4,31 +4,67 @@
 
     public class Square
     {
+        public enum State { NoIntersection, tbl, tbr, tlu, tld, tru, trd, blu, bld, bru, brd, lru, lrd }
+
         /// <summary> The row and col of this square in the grid. </summary>
-        public Vector2 Index { get; private set; }
+        public Vector2Int Index { get; private set; }
         /// <summary> The 3D position of the center of this square. </summary>
         public Vector3 Center { get; private set; }
         /// <summary> The dimensions of this square. </summary>
         public Vector2 Size { get; private set; }
         /// <summary> True if this square has something in it. </summary>
         public bool Filled { get; private set; }
+        /// <summary> True if this square has multiple shapes overlapping in it. </summary>
+        public bool MultiOverlap { get; private set; }
+        /// <summary> The current state of this square. </summary>
+        public State CurrentState { get; private set; }
 
-        public Vector2 TopLeft { get { return this.Index; } }
-        public Vector2 TopRight { get { return new Vector2(this.Index.x, this.Index.y + 1); } }
-        public Vector2 BottomLeft { get { return new Vector2(this.Index.x + 1, this.Index.y); } }
-        public Vector2 BottomRight { get { return new Vector2(this.Index.x + 1, this.Index.y + 1); } }
+        public Vector2Int TopLeft { get { return this.Index; } }
+        public Vector2Int TopRight { get { return new Vector2Int(this.Index.x + 1, this.Index.y); } }
+        public Vector2Int BottomLeft { get { return new Vector2Int(this.Index.x, this.Index.y + 1); } }
+        public Vector2Int BottomRight { get { return new Vector2Int(this.Index.x + 1, this.Index.y + 1); } }
+        public Corner Top { get; set; }
+        public Corner Bottom { get; set; }
+        public Corner Left { get; set; }
+        public Corner Right { get; set; }
 
-        public Square(Vector2 index, Vector3 position, Vector2 dimensions)
+        public Square(Vector2Int index, Vector3 position, Vector2 dimensions)
         {
             this.Index = index;
             this.Center = position;
             this.Size = dimensions;
             this.Filled = false;
+            this.MultiOverlap = false;
         }
 
         public void Fill()
         {
+            if(this.Filled && !this.MultiOverlap)
+            {
+                this.CurrentState = State.NoIntersection;
+                this.MultiOverlap = true;
+            }
+
             this.Filled = true;
+        }
+
+        public void SetState(State state)
+        {
+            if (this.CurrentState == State.NoIntersection && !this.MultiOverlap)
+            {
+                this.CurrentState = state;
+            }
+            else if (!this.MultiOverlap)
+            {
+                this.CurrentState = State.NoIntersection;
+                this.MultiOverlap = true;
+            }
+        }
+
+        public void CopyIntersections(Square s)
+        {
+            s.Top.SetPosition(this.Top.Position);
+            s.Left.SetPosition(this.Left.Position);
         }
     }
 }

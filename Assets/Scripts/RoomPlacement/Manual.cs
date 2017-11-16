@@ -38,7 +38,7 @@
             foreach (CircleRoom c in this.circles)
             {
                 c.OriginalPosition = c.transform.position;
-                c.Radius = c.transform.localScale.x;
+                c.Radius = c.transform.localScale.x/ 2f;
                 this.CircleRooms.Add(c);
             }
 
