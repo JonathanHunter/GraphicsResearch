@@ -232,11 +232,18 @@
                             intersections[2] = CircleLineIntersection(tl, bl, center, radius);
                             intersections[3] = CircleLineIntersection(tr, br, center, radius);
                             intersections[4] = center;
+                            int intersectionCount = 0;
+                            if (intersections[0] != Vector2.zero)
+                                intersectionCount++;
+                            if (intersections[1] != Vector2.zero)
+                                intersectionCount++;
+                            if (intersections[2] != Vector2.zero)
+                                intersectionCount++;
+                            if (intersections[3] != Vector2.zero)
+                                intersectionCount++;
+
                             if (Vector2.Distance(pos, center) <= radius ||
-                                intersections[0] != Vector2.zero ||
-                                intersections[1] != Vector2.zero ||
-                                intersections[2] != Vector2.zero ||
-                                intersections[3] != Vector2.zero)
+                                 intersectionCount > 1)
                             {
                                 mesh.Fill(pos);
                                 ProcessSquare(mesh, sr, sc, intersections);
