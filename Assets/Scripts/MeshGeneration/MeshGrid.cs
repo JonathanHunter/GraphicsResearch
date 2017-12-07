@@ -7,7 +7,6 @@
     public class MeshGrid
     {
         public Square[,] Squares { get; private set; }
-        public Corner[,] Corners { get; private set; }
         public Vector3 TopLeft { get { return this.topLeft; } }
 
         private int numRows;
@@ -23,45 +22,44 @@
             this.topLeft = topLeft;
             this.squareDim = squareDim;
             this.Squares = new Square[rows, cols];
-            this.Corners = new Corner[rows + 1, cols + 1];
 
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < cols; c++)
                 {
                     this.Squares[r, c] = new Square(new Vector2Int(r, c), GridUtil.GetPos(r, c, topLeft, squareDim), squareDim);
+
                     if (c == 0)
-                        this.Squares[r, c].Top = new Corner(new Vector2Int(0, 0), Vector3.zero);
+                    {
+                        this.Squares[r, c].TopLeft = new Corner(new Vector3(this.Squares[r, c].Center.x - squareDim.x / 2f, this.Squares[r, c].Center.y + squareDim.y / 2f, topLeft.z));
+                        this.Squares[r, c].TopRight = new Corner(new Vector3(this.Squares[r, c].Center.x + squareDim.x / 2f, this.Squares[r, c].Center.y + squareDim.y / 2f, topLeft.z));
+                        this.Squares[r, c].Top = new Corner(Vector3.zero);
+                    }
                     else
+                    {
+                        this.Squares[r, c].TopLeft = this.Squares[r, c - 1].BottomLeft;
+                        this.Squares[r, c].TopRight = this.Squares[r, c - 1].BottomRight;
                         this.Squares[r, c].Top = this.Squares[r, c - 1].Bottom;
+                    }
 
                     if (r == 0)
-                        this.Squares[r, c].Left = new Corner(new Vector2Int(0, 0), Vector3.zero);
+                    {
+                        this.Squares[r, c].BottomLeft = new Corner(new Vector3(this.Squares[r, c].Center.x - squareDim.x / 2f, this.Squares[r, c].Center.y - squareDim.y / 2f, topLeft.z));
+                        this.Squares[r, c].Left = new Corner(Vector3.zero);
+                    }
                     else
+                    {
+                        this.Squares[r, c].BottomLeft = this.Squares[r - 1, c].BottomRight;
                         this.Squares[r, c].Left = this.Squares[r - 1, c].Right;
-                    
-                    this.Squares[r, c].Right = new Corner(new Vector2Int(0, 0), Vector3.zero);
-                    this.Squares[r, c].Bottom = new Corner(new Vector2Int(0, 0), Vector3.zero);
-                }
-            }
+                    }
 
-            Vector3 topLeftCorner = new Vector3(topLeft.x - squareDim.x / 2f, topLeft.y + squareDim.y / 2f, topLeft.z);
-            for (int r = 0; r < rows + 1; r++)
-            {
-                for (int c = 0; c < cols + 1; c++)
-                {
-                    this.Corners[r, c] = new Corner(new Vector2Int(r, c), GridUtil.GetPos(r, c, topLeftCorner, squareDim));
+                    this.Squares[r, c].BottomRight = new Corner(new Vector3(this.Squares[r, c].Center.x + squareDim.x / 2f, this.Squares[r, c].Center.y - squareDim.y / 2f, topLeft.z));
+                    this.Squares[r, c].Right = new Corner(Vector3.zero);
+                    this.Squares[r, c].Bottom = new Corner(Vector3.zero);
                 }
             }
         }
-
-        public void Fill(Vector3 position)
-        {
-            int r = GridUtil.GetRow(position, this.topLeft, this.squareDim, this.numRows);
-            int c = GridUtil.GetCol(position, this.topLeft, this.squareDim, this.numCols);
-            this.Squares[r, c].Fill();
-        }
-
+        
         public Square GetSquare(Vector3 position)
         {
             int r = GridUtil.GetRow(position, this.topLeft, this.squareDim, this.numRows);
@@ -80,20 +78,11 @@
                     if (this.Squares[r, c].Filled)
                     {
                         dupe.Squares[r, c].Fill();
-                        dupe.Squares[r, c].SetState(this.Squares[r, c].CurrentState);
                         if (this.Squares[r, c].MultiOverlap)
                             dupe.Squares[r, c].Fill();
 
                         this.Squares[r, c].CopyIntersections(dupe.Squares[r, c], this.topLeft.z + zOffset);
                     }
-                }
-            }
-
-            for (int r = 0; r < this.numRows + 1; r++)
-            {
-                for (int c = 0; c < this.numCols + 1; c++)
-                {
-                    dupe.Corners[r, c].SetPosition(new Vector3(this.Corners[r, c].Position.x, this.Corners[r, c].Position.y, this.topLeft.z + zOffset));
                 }
             }
 

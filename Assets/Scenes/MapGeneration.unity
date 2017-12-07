@@ -249,6 +249,11 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 23962407555592736, guid: 103489cca3db11b41ab15a84f7d0220e,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
   m_IsPrefabParent: 0
@@ -359,7 +364,7 @@ MonoBehaviour:
   placeRoomsOnStart: 1
   placePathsOnStart: 1
   placeMeshOnStart: 1
-  toggleRoomsOnStart: 0
+  toggleRoomsOnStart: 1
   async: 1
   player: {fileID: 1649337577}
   disableInput: 0
@@ -648,9 +653,9 @@ MonoBehaviour:
   meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
   showGrid: 0
   topLeft: {fileID: 617955625}
-  subGridRows: 100
-  subGridCols: 100
-  boxSize: 0.01
+  subGridRows: 10
+  subGridCols: 10
+  boxSize: 0.1
   extrudeMesh: 1
   invertTriangles: 1
   drawR: 0
@@ -739,12 +744,12 @@ MonoBehaviour:
   gridRows: 1
   gridCols: 1
   meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
-  showGrid: 1
+  showGrid: 0
   topLeft: {fileID: 1948788545}
   subGridRows: 20
   subGridCols: 20
   boxSize: 0.5
-  extrudeMesh: 0
+  extrudeMesh: 1
   invertTriangles: 1
   drawR: 0
   drawC: 0
@@ -869,11 +874,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.258819
+      value: 0.2588191
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0.9659259
+      value: 0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_RootOrder
@@ -908,7 +913,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -30
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 255430341be06d7458c893da40f7abdb, type: 2}
@@ -1266,10 +1271,10 @@ MonoBehaviour:
   rectangleTemplet: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
     type: 2}
   rectDimensions: {x: 1, y: 1}
-  rotate: 0
+  rotate: 1
   resize: 1
   sizeBound: {x: 1, y: 3}
-  onlyCircles: 0
+  onlyCircles: 1
   gridCount: {x: 5, y: 5}
   numberOfAttempts: 100
   showGrid: 0

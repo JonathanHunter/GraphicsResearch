@@ -1,11 +1,11 @@
 ﻿namespace GraphicsResearch.MeshGeneration
 {
+    using System.Collections.Generic;
     using UnityEngine;
+    using Util;
 
     public class Square
     {
-        public enum State { NoIntersection, tbl, tbr, tlu, tld, tru, trd, blu, bld, bru, brd, lru, lrd }
-
         /// <summary> The row and col of this square in the grid. </summary>
         public Vector2Int Index { get; private set; }
         /// <summary> The 3D position of the center of this square. </summary>
@@ -16,13 +16,11 @@
         public bool Filled { get; private set; }
         /// <summary> True if this square has multiple shapes overlapping in it. </summary>
         public bool MultiOverlap { get; private set; }
-        /// <summary> The current state of this square. </summary>
-        public State CurrentState { get; private set; }
 
-        public Vector2Int TopLeft { get { return this.Index; } }
-        public Vector2Int TopRight { get { return new Vector2Int(this.Index.x + 1, this.Index.y); } }
-        public Vector2Int BottomLeft { get { return new Vector2Int(this.Index.x, this.Index.y + 1); } }
-        public Vector2Int BottomRight { get { return new Vector2Int(this.Index.x + 1, this.Index.y + 1); } }
+        public Corner TopLeft { get; set; }
+        public Corner TopRight { get; set; }
+        public Corner BottomLeft { get; set; }
+        public Corner BottomRight { get; set; }
         public Corner Top { get; set; }
         public Corner Bottom { get; set; }
         public Corner Left { get; set; }
@@ -39,34 +37,729 @@
 
         public void Fill()
         {
-            if(this.Filled && !this.MultiOverlap)
-            {
-                this.CurrentState = State.NoIntersection;
+            if (this.Filled)
                 this.MultiOverlap = true;
-            }
 
             this.Filled = true;
         }
 
-        public void SetState(State state)
+        public void FillCircle(Vector3 center, float radius)
         {
-            if (this.CurrentState == State.NoIntersection && !this.MultiOverlap)
+            //if(this.Filled)
+            //{
+            //    this.MultiOverlap = true;
+            //    return;
+            //}
+
+            if (Lib.PointInCircle(this.TopLeft.Position, center, radius))
+                this.TopLeft.Filled = true;
+            if (Lib.PointInCircle(this.TopRight.Position, center, radius))
+                this.TopRight.Filled = true;
+            if (Lib.PointInCircle(this.BottomLeft.Position, center, radius))
+                this.BottomLeft.Filled = true;
+            if (Lib.PointInCircle(this.BottomRight.Position, center, radius))
+                this.BottomRight.Filled = true;
+
+            if(this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
+                this.Filled = true;
+
+            if (this.TopLeft.Filled != this.TopRight.Filled)
             {
-                this.CurrentState = state;
+                this.Top.Filled = true;
+                this.Top.SetPosition(Lib.CircleLineIntersection(this.TopLeft.Position, this.TopRight.Position, center, radius));
             }
-            else if (!this.MultiOverlap)
+
+            if (this.BottomLeft.Filled != this.BottomRight.Filled)
             {
-                this.CurrentState = State.NoIntersection;
-                this.MultiOverlap = true;
+                this.Bottom.Filled = true;
+                this.Bottom.SetPosition(Lib.CircleLineIntersection(this.BottomLeft.Position, this.BottomRight.Position, center, radius));
             }
+
+            if (this.TopLeft.Filled != this.BottomLeft.Filled)
+            {
+                this.Left.Filled = true;
+                this.Left.SetPosition(Lib.CircleLineIntersection(this.TopLeft.Position, this.BottomLeft.Position, center, radius));
+            }
+
+            if (this.TopRight.Filled != this.BottomRight.Filled)
+            {
+                this.Right.Filled = true;
+                this.Right.SetPosition(Lib.CircleLineIntersection(this.TopRight.Position, this.BottomRight.Position, center, radius));
+            }
+        }
+
+        public void FillBox(Vector3 start, Vector3 end, float width)
+        {
+            //if (this.Filled)
+            //{
+            //    this.MultiOverlap = true;
+            //    return;
+            //}
+
+            Vector3 es = Vector3.Normalize(start - end);
+            Vector3 left = new Vector3(-es.y, es.x, es.z);
+            Vector3 tl = start + left * width / 2f;
+            Vector3 tr = start - left * width / 2f;
+            Vector3 bl = end + left * width / 2f;
+            Vector3 br = end - left * width / 2f;
+
+            if (Lib.PointInBox(this.TopLeft.Position, tl, tr, bl, br))
+                this.TopLeft.Filled = true;
+            if (Lib.PointInBox(this.TopRight.Position, tl, tr, bl, br))
+                this.TopRight.Filled = true;
+            if (Lib.PointInBox(this.BottomLeft.Position, tl, tr, bl, br))
+                this.BottomLeft.Filled = true;
+            if (Lib.PointInBox(this.BottomRight.Position, tl, tr, bl, br))
+                this.BottomRight.Filled = true;
+
+            if (this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
+                this.Filled = true;
+
+            if (this.TopLeft.Filled != this.TopRight.Filled)
+            {
+                this.Top.Filled = true;
+                this.Top.SetPosition(Lib.BoxLineIntersection(this.TopLeft.Position, this.TopRight.Position, tl, tr, bl, br));
+            }
+
+            if (this.BottomLeft.Filled != this.BottomRight.Filled)
+            {
+                this.Bottom.Filled = true;
+                this.Bottom.SetPosition(Lib.BoxLineIntersection(this.BottomLeft.Position, this.BottomRight.Position, tl, tr, bl, br));
+            }
+
+            if (this.TopLeft.Filled != this.BottomLeft.Filled)
+            {
+                this.Left.Filled = true;
+                this.Left.SetPosition(Lib.BoxLineIntersection(this.TopLeft.Position, this.BottomLeft.Position, tl, tr, bl, br));
+            }
+
+            if (this.TopRight.Filled != this.BottomRight.Filled)
+            {
+                this.Right.Filled = true;
+                this.Right.SetPosition(Lib.BoxLineIntersection(this.TopRight.Position, this.BottomRight.Position, tl, tr, bl, br));
+            }
+        }
+
+        public List<int> GetTriangles(List<Vector3> vertices, bool inverted)
+        {
+            List<int> ret = new List<int>();
+            // 0000 -> tl, tr, bl, br
+            int state = 0;
+            //if (this.MultiOverlap)
+            //    state = 15;
+            //else
+            //{
+                state = this.TopLeft.Filled ? state + 8 : state;
+                state = this.TopRight.Filled ? state + 4 : state;
+                state = this.BottomLeft.Filled ? state + 2 : state;
+                state = this.BottomRight.Filled ? state + 1 : state;
+            //}
+
+            //if (state != 0)
+            //{
+            //    int tl = this.TopLeft.AssignVertex(vertices);
+            //    int tr = this.TopRight.AssignVertex(vertices);
+            //    int bl = this.BottomLeft.AssignVertex(vertices);
+            //    int br = this.BottomRight.AssignVertex(vertices);
+            //    Lib.AddSquare(ret, br, bl, tl, tr, inverted);
+            //}
+
+            //return ret;
+
+            // 0000
+            if (state == 0)
+            {
+            }
+            // 0001
+            else if (state == 1)
+            {
+                int br = this.BottomRight.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddTriangle(ret, r, br, b, inverted);
+            }
+            // 0010
+            else if (state == 2)
+            {
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                Lib.AddTriangle(ret, b, bl, l, inverted);
+            }
+            // 0011
+            else if (state == 3)
+            {
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddSquare(ret, br, bl, l, r, inverted);
+            }
+            // 0100
+            else if (state == 4)
+            {
+                int tr = this.TopRight.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddTriangle(ret, t, tr, r, inverted);
+            }
+            // 0101
+            else if (state == 5)
+            {
+                int tr = this.TopRight.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                Lib.AddSquare(ret, br, b, t, tr, inverted);
+            }
+            // 0110 (ignored and filled as square)
+            else if (state == 6)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                Lib.AddSquare(ret, br, bl, tl, tr, inverted);
+            }
+            // 0111
+            else if (state == 7)
+            {
+                int tr = this.TopRight.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                Lib.AddPentagon(ret, bl, l, t, tr, br, inverted);
+            }
+            // 1000
+            else if (state == 8)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                Lib.AddTriangle(ret, l, tl, t, inverted);
+            }
+            // 1001 (ignored and filled as square)
+            else if (state == 9)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                Lib.AddSquare(ret, br, bl, tl, tr, inverted);
+            }
+            // 1010
+            else if (state == 10)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                Lib.AddSquare(ret, b, bl, tl, t, inverted);
+            }
+            // 1011
+            else if (state == 11)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int t = this.Top.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddPentagon(ret, tl, t, r, br, bl, inverted);
+            }
+            // 1100
+            else if (state == 12)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddSquare(ret, r, l, tl, tr, inverted);
+            }
+            // 1101
+            else if (state == 13)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                int l = this.Left.AssignVertex(vertices);
+                Lib.AddPentagon(ret, br, b, l, tl, tr, inverted);
+            }
+            // 1110
+            else if (state == 14)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                Lib.AddPentagon(ret, tr, r, b, bl, tl, inverted);
+            }
+            // 1111
+            else if (state == 15)
+            {
+                int tl = this.TopLeft.AssignVertex(vertices);
+                int tr = this.TopRight.AssignVertex(vertices);
+                int bl = this.BottomLeft.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                Lib.AddSquare(ret, br, bl, tl, tr, inverted);
+            }
+
+            return ret;
+        }
+
+        public List<int> GetWallPoints(Lib.Direction direction)
+        {
+            List<int> ret = new List<int>();
+            // 0000 -> tl, tr, bl, br
+            int state = 0;
+            if (this.MultiOverlap)
+                state = 15;
+            else
+            {
+                state = this.TopLeft.Filled ? state + 8 : state;
+                state = this.TopRight.Filled ? state + 4 : state;
+                state = this.BottomLeft.Filled ? state + 2 : state;
+                state = this.BottomRight.Filled ? state + 1 : state;
+            }
+
+            // 0000
+            if (state == 0)
+            {
+            }
+            // 0001
+            else if (state == 1)
+            {
+                int br = this.BottomRight.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if(direction == Lib.Direction.Up || direction == Lib.Direction.Left)
+                {
+                    ret.Add(b);
+                    ret.Add(r);
+                }
+                else if(direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(b);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(r);
+                    ret.Add(br);
+                }
+
+            }
+            // 0010
+            else if (state == 2)
+            {
+                int bl = this.BottomLeft.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int l = this.Left.VertexIndex;
+                if (direction == Lib.Direction.Up || direction == Lib.Direction.Right)
+                {
+                    ret.Add(l);
+                    ret.Add(b);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(b);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(l);
+                }
+            }
+            // 0011
+            else if (state == 3)
+            {
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int l = this.Left.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(l);
+                    ret.Add(r);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(l);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(r);
+                    ret.Add(br);
+                }
+            }
+            // 0100
+            else if (state == 4)
+            {
+                int tr = this.TopRight.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(t);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down || direction == Lib.Direction.Left)
+                {
+                    ret.Add(r);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(r);
+                }
+            }
+            // 0101
+            else if (state == 5)
+            {
+                int tr = this.TopRight.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(t);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(b);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(b);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+            // 0110 (ignored and filled as square)
+            else if (state == 6)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+            // 0111
+            else if (state == 7)
+            {
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int l = this.Left.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(t);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(l);
+                    ret.Add(l);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+            // 1000
+            else if (state == 8)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int l = this.Left.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Down || direction == Lib.Direction.Left)
+                {
+                    ret.Add(t);
+                    ret.Add(l);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(l);
+                    ret.Add(tl);
+                }
+            }
+            // 1001 (ignored and filled as square)
+            else if (state == 9)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+            // 1010
+            else if (state == 10)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(b);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(t);
+                    ret.Add(b);
+                }
+            }
+            // 1011
+            else if (state == 11)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int t = this.Top.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(t);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(t);
+                    ret.Add(r);
+                    ret.Add(r);
+                    ret.Add(br);
+                }
+            }
+            // 1100
+            else if (state == 12)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int l = this.Left.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(r);
+                    ret.Add(l);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(l);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(r);
+                }
+            }
+            // 1101
+            else if (state == 13)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int l = this.Left.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(b);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(b);
+                    ret.Add(l);
+                    ret.Add(l);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+            // 1110
+            else if (state == 14)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int r = this.Right.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(b);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(r);
+                    ret.Add(r);
+                    ret.Add(b);
+                }
+            }
+            // 1111
+            else if (state == 15)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+                else if (direction == Lib.Direction.Down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+                else if (direction == Lib.Direction.Left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+                else if (direction == Lib.Direction.Right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+            }
+
+            return ret;
         }
 
         public void CopyIntersections(Square s, float z)
         {
+            s.TopLeft.SetPosition(new Vector3(this.TopLeft.Position.x, this.TopLeft.Position.y, z));
+            s.TopRight.SetPosition(new Vector3(this.TopRight.Position.x, this.TopRight.Position.y, z));
+            s.BottomLeft.SetPosition(new Vector3(this.BottomLeft.Position.x, this.BottomLeft.Position.y, z));
+            s.BottomRight.SetPosition(new Vector3(this.BottomRight.Position.x, this.BottomRight.Position.y, z));
             s.Top.SetPosition(new Vector3(this.Top.Position.x, this.Top.Position.y, z));
             s.Left.SetPosition(new Vector3(this.Left.Position.x, this.Left.Position.y, z));
             s.Bottom.SetPosition(new Vector3(this.Bottom.Position.x, this.Bottom.Position.y, z));
             s.Right.SetPosition(new Vector3(this.Right.Position.x, this.Right.Position.y, z));
+
+            s.TopLeft.Filled = this.TopLeft.Filled;
+            s.TopRight.Filled = this.TopRight.Filled;
+            s.BottomLeft.Filled = this.BottomLeft.Filled;
+            s.BottomRight.Filled = this.BottomRight.Filled;
+            s.Top.Filled = this.Top.Filled;
+            s.Left.Filled = this.Left.Filled;
+            s.Bottom.Filled = this.Bottom.Filled;
+            s.Right.Filled = this.Right.Filled;
         }
     }
 }
