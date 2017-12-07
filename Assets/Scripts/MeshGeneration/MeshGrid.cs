@@ -62,6 +62,13 @@
             this.Squares[r, c].Fill();
         }
 
+        public Square GetSquare(Vector3 position)
+        {
+            int r = GridUtil.GetRow(position, this.topLeft, this.squareDim, this.numRows);
+            int c = GridUtil.GetCol(position, this.topLeft, this.squareDim, this.numCols);
+            return this.Squares[r, c];
+        }
+
         public MeshGrid Duplicate(int zOffset)
         {
             MeshGrid dupe = new MeshGrid(this.numRows, this.numCols, new Vector3(this.topLeft.x, this.topLeft.y, this.topLeft.z + zOffset), this.squareDim);
@@ -77,7 +84,7 @@
                         if (this.Squares[r, c].MultiOverlap)
                             dupe.Squares[r, c].Fill();
 
-                        this.Squares[r, c].CopyIntersections(dupe.Squares[r, c]);
+                        this.Squares[r, c].CopyIntersections(dupe.Squares[r, c], this.topLeft.z + zOffset);
                     }
                 }
             }
@@ -86,7 +93,7 @@
             {
                 for (int c = 0; c < this.numCols + 1; c++)
                 {
-                    dupe.Corners[r, c].SetPosition(this.Corners[r, c].Position);
+                    dupe.Corners[r, c].SetPosition(new Vector3(this.Corners[r, c].Position.x, this.Corners[r, c].Position.y, this.topLeft.z + zOffset));
                 }
             }
 

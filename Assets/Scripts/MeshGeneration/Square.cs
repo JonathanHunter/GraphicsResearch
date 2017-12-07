@@ -61,10 +61,12 @@
             }
         }
 
-        public void CopyIntersections(Square s)
+        public void CopyIntersections(Square s, float z)
         {
-            s.Top.SetPosition(this.Top.Position);
-            s.Left.SetPosition(this.Left.Position);
+            s.Top.SetPosition(new Vector3(this.Top.Position.x, this.Top.Position.y, z));
+            s.Left.SetPosition(new Vector3(this.Left.Position.x, this.Left.Position.y, z));
+            s.Bottom.SetPosition(new Vector3(this.Bottom.Position.x, this.Bottom.Position.y, z));
+            s.Right.SetPosition(new Vector3(this.Right.Position.x, this.Right.Position.y, z));
         }
     }
 }
