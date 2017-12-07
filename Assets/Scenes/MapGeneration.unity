@@ -369,11 +369,11 @@ MonoBehaviour:
   player: {fileID: 1649337577}
   disableInput: 0
   roomManager:
-  - {fileID: 165928987}
+  - {fileID: 1897790640}
   pathManager:
   - {fileID: 1268411442}
   meshManager:
-  - {fileID: 1077251125}
+  - {fileID: 819208394}
 --- !u!114 &360444102 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
@@ -656,7 +656,7 @@ MonoBehaviour:
   subGridRows: 10
   subGridCols: 10
   boxSize: 0.1
-  extrudeMesh: 1
+  extrudeMesh: 0
   invertTriangles: 1
   drawR: 0
   drawC: 0
@@ -1274,7 +1274,7 @@ MonoBehaviour:
   rotate: 1
   resize: 1
   sizeBound: {x: 1, y: 3}
-  onlyCircles: 1
+  onlyCircles: 0
   gridCount: {x: 5, y: 5}
   numberOfAttempts: 100
   showGrid: 0

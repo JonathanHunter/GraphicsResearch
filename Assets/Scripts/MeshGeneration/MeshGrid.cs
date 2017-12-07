@@ -78,9 +78,6 @@
                     if (this.Squares[r, c].Filled)
                     {
                         dupe.Squares[r, c].Fill();
-                        if (this.Squares[r, c].MultiOverlap)
-                            dupe.Squares[r, c].Fill();
-
                         this.Squares[r, c].CopyIntersections(dupe.Squares[r, c], this.topLeft.z + zOffset);
                     }
                 }

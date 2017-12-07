@@ -14,8 +14,6 @@
         public Vector2 Size { get; private set; }
         /// <summary> True if this square has something in it. </summary>
         public bool Filled { get; private set; }
-        /// <summary> True if this square has multiple shapes overlapping in it. </summary>
-        public bool MultiOverlap { get; private set; }
 
         public Corner TopLeft { get; set; }
         public Corner TopRight { get; set; }
@@ -32,56 +30,51 @@
             this.Center = position;
             this.Size = dimensions;
             this.Filled = false;
-            this.MultiOverlap = false;
         }
 
         public void Fill()
         {
-            if (this.Filled)
-                this.MultiOverlap = true;
-
             this.Filled = true;
         }
 
         public void FillCircle(Vector3 center, float radius)
         {
-            //if(this.Filled)
-            //{
-            //    this.MultiOverlap = true;
-            //    return;
-            //}
+            bool topLeft = Lib.PointInCircle(this.TopLeft.Position, center, radius);
+            bool topRight = Lib.PointInCircle(this.TopRight.Position, center, radius);
+            bool bottomLeft = Lib.PointInCircle(this.BottomLeft.Position, center, radius);
+            bool bottomRight = Lib.PointInCircle(this.BottomRight.Position, center, radius);
 
-            if (Lib.PointInCircle(this.TopLeft.Position, center, radius))
+            if (topLeft)
                 this.TopLeft.Filled = true;
-            if (Lib.PointInCircle(this.TopRight.Position, center, radius))
+            if (topRight)
                 this.TopRight.Filled = true;
-            if (Lib.PointInCircle(this.BottomLeft.Position, center, radius))
+            if (bottomLeft)
                 this.BottomLeft.Filled = true;
-            if (Lib.PointInCircle(this.BottomRight.Position, center, radius))
+            if (bottomRight)
                 this.BottomRight.Filled = true;
 
             if(this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
                 this.Filled = true;
 
-            if (this.TopLeft.Filled != this.TopRight.Filled)
+            if (topLeft != topRight)
             {
                 this.Top.Filled = true;
                 this.Top.SetPosition(Lib.CircleLineIntersection(this.TopLeft.Position, this.TopRight.Position, center, radius));
             }
 
-            if (this.BottomLeft.Filled != this.BottomRight.Filled)
+            if (bottomLeft != bottomRight)
             {
                 this.Bottom.Filled = true;
                 this.Bottom.SetPosition(Lib.CircleLineIntersection(this.BottomLeft.Position, this.BottomRight.Position, center, radius));
             }
 
-            if (this.TopLeft.Filled != this.BottomLeft.Filled)
+            if (topLeft != bottomLeft)
             {
                 this.Left.Filled = true;
                 this.Left.SetPosition(Lib.CircleLineIntersection(this.TopLeft.Position, this.BottomLeft.Position, center, radius));
             }
 
-            if (this.TopRight.Filled != this.BottomRight.Filled)
+            if (topRight != bottomRight)
             {
                 this.Right.Filled = true;
                 this.Right.SetPosition(Lib.CircleLineIntersection(this.TopRight.Position, this.BottomRight.Position, center, radius));
@@ -90,12 +83,6 @@
 
         public void FillBox(Vector3 start, Vector3 end, float width)
         {
-            //if (this.Filled)
-            //{
-            //    this.MultiOverlap = true;
-            //    return;
-            //}
-
             Vector3 es = Vector3.Normalize(start - end);
             Vector3 left = new Vector3(-es.y, es.x, es.z);
             Vector3 tl = start + left * width / 2f;
@@ -103,37 +90,42 @@
             Vector3 bl = end + left * width / 2f;
             Vector3 br = end - left * width / 2f;
 
-            if (Lib.PointInBox(this.TopLeft.Position, tl, tr, bl, br))
+            bool topLeft = Lib.PointInBox(this.TopLeft.Position, tl, tr, bl, br);
+            bool topRight = Lib.PointInBox(this.TopRight.Position, tl, tr, bl, br);
+            bool bottomLeft = Lib.PointInBox(this.BottomLeft.Position, tl, tr, bl, br);
+            bool bottomRight = Lib.PointInBox(this.BottomRight.Position, tl, tr, bl, br);
+
+            if (topLeft)
                 this.TopLeft.Filled = true;
-            if (Lib.PointInBox(this.TopRight.Position, tl, tr, bl, br))
+            if (topRight)
                 this.TopRight.Filled = true;
-            if (Lib.PointInBox(this.BottomLeft.Position, tl, tr, bl, br))
+            if (bottomLeft)
                 this.BottomLeft.Filled = true;
-            if (Lib.PointInBox(this.BottomRight.Position, tl, tr, bl, br))
+            if (bottomRight)
                 this.BottomRight.Filled = true;
 
             if (this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
                 this.Filled = true;
 
-            if (this.TopLeft.Filled != this.TopRight.Filled)
+            if (topLeft != topRight)
             {
                 this.Top.Filled = true;
                 this.Top.SetPosition(Lib.BoxLineIntersection(this.TopLeft.Position, this.TopRight.Position, tl, tr, bl, br));
             }
 
-            if (this.BottomLeft.Filled != this.BottomRight.Filled)
+            if (bottomLeft!= bottomRight)
             {
                 this.Bottom.Filled = true;
                 this.Bottom.SetPosition(Lib.BoxLineIntersection(this.BottomLeft.Position, this.BottomRight.Position, tl, tr, bl, br));
             }
 
-            if (this.TopLeft.Filled != this.BottomLeft.Filled)
+            if (topLeft != bottomLeft)
             {
                 this.Left.Filled = true;
                 this.Left.SetPosition(Lib.BoxLineIntersection(this.TopLeft.Position, this.BottomLeft.Position, tl, tr, bl, br));
             }
 
-            if (this.TopRight.Filled != this.BottomRight.Filled)
+            if (topRight != bottomRight)
             {
                 this.Right.Filled = true;
                 this.Right.SetPosition(Lib.BoxLineIntersection(this.TopRight.Position, this.BottomRight.Position, tl, tr, bl, br));
@@ -145,15 +137,10 @@
             List<int> ret = new List<int>();
             // 0000 -> tl, tr, bl, br
             int state = 0;
-            //if (this.MultiOverlap)
-            //    state = 15;
-            //else
-            //{
-                state = this.TopLeft.Filled ? state + 8 : state;
-                state = this.TopRight.Filled ? state + 4 : state;
-                state = this.BottomLeft.Filled ? state + 2 : state;
-                state = this.BottomRight.Filled ? state + 1 : state;
-            //}
+            state = this.TopLeft.Filled ? state + 8 : state;
+            state = this.TopRight.Filled ? state + 4 : state;
+            state = this.BottomLeft.Filled ? state + 2 : state;
+            state = this.BottomRight.Filled ? state + 1 : state;
 
             //if (state != 0)
             //{
@@ -313,16 +300,11 @@
         {
             List<int> ret = new List<int>();
             // 0000 -> tl, tr, bl, br
-            int state = 0;
-            if (this.MultiOverlap)
-                state = 15;
-            else
-            {
-                state = this.TopLeft.Filled ? state + 8 : state;
-                state = this.TopRight.Filled ? state + 4 : state;
-                state = this.BottomLeft.Filled ? state + 2 : state;
-                state = this.BottomRight.Filled ? state + 1 : state;
-            }
+            int state = 0;            
+            state = this.TopLeft.Filled ? state + 8 : state;
+            state = this.TopRight.Filled ? state + 4 : state;
+            state = this.BottomLeft.Filled ? state + 2 : state;
+            state = this.BottomRight.Filled ? state + 1 : state;
 
             // 0000
             if (state == 0)
