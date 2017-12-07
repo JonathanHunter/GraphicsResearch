@@ -5,7 +5,7 @@
 
     public class Lib
     {
-        public enum Direction { Up, Down, Left, Right }
+        public enum Direction { Up, Down, Left, Right, None }
 
         public static Vector2 CircleLineIntersection(Vector3 begin, Vector3 end, Vector3 center, float radius)
         {

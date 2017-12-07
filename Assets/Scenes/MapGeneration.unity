@@ -239,7 +239,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4461314057040506, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_LocalScale.x
@@ -307,9 +307,9 @@ MonoBehaviour:
   resize: 0
   sizeBound: {x: 0, y: 0}
   onlyCircles: 0
-  circles: []
-  rects:
-  - {fileID: 360444102}
+  circles:
+  - {fileID: 2134079933}
+  rects: []
 --- !u!1 &221739657
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,19 +367,13 @@ MonoBehaviour:
   toggleRoomsOnStart: 1
   async: 1
   player: {fileID: 1649337577}
-  disableInput: 0
+  disableInput: 1
   roomManager:
   - {fileID: 1897790640}
   pathManager:
   - {fileID: 1268411442}
   meshManager:
   - {fileID: 819208394}
---- !u!114 &360444102 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
-    type: 2}
-  m_PrefabInternal: {fileID: 1523329816}
-  m_Script: {fileID: 11500000, guid: 2d17122e6762c0f44bbd14bab969a511, type: 3}
 --- !u!1 &617955624
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,8 +650,8 @@ MonoBehaviour:
   subGridRows: 10
   subGridCols: 10
   boxSize: 0.1
-  extrudeMesh: 0
-  invertTriangles: 1
+  extrudeMesh: 1
+  invertTriangles: 0
   drawR: 0
   drawC: 0
 --- !u!1 &1057086763
@@ -750,7 +744,7 @@ MonoBehaviour:
   subGridCols: 20
   boxSize: 0.5
   extrudeMesh: 1
-  invertTriangles: 1
+  invertTriangles: 0
   drawR: 0
   drawC: 0
 --- !u!1 &1268411440
@@ -890,7 +884,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalScale.x
@@ -936,7 +930,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1578558617
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1110,7 +1104,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
@@ -1356,3 +1350,9 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &2134079933 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114194699498897538, guid: 103489cca3db11b41ab15a84f7d0220e,
+    type: 2}
+  m_PrefabInternal: {fileID: 91566827}
+  m_Script: {fileID: 11500000, guid: b6964339400c2f548aace0270437e65f, type: 3}

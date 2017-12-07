@@ -153,6 +153,7 @@
 
             //return ret;
 
+
             // 0000
             if (state == 0)
             {
@@ -306,6 +307,37 @@
             state = this.BottomLeft.Filled ? state + 2 : state;
             state = this.BottomRight.Filled ? state + 1 : state;
 
+            //if (state != 0)
+            //{
+            //    int tl = this.TopLeft.VertexIndex;
+            //    int tr = this.TopRight.VertexIndex;
+            //    int bl = this.BottomLeft.VertexIndex;
+            //    int br = this.BottomRight.VertexIndex;
+            //    if (direction == Lib.Direction.Up)
+            //    {
+            //        ret.Add(tl);
+            //        ret.Add(tr);
+            //    }
+            //    else if (direction == Lib.Direction.Down)
+            //    {
+            //        ret.Add(br);
+            //        ret.Add(bl);
+            //    }
+            //    else if (direction == Lib.Direction.Left)
+            //    {
+            //        ret.Add(bl);
+            //        ret.Add(tl);
+            //    }
+            //    else if (direction == Lib.Direction.Right)
+            //    {
+            //        ret.Add(tr);
+            //        ret.Add(br);
+            //    }
+            //}
+
+            //return ret;
+
+
             // 0000
             if (state == 0)
             {
@@ -316,22 +348,8 @@
                 int br = this.BottomRight.VertexIndex;
                 int b = this.Bottom.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if(direction == Lib.Direction.Up || direction == Lib.Direction.Left)
-                {
-                    ret.Add(b);
-                    ret.Add(r);
-                }
-                else if(direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(b);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(r);
-                    ret.Add(br);
-                }
-
+                ret.Add(b);
+                ret.Add(r);
             }
             // 0010
             else if (state == 2)
@@ -339,21 +357,8 @@
                 int bl = this.BottomLeft.VertexIndex;
                 int b = this.Bottom.VertexIndex;
                 int l = this.Left.VertexIndex;
-                if (direction == Lib.Direction.Up || direction == Lib.Direction.Right)
-                {
-                    ret.Add(l);
-                    ret.Add(b);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(b);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(l);
-                }
+                ret.Add(l);
+                ret.Add(b);
             }
             // 0011
             else if (state == 3)
@@ -362,26 +367,8 @@
                 int br = this.BottomRight.VertexIndex;
                 int l = this.Left.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(l);
-                    ret.Add(r);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(l);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(r);
-                    ret.Add(br);
-                }
+                ret.Add(l);
+                ret.Add(r);
             }
             // 0100
             else if (state == 4)
@@ -389,21 +376,8 @@
                 int tr = this.TopRight.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(t);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down || direction == Lib.Direction.Left)
-                {
-                    ret.Add(r);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(r);
-                }
+                ret.Add(r);
+                ret.Add(t);
             }
             // 0101
             else if (state == 5)
@@ -412,26 +386,8 @@
                 int br = this.BottomRight.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int b = this.Bottom.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(t);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(b);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(b);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(br);
-                }
+                ret.Add(b);
+                ret.Add(t);
             }
             // 0110 (ignored and filled as square)
             else if (state == 6)
@@ -469,50 +425,16 @@
                 int br = this.BottomRight.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int l = this.Left.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(t);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(l);
-                    ret.Add(l);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(br);
-                }
+                ret.Add(l);
+                ret.Add(t);
             }
             // 1000
             else if (state == 8)
             {
-                int tl = this.TopLeft.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int l = this.Left.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Down || direction == Lib.Direction.Left)
-                {
-                    ret.Add(t);
-                    ret.Add(l);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(l);
-                    ret.Add(tl);
-                }
+                ret.Add(t);
+                ret.Add(l);
             }
             // 1001 (ignored and filled as square)
             else if (state == 9)
@@ -549,147 +471,40 @@
                 int bl = this.BottomLeft.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int b = this.Bottom.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(b);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(tl);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(t);
-                    ret.Add(b);
-                }
+                ret.Add(t);
+                ret.Add(b);
             }
             // 1011
             else if (state == 11)
             {
-                int tl = this.TopLeft.VertexIndex;
-                int bl = this.BottomLeft.VertexIndex;
-                int br = this.BottomRight.VertexIndex;
                 int t = this.Top.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(t);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(tl);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(t);
-                    ret.Add(r);
-                    ret.Add(r);
-                    ret.Add(br);
-                }
+                ret.Add(t);
+                ret.Add(r);
             }
             // 1100
             else if (state == 12)
             {
-                int tl = this.TopLeft.VertexIndex;
-                int tr = this.TopRight.VertexIndex;
                 int l = this.Left.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(r);
-                    ret.Add(l);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(l);
-                    ret.Add(tl);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(r);
-                }
+                ret.Add(r);
+                ret.Add(l);
             }
             // 1101
             else if (state == 13)
             {
-                int tl = this.TopLeft.VertexIndex;
-                int tr = this.TopRight.VertexIndex;
-                int br = this.BottomRight.VertexIndex;
                 int b = this.Bottom.VertexIndex;
                 int l = this.Left.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(br);
-                    ret.Add(b);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(b);
-                    ret.Add(l);
-                    ret.Add(l);
-                    ret.Add(tl);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(br);
-                }
+                ret.Add(b);
+                ret.Add(l);
             }
             // 1110
             else if (state == 14)
             {
-                int tl = this.TopLeft.VertexIndex;
-                int tr = this.TopRight.VertexIndex;
-                int bl = this.BottomLeft.VertexIndex;
                 int b = this.Bottom.VertexIndex;
                 int r = this.Right.VertexIndex;
-                if (direction == Lib.Direction.Up)
-                {
-                    ret.Add(tl);
-                    ret.Add(tr);
-                }
-                else if (direction == Lib.Direction.Down)
-                {
-                    ret.Add(b);
-                    ret.Add(bl);
-                }
-                else if (direction == Lib.Direction.Left)
-                {
-                    ret.Add(bl);
-                    ret.Add(tl);
-                }
-                else if (direction == Lib.Direction.Right)
-                {
-                    ret.Add(tr);
-                    ret.Add(r);
-                    ret.Add(r);
-                    ret.Add(b);
-                }
+                ret.Add(r);
+                ret.Add(b);
             }
             // 1111
             else if (state == 15)

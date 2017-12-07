@@ -337,46 +337,23 @@
 
             Square ts = top.Squares[subGridRow, subGridCol];
             Square bs = bottom.Squares[subGridRow, subGridCol];
+            Lib.Direction dir = Lib.Direction.None;
 
             if (left)
-            {
-                List<int> topPoints = ts.GetWallPoints(Lib.Direction.Left);
-                List<int> bottomPoints = bs.GetWallPoints(Lib.Direction.Left);
+                dir = Lib.Direction.Left;
+            else if (right)
+                dir = Lib.Direction.Right;
+            else if (up)
+                dir = Lib.Direction.Up;
+            else if (down)
+                dir = Lib.Direction.Down;
+            
+            List<int> topPoints = ts.GetWallPoints(dir);
+            List<int> bottomPoints = bs.GetWallPoints(dir);
 
-                for(int i = 0; i < topPoints.Count - 1; i += 2)
-                {
-                    Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
-                }
-            }
-            if (right)
+            for(int i = 0; i < topPoints.Count - 1; i += 2)
             {
-                List<int> topPoints = ts.GetWallPoints(Lib.Direction.Right);
-                List<int> bottomPoints = bs.GetWallPoints(Lib.Direction.Right);
-
-                for (int i = 0; i < topPoints.Count - 1; i += 2)
-                {
-                    Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
-                }
-            }
-            if (up)
-            {
-                List<int> topPoints = ts.GetWallPoints(Lib.Direction.Up);
-                List<int> bottomPoints = bs.GetWallPoints(Lib.Direction.Up);
-
-                for (int i = 0; i < topPoints.Count - 1; i += 2)
-                {
-                    Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
-                }
-            }
-            if (down)
-            {
-                List<int> topPoints = ts.GetWallPoints(Lib.Direction.Down);
-                List<int> bottomPoints = bs.GetWallPoints(Lib.Direction.Down);
-
-                for (int i = 0; i < topPoints.Count - 1; i += 2)
-                {
-                    Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
-                }
+                Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
             }
         }
     }
