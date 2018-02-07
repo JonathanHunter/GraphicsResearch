@@ -180,9 +180,11 @@
                     if (overlaps.Length == 0)
                     {
                         CircleRoom circle = Instantiate<CircleRoom>(this.circleTemplet);
+                        circle.Init();
                         circle.transform.position = new Vector2(x, y);
                         circle.OriginalPosition = circle.transform.position;
                         circle.transform.localScale = Vector3.one * this.circleRadius * 2f * size;
+                        circle.transform.localScale = new Vector3(circle.transform.localScale.x, circle.transform.localScale.y, 1);
                         circle.Radius = this.circleRadius * size;
                         this.CircleRooms.Add(circle);
                         return circle.gameObject;

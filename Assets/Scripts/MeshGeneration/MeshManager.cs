@@ -102,6 +102,7 @@
         public void GenerateMesh(RoomManager rooms, PathManager paths)
         {
             Clear();
+            LocalReserveGridSquares(rooms, paths);
             CalculateMesh(rooms, paths);
             CreateMesh();
         }
@@ -112,6 +113,7 @@
         public IEnumerator GenerateMeshAsync(RoomManager rooms, PathManager paths)
         {
             Clear();
+            LocalReserveGridSquares(rooms, paths);
             yield return StartCoroutine(CalculateMeshAsync(rooms, paths));
             yield return StartCoroutine(CreateMeshAsync());
         }
@@ -138,6 +140,7 @@
 
         /// <summary> Local handler for initialization. </summary>
         protected abstract void LocalInit();
+        protected abstract void LocalReserveGridSquares(RoomManager rooms, PathManager paths);
         /// <summary> Local handler for Calculating the mesh. </summary>
         protected abstract void LocalCalculateMesh(RoomManager rooms, PathManager paths);
         /// <summary> Local async handler for Calculating the mesh. </summary>

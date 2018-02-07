@@ -101,6 +101,12 @@
                     this.meshManager[i].GenerateMesh(this.roomManager[i], this.pathManager[i]);
                 }
 
+                foreach (Room r in this.roomManager[i].Rooms)
+                {
+                    r.transform.parent = this.meshManager[i].gameObject.transform;
+                    r.transform.parent = null;
+                }
+
                 if (this.toggleRoomsOnStart)
                 {
                     this.roomManager[i].ToggleRooms();
@@ -149,6 +155,19 @@
                     stopwatch.Reset();
                 }
 
+                foreach (Room r in this.roomManager[i].Rooms)
+                {
+                    r.GetComponent<Collider>().enabled = false;
+                    Vector3 pos = r.transform.position;
+                    Vector3 size = r.transform.localScale;
+                    Quaternion rot = r.transform.rotation;
+                    r.transform.parent = this.meshManager[i].gameObject.transform;
+                    r.transform.localPosition = pos;
+                    r.transform.localScale = size;
+                    r.transform.localRotation = rot;
+                    r.transform.parent = null;
+                }
+
                 if (this.toggleRoomsOnStart)
                 {
                     this.roomManager[i].ToggleRooms();
@@ -160,9 +179,7 @@
 
             if (placeMeshOnStart)
             {
-                this.player.transform.parent = this.meshManager[0].gameObject.transform;
-                this.player.transform.localPosition = roomManager[0].Rooms[0].transform.position;
-                this.player.transform.parent = null;
+                this.player.transform.position = roomManager[0].Rooms[0].transform.position;
                 this.player.transform.rotation = Quaternion.identity;
                 this.player.transform.localScale = Vector3.one;
             }

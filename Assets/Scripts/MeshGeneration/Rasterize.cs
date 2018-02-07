@@ -53,6 +53,9 @@
 
                         if (this.Grids.Get(drawR, drawC) != null && this.Grids.Get(drawR, drawC).Squares[r, c].Filled)
                         {
+                            if (this.Grids.Get(drawR, drawC).Squares[r, c].reserved)
+                                Gizmos.color = Color.red;
+
                             Gizmos.DrawCube(s.Center, new Vector2(s.Size.x / 2f, s.Size.y / 2f));
                             Gizmos.DrawWireCube(s.Center, new Vector2(s.Size.x, s.Size.y));
 
@@ -108,6 +111,33 @@
                         gridSize));
                 }
             }
+        }
+
+        protected override void LocalReserveGridSquares(RoomManager rooms, PathManager paths)
+        {
+            CircleRoom circleRoom = rooms.CircleRooms[0];
+            Vector3 circle = circleRoom.OriginalPosition + Vector3.up * (circleRoom.Radius);
+            Debug.Log("loc: " + circle);
+            Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
+            Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
+            int row = GridUtil.GetRow(circle, this.topLeft.position, size, this.GridRows);
+            int col = GridUtil.GetCol(circle, this.topLeft.position, size, this.GridCols);
+            MeshGrid mesh = this.Grids.Get(row, col);
+            Debug.Log("row: " + row + ", col: " + col);
+            mesh.GetSquare(circle).reserved = true;
+            Debug.Log("Square: " + mesh.GetSquare(circle).Index);
+
+            RectangleRoom rectangle = rooms.RectangleRooms[0];
+            Vector3 rect = rectangle.OriginalPosition + rectangle.transform.up * (rectangle.transform.localScale.y / 2f);
+            Debug.Log("loc: " + rect);
+            size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
+            gridSize = new Vector2(this.boxSize, this.boxSize);
+            row = GridUtil.GetRow(rect, this.topLeft.position, size, this.GridRows);
+            col = GridUtil.GetCol(rect, this.topLeft.position, size, this.GridCols);
+            mesh = this.Grids.Get(row, col);
+            Debug.Log("row: " + row + ", col: " + col);
+            mesh.GetSquare(rect).reserved = true;
+            Debug.Log("Square: " + mesh.GetSquare(rect).Index);
         }
 
         protected override void LocalCalculateMesh(RoomManager rooms, PathManager paths)
@@ -242,10 +272,9 @@
             Vector3 es = Vector3.Normalize(start - end);
             Vector3 left = new Vector3(-es.y, es.x, es.z);
             float change = this.boxSize / Vector2.Distance(start, end) / 4f;
-            float change2 = this.boxSize / width / 4;
+            float change2 = this.boxSize / width / 4f;
             float lerp = 0;
             float lerp2 = 0;
-            List<Square> squares = new List<Square>();
             while (lerp <= 1f + change)
             {
                 Vector3 pos = Vector2.Lerp(start - left * width / 2f, end - left * width / 2f, lerp);
@@ -254,19 +283,12 @@
                 {
                     Vector3 cell = Vector2.Lerp(pos, pos + left * width, lerp2);
                     Square s = this.Grids.Get(this.Grids.GetRow(cell), this.Grids.GetCol(cell)).GetSquare(cell);
-                    if (!squares.Contains(s))
-                    {
-                        s.FillBox(start, end, width);
-                        squares.Add(s);
-                    }
-
+                    s.FillBox(start, end, width);
                     lerp2 += change2;
                 }
 
                 lerp += change;
             }
-
-            squares.Clear();
         }
 
         private void ProcessRasterizedGrid(MeshGrid rasterized, int gridRow, int gridCol)
@@ -337,23 +359,79 @@
 
             Square ts = top.Squares[subGridRow, subGridCol];
             Square bs = bottom.Squares[subGridRow, subGridCol];
-            Lib.Direction dir = Lib.Direction.None;
-
-            if (left)
-                dir = Lib.Direction.Left;
-            else if (right)
-                dir = Lib.Direction.Right;
-            else if (up)
-                dir = Lib.Direction.Up;
-            else if (down)
-                dir = Lib.Direction.Down;
+            List<int> topPoints = new List<int>();
+            List<int> bottomPoints = new List<int>();
             
-            List<int> topPoints = ts.GetWallPoints(dir);
-            List<int> bottomPoints = bs.GetWallPoints(dir);
-
-            for(int i = 0; i < topPoints.Count - 1; i += 2)
+            if (left)
             {
-                Lib.AddSquare(this.Triangles[gridRow, gridCol], bottomPoints[i], bottomPoints[i + 1], topPoints[i + 1], topPoints[i], this.invertTriangles);
+                List<int> temp = ts.GetWallPoints(Lib.Direction.Left);
+                foreach (int i in temp)
+                    topPoints.Add(i);
+
+                temp = bs.GetWallPoints(Lib.Direction.Left);
+                foreach (int i in temp)
+                    bottomPoints.Add(i);
+            }
+            if (right)
+            {
+                List<int> temp = ts.GetWallPoints(Lib.Direction.Right);
+                foreach (int i in temp)
+                    topPoints.Add(i);
+
+                temp = bs.GetWallPoints(Lib.Direction.Right);
+                foreach (int i in temp)
+                    bottomPoints.Add(i);
+            }
+            if (up)
+            {
+                List<int> temp = ts.GetWallPoints(Lib.Direction.Up);
+                foreach (int i in temp)
+                    topPoints.Add(i);
+
+                temp = bs.GetWallPoints(Lib.Direction.Up);
+                foreach (int i in temp)
+                    bottomPoints.Add(i);
+            }
+            if (down)
+            {
+                List<int> temp = ts.GetWallPoints(Lib.Direction.Down);
+                foreach (int i in temp)
+                    topPoints.Add(i);
+
+                temp = bs.GetWallPoints(Lib.Direction.Down);
+                foreach (int i in temp)
+                    bottomPoints.Add(i);
+            }
+            if(!left && !right && !up && !down)
+            {
+                if(!ts.TopLeft.Filled || !ts.TopRight.Filled || !ts.BottomLeft.Filled || !ts.BottomRight.Filled)
+                {
+                    List<int> temp = ts.GetWallPoints(Lib.Direction.Down);
+                    foreach (int i in temp)
+                        topPoints.Add(i);
+
+                    temp = bs.GetWallPoints(Lib.Direction.Down);
+                    foreach (int i in temp)
+                        bottomPoints.Add(i);
+                }
+            }
+
+            // change to add new points to fix shading (make walls their own mesh grid?)
+            for (int i = 0; i < topPoints.Count - 1; i += 2)
+            {
+                Vector3 pos1 = this.Vertices[gridRow, gridCol][bottomPoints[i]];
+                int a = this.Vertices[gridRow, gridCol].Count;
+                this.Vertices[gridRow, gridCol].Add(pos1);
+                Vector3 pos2 = this.Vertices[gridRow, gridCol][bottomPoints[i + 1]];
+                int b = this.Vertices[gridRow, gridCol].Count;
+                this.Vertices[gridRow, gridCol].Add(pos2);
+                Vector3 pos3 = this.Vertices[gridRow, gridCol][topPoints[i + 1]];
+                int c = this.Vertices[gridRow, gridCol].Count;
+                this.Vertices[gridRow, gridCol].Add(pos3);
+                Vector3 pos4 = this.Vertices[gridRow, gridCol][topPoints[i]];
+                int d = this.Vertices[gridRow, gridCol].Count;
+                this.Vertices[gridRow, gridCol].Add(pos4);
+                Lib.AddSquare(this.Triangles[gridRow, gridCol], a, b, c, d, this.invertTriangles);
             }
         }
     }

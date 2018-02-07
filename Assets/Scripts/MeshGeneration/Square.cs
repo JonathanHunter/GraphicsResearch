@@ -13,7 +13,9 @@
         /// <summary> The dimensions of this square. </summary>
         public Vector2 Size { get; private set; }
         /// <summary> True if this square has something in it. </summary>
-        public bool Filled { get; private set; }
+        public bool Filled { get { return this.filled || this.reserved; } private set { this.filled = value; } }
+
+        public bool reserved;
 
         public Corner TopLeft { get; set; }
         public Corner TopRight { get; set; }
@@ -24,12 +26,15 @@
         public Corner Left { get; set; }
         public Corner Right { get; set; }
 
+        private bool filled;
+
         public Square(Vector2Int index, Vector3 position, Vector2 dimensions)
         {
             this.Index = index;
             this.Center = position;
             this.Size = dimensions;
             this.Filled = false;
+            this.reserved = false;
         }
 
         public void Fill()
@@ -39,6 +44,9 @@
 
         public void FillCircle(Vector3 center, float radius)
         {
+            if (this.reserved)
+                return;
+
             bool topLeft = Lib.PointInCircle(this.TopLeft.Position, center, radius);
             bool topRight = Lib.PointInCircle(this.TopRight.Position, center, radius);
             bool bottomLeft = Lib.PointInCircle(this.BottomLeft.Position, center, radius);
@@ -83,6 +91,9 @@
 
         public void FillBox(Vector3 start, Vector3 end, float width)
         {
+            if (this.reserved)
+                return;
+
             Vector3 es = Vector3.Normalize(start - end);
             Vector3 left = new Vector3(-es.y, es.x, es.z);
             Vector3 tl = start + left * width / 2f;
@@ -135,6 +146,9 @@
         public List<int> GetTriangles(List<Vector3> vertices, bool inverted)
         {
             List<int> ret = new List<int>();
+            if (this.reserved)
+                return ret;
+
             // 0000 -> tl, tr, bl, br
             int state = 0;
             state = this.TopLeft.Filled ? state + 8 : state;
@@ -300,6 +314,9 @@
         public List<int> GetWallPoints(Lib.Direction direction)
         {
             List<int> ret = new List<int>();
+            if (this.reserved)
+                return ret;
+
             // 0000 -> tl, tr, bl, br
             int state = 0;            
             state = this.TopLeft.Filled ? state + 8 : state;
@@ -420,10 +437,14 @@
             // 0111
             else if (state == 7)
             {
-                int tr = this.TopRight.VertexIndex;
-                int bl = this.BottomLeft.VertexIndex;
-                int br = this.BottomRight.VertexIndex;
                 int t = this.Top.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    int tr = this.TopRight.VertexIndex;
+                    ret.Add(tr);
+                    ret.Add(t);
+                }
+
                 int l = this.Left.VertexIndex;
                 ret.Add(l);
                 ret.Add(t);
@@ -478,6 +499,13 @@
             else if (state == 11)
             {
                 int t = this.Top.VertexIndex;
+                if (direction == Lib.Direction.Up)
+                {
+                    int tl = this.TopLeft.VertexIndex;
+                    ret.Add(tl);
+                    ret.Add(t);
+                }
+
                 int r = this.Right.VertexIndex;
                 ret.Add(t);
                 ret.Add(r);
@@ -494,6 +522,13 @@
             else if (state == 13)
             {
                 int b = this.Bottom.VertexIndex;
+                if (direction == Lib.Direction.Down)
+                {
+                    int br = this.BottomRight.VertexIndex;
+                    ret.Add(br);
+                    ret.Add(b);
+                }
+
                 int l = this.Left.VertexIndex;
                 ret.Add(b);
                 ret.Add(l);
@@ -502,6 +537,13 @@
             else if (state == 14)
             {
                 int b = this.Bottom.VertexIndex;
+                if (direction == Lib.Direction.Down)
+                {
+                    int bl = this.BottomLeft.VertexIndex;
+                    ret.Add(bl);
+                    ret.Add(b);
+                }
+
                 int r = this.Right.VertexIndex;
                 ret.Add(r);
                 ret.Add(b);
