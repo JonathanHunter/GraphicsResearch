@@ -115,29 +115,29 @@
 
         protected override void LocalReserveGridSquares(RoomManager rooms, PathManager paths)
         {
-            CircleRoom circleRoom = rooms.CircleRooms[0];
-            Vector3 circle = circleRoom.OriginalPosition + Vector3.up * (circleRoom.Radius);
-            Debug.Log("loc: " + circle);
-            Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-            Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
-            int row = GridUtil.GetRow(circle, this.topLeft.position, size, this.GridRows);
-            int col = GridUtil.GetCol(circle, this.topLeft.position, size, this.GridCols);
-            MeshGrid mesh = this.Grids.Get(row, col);
-            Debug.Log("row: " + row + ", col: " + col);
-            mesh.GetSquare(circle).reserved = true;
-            Debug.Log("Square: " + mesh.GetSquare(circle).Index);
+            //CircleRoom circleRoom = rooms.CircleRooms[0];
+            //Vector3 circle = circleRoom.OriginalPosition + Vector3.up * (circleRoom.Radius);
+            //Debug.Log("loc: " + circle);
+            //Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
+            //Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
+            //int row = GridUtil.GetRow(circle, this.topLeft.position, size, this.GridRows);
+            //int col = GridUtil.GetCol(circle, this.topLeft.position, size, this.GridCols);
+            //MeshGrid mesh = this.Grids.Get(row, col);
+            //Debug.Log("row: " + row + ", col: " + col);
+            //mesh.GetSquare(circle).reserved = true;
+            //Debug.Log("Square: " + mesh.GetSquare(circle).Index);
 
-            RectangleRoom rectangle = rooms.RectangleRooms[0];
-            Vector3 rect = rectangle.OriginalPosition + rectangle.transform.up * (rectangle.transform.localScale.y / 2f);
-            Debug.Log("loc: " + rect);
-            size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-            gridSize = new Vector2(this.boxSize, this.boxSize);
-            row = GridUtil.GetRow(rect, this.topLeft.position, size, this.GridRows);
-            col = GridUtil.GetCol(rect, this.topLeft.position, size, this.GridCols);
-            mesh = this.Grids.Get(row, col);
-            Debug.Log("row: " + row + ", col: " + col);
-            mesh.GetSquare(rect).reserved = true;
-            Debug.Log("Square: " + mesh.GetSquare(rect).Index);
+            //RectangleRoom rectangle = rooms.RectangleRooms[0];
+            //Vector3 rect = rectangle.OriginalPosition + rectangle.transform.up * (rectangle.transform.localScale.y / 2f);
+            //Debug.Log("loc: " + rect);
+            //size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
+            //gridSize = new Vector2(this.boxSize, this.boxSize);
+            //row = GridUtil.GetRow(rect, this.topLeft.position, size, this.GridRows);
+            //col = GridUtil.GetCol(rect, this.topLeft.position, size, this.GridCols);
+            //mesh = this.Grids.Get(row, col);
+            //Debug.Log("row: " + row + ", col: " + col);
+            //mesh.GetSquare(rect).reserved = true;
+            //Debug.Log("Square: " + mesh.GetSquare(rect).Index);
         }
 
         protected override void LocalCalculateMesh(RoomManager rooms, PathManager paths)

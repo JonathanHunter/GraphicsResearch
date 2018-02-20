@@ -355,6 +355,7 @@ Transform:
   - {fileID: 819208393}
   - {fileID: 617955625}
   - {fileID: 1607921542}
+  - {fileID: 640144017}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -371,17 +372,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placeRoomsOnStart: 1
   placePathsOnStart: 1
-  placeMeshOnStart: 1
-  toggleRoomsOnStart: 1
+  placeMeshOnStart: 0
+  toggleRoomsOnStart: 0
   async: 1
   player: {fileID: 1649337577}
   disableInput: 1
   roomManager:
   - {fileID: 1897790640}
+  - {fileID: 1664210432}
   pathManager:
   - {fileID: 1268411442}
+  - {fileID: 1279295289}
   meshManager:
   - {fileID: 1077251125}
+  - {fileID: 819208394}
+  multiFloorManager: {fileID: 640144018}
 --- !u!1 &617955624
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,6 +415,50 @@ Transform:
   m_Father: {fileID: 221739659}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &640144016
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 640144017}
+  - component: {fileID: 640144018}
+  m_Layer: 0
+  m_Name: MultiFloorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &640144017
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 640144016}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 221739659}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &640144018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 640144016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7a0e9d9bf0884c4e8777840860b4bde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gradientRange: {x: 0, y: 40}
+  distanceRange: {x: 20, y: 35}
+  drawPaths: 1
+  drawHandles: 1
 --- !u!1 &646667179
 GameObject:
   m_ObjectHideFlags: 0
