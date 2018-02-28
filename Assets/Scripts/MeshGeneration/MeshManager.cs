@@ -87,7 +87,8 @@
             {
                 for (int c = 0; c < this.GridCols; c++)
                 {
-                    SpawnMesh(r, c);
+                    if (this.Triangles[r, c].Count > 0)
+                        SpawnMesh(r, c);
                 }
 
                 yield return null;

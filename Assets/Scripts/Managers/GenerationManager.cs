@@ -207,6 +207,7 @@
             {
                 stopwatch.Start();
                 yield return StartCoroutine(this.multiFloorManager.FindRoomPairsAsync(this.roomManager[i], this.roomManager[i + 1]));
+                this.multiFloorManager.RasterizeHallways();
                 stopwatch.Stop();
                 Debug.Log("finished placing multifloor paths in " + stopwatch.Elapsed);
                 stopwatch.Reset();

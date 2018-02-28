@@ -4,21 +4,35 @@
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEditor;
+    using PathPlacement;
     using RoomPlacement;
     using System;
 
     public class MultiFloorManager : MonoBehaviour
     {
+        public GameObject meshPrefab;
         public Vector2 gradientRange;
         public Vector2 distanceRange;
         public bool drawPaths;
         public bool drawHandles;
+        public Transform topLeft = null;
+        public Vector2Int gridDim;
+        public Vector2Int subGridDim;
+        public Vector2 boxSize;
+        public bool invertTriangles;
+
+        public bool showGrid;
+        public Vector2Int point;
+
+        private HallwayRasterizer rast;
 
         private List<MulitFloorPath> paths;
+        private List<GameObject> spawnedMeshes;
 
         public void Init()
         {
-            paths = new List<MulitFloorPath>();
+            this.paths = new List<MulitFloorPath>();
+            this.spawnedMeshes = new List<GameObject>();
         }
 
         private void OnDrawGizmos()
@@ -33,6 +47,11 @@
                         Handles.Label(Vector3.Lerp(p.Room1.transform.position, p.Room2.transform.position, .5f), 
                             "Gradient: " + p.Gradient + "\nDistance: " + p.Distance);
                 }
+            }
+
+            if(showGrid)
+            {
+                rast.DrawGrid(point);
             }
         }
 
@@ -60,6 +79,34 @@
             }
 
             yield return null;
+        }
+
+        public void RasterizeHallways()
+        {
+            foreach(MulitFloorPath p in this.paths)
+            {
+                HallwayRasterizer rasterizer = new HallwayRasterizer(this.gridDim, this.subGridDim, this.boxSize, this.topLeft, this.invertTriangles);
+                rasterizer.RasterizeCircle((CircleRoom)p.Room1);
+                rasterizer.RasterizeCircle((CircleRoom)p.Room2);
+                rasterizer.RasterizePath(p);
+                Vector3 r21 = Vector3.Normalize(p.Room1.OriginalPosition - p.Room2.OriginalPosition);
+                Vector3 start = p.Room1.OriginalPosition - r21 * p.Distance * .01f;
+                Vector3 end = p.Room2.OriginalPosition + r21 * p.Distance * .01f;
+                rasterizer.MarkForKeeping(start, end, p.Width);
+                rasterizer.GenerateMesh(true);
+                rasterizer.RaiseMesh(start, end, p.Width, p.Room1.transform.position, p.Room2.transform.position);
+                rasterizer.ExtrudeMesh(true);
+                for (int r = 0; r < this.gridDim.x; r++)
+                {
+                    for (int c = 0; c < this.gridDim.y; c++)
+                    {
+                        if (rasterizer.Triangles[r, c].Count > 0)
+                            SpawnMesh(rasterizer.Vertices[r, c], rasterizer.Triangles[r, c]);
+                    }
+                }
+
+                this.rast = rasterizer;
+            }
         }
 
         private void CompareRoom(Room r1, Room r2)
@@ -97,6 +144,27 @@
         private float GetDistance(Room r1, Room r2)
         {
             return Vector3.Distance(r1.transform.position, r2.transform.position);
+        }
+
+        private void SpawnMesh(List<Vector3> vertices, List<int> triangles)
+        {
+            GameObject mesh = Instantiate(this.meshPrefab);
+            MeshFilter filter = mesh.GetComponent<MeshFilter>();
+            MeshCollider collider = mesh.GetComponent<MeshCollider>();
+            Mesh m = new Mesh
+            {
+                vertices = vertices.ToArray(),
+                triangles = triangles.ToArray()
+            };
+
+            m.RecalculateNormals();
+            filter.mesh = m;
+            collider.sharedMesh = m;
+            mesh.transform.parent = this.gameObject.transform;
+            mesh.transform.localPosition = Vector3.zero;
+            mesh.transform.localRotation = Quaternion.identity;
+            mesh.transform.localScale = Vector3.one;
+            this.spawnedMeshes.Add(mesh);
         }
     }
 }

@@ -36,5 +36,12 @@
 
             return this.VertexIndex;
         }
+
+        public void SetZ(float z, List<Vector3> vertices = null)
+        {
+            this.Position = new Vector3(this.Position.x, this.Position.y, z);
+            if (this.VertexIndex != -1 && vertices != null)
+                vertices[this.VertexIndex] = this.Position;
+        }
     }
 }

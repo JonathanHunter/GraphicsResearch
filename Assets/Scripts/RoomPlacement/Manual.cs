@@ -39,6 +39,7 @@
             {
                 c.OriginalPosition = c.transform.position;
                 c.Radius = c.transform.localScale.x/ 2f;
+                c.Init();
                 this.CircleRooms.Add(c);
             }
 

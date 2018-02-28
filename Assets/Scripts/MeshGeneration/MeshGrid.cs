@@ -8,6 +8,8 @@
     {
         public Square[,] Squares { get; private set; }
         public Vector3 TopLeft { get { return this.topLeft; } }
+        public int Rows { get { return this.numRows; } }
+        public int Cols { get { return this.numCols; } }
 
         private int numRows;
         private int numCols;

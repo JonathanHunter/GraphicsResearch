@@ -14,6 +14,8 @@
         public Vector2 Size { get; private set; }
         /// <summary> True if this square has something in it. </summary>
         public bool Filled { get { return this.filled || this.reserved; } private set { this.filled = value; } }
+        /// <summary> True if this square was marked. </summary>
+        public bool Marked { get { return this.marked; } }
 
         public bool reserved;
 
@@ -27,6 +29,7 @@
         public Corner Right { get; set; }
 
         private bool filled;
+        private bool marked;
 
         public Square(Vector2Int index, Vector3 position, Vector2 dimensions)
         {
@@ -34,12 +37,18 @@
             this.Center = position;
             this.Size = dimensions;
             this.Filled = false;
+            this.marked = false;
             this.reserved = false;
         }
 
         public void Fill()
         {
             this.Filled = true;
+        }
+
+        public void Mark()
+        {
+            this.marked = true;
         }
 
         public void FillCircle(Vector3 center, float radius)
@@ -61,7 +70,7 @@
             if (bottomRight)
                 this.BottomRight.Filled = true;
 
-            if(this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
+            if (this.TopLeft.Filled || this.TopRight.Filled || this.BottomLeft.Filled || this.BottomRight.Filled)
                 this.Filled = true;
 
             if (topLeft != topRight)
@@ -582,14 +591,14 @@
 
         public void CopyIntersections(Square s, float z)
         {
-            s.TopLeft.SetPosition(new Vector3(this.TopLeft.Position.x, this.TopLeft.Position.y, z));
-            s.TopRight.SetPosition(new Vector3(this.TopRight.Position.x, this.TopRight.Position.y, z));
-            s.BottomLeft.SetPosition(new Vector3(this.BottomLeft.Position.x, this.BottomLeft.Position.y, z));
-            s.BottomRight.SetPosition(new Vector3(this.BottomRight.Position.x, this.BottomRight.Position.y, z));
-            s.Top.SetPosition(new Vector3(this.Top.Position.x, this.Top.Position.y, z));
-            s.Left.SetPosition(new Vector3(this.Left.Position.x, this.Left.Position.y, z));
-            s.Bottom.SetPosition(new Vector3(this.Bottom.Position.x, this.Bottom.Position.y, z));
-            s.Right.SetPosition(new Vector3(this.Right.Position.x, this.Right.Position.y, z));
+            s.TopLeft.SetPosition(new Vector3(this.TopLeft.Position.x, this.TopLeft.Position.y, this.TopLeft.Position.z + z));
+            s.TopRight.SetPosition(new Vector3(this.TopRight.Position.x, this.TopRight.Position.y, this.TopRight.Position.z + z));
+            s.BottomLeft.SetPosition(new Vector3(this.BottomLeft.Position.x, this.BottomLeft.Position.y, this.BottomLeft.Position.z + z));
+            s.BottomRight.SetPosition(new Vector3(this.BottomRight.Position.x, this.BottomRight.Position.y, this.BottomRight.Position.z + z));
+            s.Top.SetPosition(new Vector3(this.Top.Position.x, this.Top.Position.y, this.Top.Position.z + z));
+            s.Left.SetPosition(new Vector3(this.Left.Position.x, this.Left.Position.y, this.Left.Position.z + z));
+            s.Bottom.SetPosition(new Vector3(this.Bottom.Position.x, this.Bottom.Position.y, this.Bottom.Position.z + z));
+            s.Right.SetPosition(new Vector3(this.Right.Position.x, this.Right.Position.y, this.Right.Position.z + z));
 
             s.TopLeft.Filled = this.TopLeft.Filled;
             s.TopRight.Filled = this.TopRight.Filled;
@@ -599,6 +608,22 @@
             s.Left.Filled = this.Left.Filled;
             s.Bottom.Filled = this.Bottom.Filled;
             s.Right.Filled = this.Right.Filled;
+
+            s.filled = this.filled;
+            s.marked = this.marked;
+            s.reserved = this.reserved;
+        }
+        
+        public void SetZHeight(Vector3 startHeight, Vector3 endHeight, List<Vector3> vertices)
+        {
+            TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopLeft.Position)).y, vertices);
+            TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopRight.Position)).y, vertices);
+            BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomLeft.Position)).y, vertices);
+            BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomRight.Position)).y, vertices);
+            Top.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Top.Position)).y, vertices);
+            Left.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Left.Position)).y, vertices);
+            Right.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Right.Position)).y, vertices);
+            Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Bottom.Position)).y, vertices);
         }
     }
 }

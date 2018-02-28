@@ -95,7 +95,6 @@
             return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
         }
 
-
         public static void AddTriangle(List<int> triangles, int a, int b, int c, bool invert)
         {
             if (invert)
@@ -123,6 +122,13 @@
             AddTriangle(triangles, e, a, b, invert);
             AddTriangle(triangles, e, b, c, invert);
             AddTriangle(triangles, e, c, d, invert);
+        }
+
+        public static float PercentBetween(Vector2 start, Vector2 end, Vector2 point)
+        {
+            float totalDist = Vector2.Distance(start, end);
+            float dist = Vector2.Distance(start, point);
+            return 1 - dist / totalDist;
         }
     }
 }

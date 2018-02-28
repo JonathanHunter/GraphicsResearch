@@ -35,62 +35,7 @@
         {
             if (this.showGrid && this.Grids != null)
             {
-                for (int r = 0; r < this.GridRows; r++)
-                {
-                    for (int c = 0; c < this.GridCols; c++)
-                    {
-                        Vector2 boxCenter = this.Grids.GetPos(r, c);
-                        Gizmos.DrawWireCube(boxCenter, new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols));
-                    }
-                }
-
-                for (int r = 0; r < this.subGridRows; r++)
-                {
-                    for (int c = 0; c < this.subGridCols; c++)
-                    {
-                        MeshGrid m = this.Grids.Get(drawR, drawC);
-                        Square s = m.Squares[r, c];
-
-                        if (this.Grids.Get(drawR, drawC) != null && this.Grids.Get(drawR, drawC).Squares[r, c].Filled)
-                        {
-                            if (this.Grids.Get(drawR, drawC).Squares[r, c].reserved)
-                                Gizmos.color = Color.red;
-
-                            Gizmos.DrawCube(s.Center, new Vector2(s.Size.x / 2f, s.Size.y / 2f));
-                            Gizmos.DrawWireCube(s.Center, new Vector2(s.Size.x, s.Size.y));
-
-                            //Gizmos.color = Color.red;
-                            //if (s.Top.Filled)
-                            //    Gizmos.DrawSphere(s.Top.Position, this.boxSize / 10);
-                            //if (s.Bottom.Filled)
-                            //    Gizmos.DrawSphere(s.Bottom.Position, this.boxSize / 10);
-                            //if (s.Left.Filled)
-                            //    Gizmos.DrawSphere(s.Left.Position, this.boxSize / 10);
-                            //if (s.Right.Filled)
-                            //    Gizmos.DrawSphere(s.Right.Position, this.boxSize / 10);
-
-                            //Gizmos.color = Color.red;
-                            //if (s.TopLeft.Filled)
-                            //    Gizmos.DrawSphere(s.TopLeft.Position, this.boxSize / 10);
-
-                            //Gizmos.color = Color.blue;
-                            //if (s.TopRight.Filled)
-                            //    Gizmos.DrawSphere(s.TopRight.Position, this.boxSize / 10);
-
-                            //Gizmos.color = Color.green;
-                            //if (s.BottomLeft.Filled)
-                            //    Gizmos.DrawSphere(s.BottomLeft.Position, this.boxSize / 10);
-
-                            //Gizmos.color = Color.yellow;
-                            //if (s.BottomRight.Filled)
-                            //    Gizmos.DrawSphere(s.BottomRight.Position, this.boxSize / 10);
-
-                            Gizmos.color = Color.white;
-                        }
-                        else
-                            Gizmos.DrawWireCube(s.Center, new Vector2(this.boxSize, this.boxSize));
-                    }
-                }
+                RasterizerUtil.DrawMesh(this.Grids, this.drawR, this.drawC);
             }
         }
 
@@ -205,7 +150,7 @@
         {
             foreach (CircleRoom circle in circles)
             {
-                RasterizeCircle(circle.transform.position, circle.Radius);
+                RasterizerUtil.RasterizeCircle(this.Grids, circle.OriginalPosition, circle.Radius);
             }
         }
 
@@ -213,13 +158,10 @@
         {
             foreach (RectangleRoom rect in rectangles)
             {
-                Vector3 start = rect.transform.position + rect.transform.up * rect.Dimentions.y / 2f;
-                Vector3 end = rect.transform.position - rect.transform.up * rect.Dimentions.y / 2f;
-                float width = rect.Dimentions.x;
-                RasterizeBox(
-                    start,
-                    end,
-                    width);
+                Vector3 start, end;
+                float width;
+                RasterizerUtil.GetSquareBounds(rect, out start, out end, out width);
+                RasterizerUtil.RasterizeBox(this.Grids, start, end, width);
 
             }
         }
@@ -230,64 +172,10 @@
             {
                 foreach (Edge e in p.Edges)
                 {
-                    RasterizeBox(e.Start, e.End, e.Width);
+                    RasterizerUtil.RasterizeBox(this.Grids, e.Start, e.End, e.Width);
                     if (e.EndRoom == null)
-                        RasterizeCircle(e.End, e.Width / 2f);
+                        RasterizerUtil.RasterizeCircle(this.Grids, e.End, e.Width / 2f);
                 }
-            }
-        }
-
-        private void RasterizeCircle(Vector3 center, float radius)
-        {
-            Vector2 topLeft = new Vector2(center.x - radius, center.y + radius);
-            Vector2 bottomRight = new Vector2(center.x + radius, center.y - radius);
-            Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-            Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
-            int gridRowLeft = GridUtil.GetRow(topLeft, this.topLeft.position, size, this.GridRows);
-            int gridRowRight = GridUtil.GetRow(bottomRight, this.topLeft.position, size, this.GridRows);
-            int gridColTop = GridUtil.GetCol(topLeft, this.topLeft.position, size, this.GridCols);
-            int gridColBottom = GridUtil.GetCol(bottomRight, this.topLeft.position, size, this.GridCols);
-            for (int r = gridRowLeft; r <= gridRowRight; r++)
-            {
-                for (int c = gridColTop; c <= gridColBottom; c++)
-                {
-                    MeshGrid mesh = this.Grids.Get(r, c);
-                    int r1 = GridUtil.GetRow(topLeft, mesh.TopLeft, gridSize, this.subGridRows);
-                    int r2 = GridUtil.GetRow(bottomRight, mesh.TopLeft, gridSize, this.subGridRows);
-                    int c1 = GridUtil.GetCol(topLeft, mesh.TopLeft, gridSize, this.subGridCols);
-                    int c2 = GridUtil.GetCol(bottomRight, mesh.TopLeft, gridSize, this.subGridCols);
-                    for (int sr = r1; sr <= r2; sr++)
-                    {
-                        for (int sc = c1; sc <= c2; sc++)
-                        {
-                            mesh.Squares[sr, sc].FillCircle(center, radius);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void RasterizeBox(Vector3 start, Vector3 end, float width)
-        {
-            Vector3 es = Vector3.Normalize(start - end);
-            Vector3 left = new Vector3(-es.y, es.x, es.z);
-            float change = this.boxSize / Vector2.Distance(start, end) / 4f;
-            float change2 = this.boxSize / width / 4f;
-            float lerp = 0;
-            float lerp2 = 0;
-            while (lerp <= 1f + change)
-            {
-                Vector3 pos = Vector2.Lerp(start - left * width / 2f, end - left * width / 2f, lerp);
-                lerp2 = 0;
-                while (lerp2 <= 1f + change2)
-                {
-                    Vector3 cell = Vector2.Lerp(pos, pos + left * width, lerp2);
-                    Square s = this.Grids.Get(this.Grids.GetRow(cell), this.Grids.GetCol(cell)).GetSquare(cell);
-                    s.FillBox(start, end, width);
-                    lerp2 += change2;
-                }
-
-                lerp += change;
             }
         }
 
@@ -331,107 +219,20 @@
                     {
                         if (rasterized.Squares[r, c].Filled)
                         {
-                            AddWalls(gridRow, gridCol, r, c, rasterized, dupe);
+                            RasterizerUtil.AddWalls(
+                                this.Grids, 
+                                rasterized, 
+                                dupe, 
+                                this.Vertices,
+                                this.Triangles,
+                                this.invertTriangles,
+                                gridRow, 
+                                gridCol, 
+                                r, 
+                                c);
                         }
                     }
                 }
-            }
-        }
-
-        private void AddWalls(int gridRow, int gridCol, int subGridRow, int subGridCol, MeshGrid top, MeshGrid bottom)
-        {
-            bool left = subGridRow == 0 || !top.Squares[subGridRow - 1, subGridCol].Filled;
-            bool right = subGridRow == this.subGridRows - 1 || !top.Squares[subGridRow + 1, subGridCol].Filled;
-            bool up = subGridCol == 0 || !top.Squares[subGridRow, subGridCol - 1].Filled;
-            bool down = subGridCol == this.subGridCols - 1 || !top.Squares[subGridRow, subGridCol + 1].Filled;
-
-            if (subGridRow == 0 && gridRow != 0)
-                left = !this.Grids.Get(gridRow - 1, gridCol).Squares[this.subGridRows - 1, subGridCol].Filled;
-
-            if (subGridRow == this.subGridRows - 1 && gridRow != this.GridRows - 1)
-                right = !this.Grids.Get(gridRow + 1, gridCol).Squares[0, subGridCol].Filled;
-
-            if (subGridCol == 0 && gridCol != 0)
-                up = !this.Grids.Get(gridRow, gridCol - 1).Squares[subGridRow, this.subGridCols - 1].Filled;
-
-            if (subGridCol == this.subGridCols - 1 && gridCol != this.GridCols - 1)
-                down = !this.Grids.Get(gridRow, gridCol + 1).Squares[subGridRow, 0].Filled;
-
-            Square ts = top.Squares[subGridRow, subGridCol];
-            Square bs = bottom.Squares[subGridRow, subGridCol];
-            List<int> topPoints = new List<int>();
-            List<int> bottomPoints = new List<int>();
-            
-            if (left)
-            {
-                List<int> temp = ts.GetWallPoints(Lib.Direction.Left);
-                foreach (int i in temp)
-                    topPoints.Add(i);
-
-                temp = bs.GetWallPoints(Lib.Direction.Left);
-                foreach (int i in temp)
-                    bottomPoints.Add(i);
-            }
-            if (right)
-            {
-                List<int> temp = ts.GetWallPoints(Lib.Direction.Right);
-                foreach (int i in temp)
-                    topPoints.Add(i);
-
-                temp = bs.GetWallPoints(Lib.Direction.Right);
-                foreach (int i in temp)
-                    bottomPoints.Add(i);
-            }
-            if (up)
-            {
-                List<int> temp = ts.GetWallPoints(Lib.Direction.Up);
-                foreach (int i in temp)
-                    topPoints.Add(i);
-
-                temp = bs.GetWallPoints(Lib.Direction.Up);
-                foreach (int i in temp)
-                    bottomPoints.Add(i);
-            }
-            if (down)
-            {
-                List<int> temp = ts.GetWallPoints(Lib.Direction.Down);
-                foreach (int i in temp)
-                    topPoints.Add(i);
-
-                temp = bs.GetWallPoints(Lib.Direction.Down);
-                foreach (int i in temp)
-                    bottomPoints.Add(i);
-            }
-            if(!left && !right && !up && !down)
-            {
-                if(!ts.TopLeft.Filled || !ts.TopRight.Filled || !ts.BottomLeft.Filled || !ts.BottomRight.Filled)
-                {
-                    List<int> temp = ts.GetWallPoints(Lib.Direction.Down);
-                    foreach (int i in temp)
-                        topPoints.Add(i);
-
-                    temp = bs.GetWallPoints(Lib.Direction.Down);
-                    foreach (int i in temp)
-                        bottomPoints.Add(i);
-                }
-            }
-
-            // change to add new points to fix shading (make walls their own mesh grid?)
-            for (int i = 0; i < topPoints.Count - 1; i += 2)
-            {
-                Vector3 pos1 = this.Vertices[gridRow, gridCol][bottomPoints[i]];
-                int a = this.Vertices[gridRow, gridCol].Count;
-                this.Vertices[gridRow, gridCol].Add(pos1);
-                Vector3 pos2 = this.Vertices[gridRow, gridCol][bottomPoints[i + 1]];
-                int b = this.Vertices[gridRow, gridCol].Count;
-                this.Vertices[gridRow, gridCol].Add(pos2);
-                Vector3 pos3 = this.Vertices[gridRow, gridCol][topPoints[i + 1]];
-                int c = this.Vertices[gridRow, gridCol].Count;
-                this.Vertices[gridRow, gridCol].Add(pos3);
-                Vector3 pos4 = this.Vertices[gridRow, gridCol][topPoints[i]];
-                int d = this.Vertices[gridRow, gridCol].Count;
-                this.Vertices[gridRow, gridCol].Add(pos4);
-                Lib.AddSquare(this.Triangles[gridRow, gridCol], a, b, c, d, this.invertTriangles);
             }
         }
     }

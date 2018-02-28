@@ -9,6 +9,7 @@
         public Room Room2 { get; private set; }
         public float Gradient { get; private set; }
         public float Distance { get; private set; }
+        public float Width { get { return this.width; } }
 
         private float width;
 

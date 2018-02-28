@@ -4,6 +4,11 @@
 
     public class Grid2D<T>
     {
+        public Transform TopLeft { get { return this.topLeft; } }
+        public Vector2 BoxSize { get { return this.boxSize; } }
+        public int Rows { get { return this.numRows; } }
+        public int Cols { get { return this.numCols; } }
+
         private T[,] grid;
         private Transform topLeft;
         private Vector2 boxSize;
