@@ -29,12 +29,13 @@
                     MeshGrid m = grids.Get(drawR, drawC);
                     Square s = m.Squares[r, c];
 
+                    if (grids.Get(drawR, drawC).Squares[r, c].reserved)
+                        Gizmos.color = Color.blue;
+                    if (grids.Get(drawR, drawC).Squares[r, c].Marked)
+                        Gizmos.color = Color.green;
+
                     if (grids.Get(drawR, drawC) != null && grids.Get(drawR, drawC).Squares[r, c].Filled)
                     {
-                        if (grids.Get(drawR, drawC).Squares[r, c].reserved)
-                            Gizmos.color = Color.blue;
-                        if (grids.Get(drawR, drawC).Squares[r, c].Marked)
-                            Gizmos.color = Color.green;
 
                         Gizmos.DrawCube(s.Center, square.Size / 2f);
                         Gizmos.DrawWireCube(s.Center, square.Size);
@@ -64,19 +65,19 @@
                         //Gizmos.color = Color.yellow;
                         //if (s.BottomRight.Filled)
                         //    Gizmos.DrawSphere(s.BottomRight.Position, this.boxSize / 10);
-
-                        Gizmos.color = Color.white;
                     }
                     else
                         Gizmos.DrawWireCube(s.Center, square.Size);
+
+                    Gizmos.color = Color.white;
                 }
             }
         }
 
         public static void GetSquareBounds(RectangleRoom rect, out Vector3 start, out Vector3 end, out float width)
         {
-            start = rect.OriginalPosition + rect.transform.up * rect.Dimentions.y / 2f;
-            end = rect.OriginalPosition - rect.transform.up * rect.Dimentions.y / 2f;
+            start = rect.OriginalPosition + rect.transform.forward * rect.Dimentions.y / 2f;
+            end = rect.OriginalPosition - rect.transform.forward * rect.Dimentions.y / 2f;
             width = rect.Dimentions.x;
         }
 

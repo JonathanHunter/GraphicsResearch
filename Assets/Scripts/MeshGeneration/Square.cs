@@ -616,14 +616,14 @@
         
         public void SetZHeight(Vector3 startHeight, Vector3 endHeight, List<Vector3> vertices)
         {
-            TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopLeft.Position)).y, vertices);
-            TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopRight.Position)).y, vertices);
-            BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomLeft.Position)).y, vertices);
-            BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomRight.Position)).y, vertices);
-            Top.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Top.Position)).y, vertices);
-            Left.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Left.Position)).y, vertices);
-            Right.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Right.Position)).y, vertices);
-            Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Bottom.Position)).y, vertices);
+            TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopLeft.Position)).z, vertices);
+            TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, TopRight.Position)).z, vertices);
+            BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomLeft.Position)).z, vertices);
+            BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, BottomRight.Position)).z, vertices);
+            Top.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Top.Position)).z, vertices);
+            Left.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Left.Position)).z, vertices);
+            Right.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Right.Position)).z, vertices);
+            Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, Lib.PercentBetween(startHeight, endHeight, Bottom.Position)).z, vertices);
         }
     }
 }

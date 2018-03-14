@@ -102,8 +102,6 @@
         /// <param name="paths"> The paths to add to the mesh. </param>
         public void GenerateMesh(RoomManager rooms, PathManager paths)
         {
-            Clear();
-            LocalReserveGridSquares(rooms, paths);
             CalculateMesh(rooms, paths);
             CreateMesh();
         }
@@ -113,8 +111,6 @@
         /// <param name="paths"> The paths to add to the mesh. </param>
         public IEnumerator GenerateMeshAsync(RoomManager rooms, PathManager paths)
         {
-            Clear();
-            LocalReserveGridSquares(rooms, paths);
             yield return StartCoroutine(CalculateMeshAsync(rooms, paths));
             yield return StartCoroutine(CreateMeshAsync());
         }
@@ -139,9 +135,10 @@
             LocalClear();
         }
 
+        public abstract void ReserveGridSquares(Vector3 start, Vector3 end, float width);
+
         /// <summary> Local handler for initialization. </summary>
         protected abstract void LocalInit();
-        protected abstract void LocalReserveGridSquares(RoomManager rooms, PathManager paths);
         /// <summary> Local handler for Calculating the mesh. </summary>
         protected abstract void LocalCalculateMesh(RoomManager rooms, PathManager paths);
         /// <summary> Local async handler for Calculating the mesh. </summary>
@@ -162,7 +159,7 @@
             this.Meshes[r, c].triangles = this.Triangles[r, c].ToArray();
             this.Meshes[r, c].RecalculateNormals();
             filter.mesh = this.Meshes[r, c];
-            collider.sharedMesh = this.Meshes[r, c];
+            //collider.sharedMesh = this.Meshes[r, c];
             mesh.transform.parent = this.gameObject.transform;
             mesh.transform.localPosition = Vector3.zero;
             mesh.transform.localRotation = Quaternion.identity;

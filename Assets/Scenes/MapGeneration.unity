@@ -240,7 +240,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4461314057040506, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_LocalScale.x
@@ -359,7 +359,6 @@ Transform:
   - {fileID: 1279295290}
   - {fileID: 819208393}
   - {fileID: 617955625}
-  - {fileID: 1607921542}
   - {fileID: 640144017}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -377,14 +376,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placeRoomsOnStart: 1
   placePathsOnStart: 1
-  placeMeshOnStart: 0
-  toggleRoomsOnStart: 0
+  placeMeshOnStart: 1
+  toggleRoomsOnStart: 1
   async: 1
   player: {fileID: 1649337577}
   disableInput: 1
   roomManager:
-  - {fileID: 165928987}
-  - {fileID: 1037481860}
+  - {fileID: 1897790640}
+  - {fileID: 1664210432}
   pathManager:
   - {fileID: 1268411442}
   - {fileID: 1279295289}
@@ -447,7 +446,7 @@ Transform:
   m_LocalScale: {x: 8, y: 8.000004, z: 8.000004}
   m_Children: []
   m_Father: {fileID: 221739659}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &640144018
 MonoBehaviour:
@@ -461,7 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
-  gradientRange: {x: 0, y: 99}
+  gradientRange: {x: 0, y: 70}
   distanceRange: {x: 0, y: 99}
   drawPaths: 1
   drawHandles: 1
@@ -469,7 +468,7 @@ MonoBehaviour:
   gridDim: {x: 20, y: 12}
   subGridDim: {x: 10, y: 10}
   boxSize: {x: 0.1, y: 0.1}
-  invertTriangles: 1
+  invertTriangles: 0
   showGrid: 0
   point: {x: 0, y: 0}
 --- !u!1 &646667179
@@ -721,7 +720,7 @@ MonoBehaviour:
   subGridCols: 10
   boxSize: 0.1
   extrudeMesh: 1
-  invertTriangles: 1
+  invertTriangles: 0
   drawR: 0
   drawC: 0
 --- !u!1 &1037481858
@@ -775,7 +774,7 @@ MonoBehaviour:
   sizeBound: {x: 0, y: 0}
   onlyCircles: 0
   circles:
-  - {fileID: 1973144418}
+  - {fileID: 1898232543}
   rects: []
 --- !u!1 &1057086763
 GameObject:
@@ -867,7 +866,7 @@ MonoBehaviour:
   subGridCols: 10
   boxSize: 0.1
   extrudeMesh: 1
-  invertTriangles: 1
+  invertTriangles: 0
   drawR: 0
   drawC: 0
 --- !u!1 &1268411440
@@ -1124,51 +1123,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1607921541
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1607921542}
-  - component: {fileID: 1607921543}
-  m_Layer: 0
-  m_Name: ObjectMesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1607921542
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1607921541}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 221739659}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1607921543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1607921541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8eb165f7cbd21447b00070ba23d8930, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridRows: 0
-  gridCols: 0
-  meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
-  circleTemplet: {fileID: 114598135270857924, guid: 770c7296d49c5c341ab7054649f15f96,
-    type: 2}
 --- !u!1 &1649337577 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
@@ -1228,8 +1182,8 @@ MonoBehaviour:
   rotate: 1
   resize: 1
   sizeBound: {x: 1, y: 3}
-  onlyCircles: 0
-  gridCount: {x: 5, y: 5}
+  onlyCircles: 1
+  gridCount: {x: 3, y: 3}
   numberOfAttempts: 100
   showGrid: 0
 --- !u!1001 &1796579701
@@ -1287,11 +1241,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -3.27
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0.38
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1299,15 +1253,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.w
@@ -1327,6 +1281,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 65434955976819670, guid: 255430341be06d7458c893da40f7abdb,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1437,10 +1400,16 @@ MonoBehaviour:
   rotate: 1
   resize: 1
   sizeBound: {x: 1, y: 3}
-  onlyCircles: 0
-  gridCount: {x: 5, y: 5}
+  onlyCircles: 1
+  gridCount: {x: 3, y: 3}
   numberOfAttempts: 100
   showGrid: 0
+--- !u!114 &1898232543 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114194699498897538, guid: 103489cca3db11b41ab15a84f7d0220e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1973144417}
+  m_Script: {fileID: 11500000, guid: b6964339400c2f548aace0270437e65f, type: 3}
 --- !u!1 &1948788544
 GameObject:
   m_ObjectHideFlags: 0
@@ -1514,7 +1483,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1003191351777658, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4461314057040506, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
       propertyPath: m_LocalScale.x
@@ -1536,9 +1505,3 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 103489cca3db11b41ab15a84f7d0220e, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &1973144418 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114194699498897538, guid: 103489cca3db11b41ab15a84f7d0220e,
-    type: 2}
-  m_PrefabInternal: {fileID: 1973144417}
-  m_Script: {fileID: 11500000, guid: b6964339400c2f548aace0270437e65f, type: 3}

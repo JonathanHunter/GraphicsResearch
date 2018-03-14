@@ -128,7 +128,14 @@
         {
             float totalDist = Vector2.Distance(start, end);
             float dist = Vector2.Distance(start, point);
-            return 1 - dist / totalDist;
+            float percent = dist / totalDist;
+            if (percent < .2f)
+                return 0;
+            if (percent > .8f)
+                return 1;
+                
+            return (Mathf.Cos((5f * percent) + (.7f * Mathf.PI)) + 1f) / 2f;
+            //return (Mathf.Pow((2.5f * percent - 1.25f), 3f) + 1f) / 2f;
         }
     }
 }

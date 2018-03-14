@@ -58,31 +58,30 @@
             }
         }
 
-        protected override void LocalReserveGridSquares(RoomManager rooms, PathManager paths)
+        public override void ReserveGridSquares(Vector3 start, Vector3 end, float width)
         {
-            //CircleRoom circleRoom = rooms.CircleRooms[0];
-            //Vector3 circle = circleRoom.OriginalPosition + Vector3.up * (circleRoom.Radius);
-            //Debug.Log("loc: " + circle);
-            //Vector2 size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-            //Vector2 gridSize = new Vector2(this.boxSize, this.boxSize);
-            //int row = GridUtil.GetRow(circle, this.topLeft.position, size, this.GridRows);
-            //int col = GridUtil.GetCol(circle, this.topLeft.position, size, this.GridCols);
-            //MeshGrid mesh = this.Grids.Get(row, col);
-            //Debug.Log("row: " + row + ", col: " + col);
-            //mesh.GetSquare(circle).reserved = true;
-            //Debug.Log("Square: " + mesh.GetSquare(circle).Index);
+            Vector2 size = this.Grids.BoxSize;
+            Vector2 gridSize = this.Grids.Get(0, 0).Squares[0, 0].Size;
+            Vector3 es = Vector3.Normalize(start - end);
+            Vector3 left = new Vector3(-es.y, es.x, es.z);
+            float change = gridSize.x / Vector2.Distance(start, end) / 4f;
+            float change2 = gridSize.x / width / 4f;
+            float lerp = 0;
+            float lerp2 = 0;
+            while (lerp <= 1f + change)
+            {
+                Vector3 pos = Vector2.Lerp(start - left * width / 2f, end - left * width / 2f, lerp);
+                lerp2 = 0;
+                while (lerp2 <= 1f + change2)
+                {
+                    Vector3 cell = Vector2.Lerp(pos, pos + left * width, lerp2);
+                    Square s = this.Grids.Get(this.Grids.GetRow(cell), this.Grids.GetCol(cell)).GetSquare(cell);
+                    s.reserved = true;
+                    lerp2 += change2;
+                }
 
-            //RectangleRoom rectangle = rooms.RectangleRooms[0];
-            //Vector3 rect = rectangle.OriginalPosition + rectangle.transform.up * (rectangle.transform.localScale.y / 2f);
-            //Debug.Log("loc: " + rect);
-            //size = new Vector2(this.boxSize * this.subGridRows, this.boxSize * this.subGridCols);
-            //gridSize = new Vector2(this.boxSize, this.boxSize);
-            //row = GridUtil.GetRow(rect, this.topLeft.position, size, this.GridRows);
-            //col = GridUtil.GetCol(rect, this.topLeft.position, size, this.GridCols);
-            //mesh = this.Grids.Get(row, col);
-            //Debug.Log("row: " + row + ", col: " + col);
-            //mesh.GetSquare(rect).reserved = true;
-            //Debug.Log("Square: " + mesh.GetSquare(rect).Index);
+                lerp += change;
+            }
         }
 
         protected override void LocalCalculateMesh(RoomManager rooms, PathManager paths)
@@ -120,8 +119,8 @@
                 for (int c = 0; c < this.GridCols; c++)
                 {
                     ProcessRasterizedGrid(this.Grids.Get(r, c), r, c);
-                    yield return null;
                 }
+                yield return null;
             }
 
             yield return null;
@@ -198,7 +197,7 @@
             if (this.extrudeMesh)
             {
                 // Ceiling triangles are inverted from floor
-                MeshGrid dupe = rasterized.Duplicate(1);
+                MeshGrid dupe = rasterized.Duplicate(-1);
                 for (int r = 0; r < this.subGridRows; r++)
                 {
                     for (int c = 0; c < this.subGridCols; c++)

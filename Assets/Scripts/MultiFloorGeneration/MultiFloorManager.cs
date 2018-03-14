@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEditor;
-    using PathPlacement;
     using RoomPlacement;
-    using System;
+    using PathPlacement;
+    using MeshGeneration;
+    using Util;
 
     public class MultiFloorManager : MonoBehaviour
     {
@@ -41,38 +42,38 @@
             {
                 foreach (MulitFloorPath p in this.paths)
                 {
-                    if(this.drawPaths)
+                    if (this.drawPaths)
                         p.Draw();
-                    if(this.drawHandles)
-                        Handles.Label(Vector3.Lerp(p.Room1.transform.position, p.Room2.transform.position, .5f), 
+                    if (this.drawHandles)
+                        Handles.Label(Vector3.Lerp(p.Room1.transform.position, p.Room2.transform.position, .5f),
                             "Gradient: " + p.Gradient + "\nDistance: " + p.Distance);
                 }
             }
 
-            if(showGrid)
+            if (showGrid)
             {
                 rast.DrawGrid(point);
             }
         }
 
-        public void FindRoomPairs(RoomManager rooms1, RoomManager rooms2)
-        {
-            foreach (Room r1 in rooms1.Rooms)
-            {
-                foreach(Room r2 in rooms2.Rooms)
-                {
-                    CompareRoom(r1, r2);
-                }
-            }
-        }
-
-        public IEnumerator FindRoomPairsAsync(RoomManager rooms1, RoomManager rooms2)
+        public void FindRoomPairs(RoomManager rooms1, RoomManager rooms2, PathManager paths1, PathManager paths2)
         {
             foreach (Room r1 in rooms1.Rooms)
             {
                 foreach (Room r2 in rooms2.Rooms)
                 {
-                    CompareRoom(r1, r2);
+                    CompareRoom(r1, r2, rooms1, rooms2, paths1, paths2);
+                }
+            }
+        }
+
+        public IEnumerator FindRoomPairsAsync(RoomManager rooms1, RoomManager rooms2, PathManager paths1, PathManager paths2)
+        {
+            foreach (Room r1 in rooms1.Rooms)
+            {
+                foreach (Room r2 in rooms2.Rooms)
+                {
+                    CompareRoom(r1, r2, rooms1, rooms2, paths1, paths2);
                 }
 
                 yield return null;
@@ -81,45 +82,127 @@
             yield return null;
         }
 
-        public void RasterizeHallways()
+        public void RasterizeHallways(MeshManager floor1, MeshManager floor2)
         {
-            foreach(MulitFloorPath p in this.paths)
-            {
-                HallwayRasterizer rasterizer = new HallwayRasterizer(this.gridDim, this.subGridDim, this.boxSize, this.topLeft, this.invertTriangles);
-                rasterizer.RasterizeCircle((CircleRoom)p.Room1);
-                rasterizer.RasterizeCircle((CircleRoom)p.Room2);
-                rasterizer.RasterizePath(p);
-                Vector3 r21 = Vector3.Normalize(p.Room1.OriginalPosition - p.Room2.OriginalPosition);
-                Vector3 start = p.Room1.OriginalPosition - r21 * p.Distance * .01f;
-                Vector3 end = p.Room2.OriginalPosition + r21 * p.Distance * .01f;
-                rasterizer.MarkForKeeping(start, end, p.Width);
-                rasterizer.GenerateMesh(true);
-                rasterizer.RaiseMesh(start, end, p.Width, p.Room1.transform.position, p.Room2.transform.position);
-                rasterizer.ExtrudeMesh(true);
-                for (int r = 0; r < this.gridDim.x; r++)
-                {
-                    for (int c = 0; c < this.gridDim.y; c++)
-                    {
-                        if (rasterizer.Triangles[r, c].Count > 0)
-                            SpawnMesh(rasterizer.Vertices[r, c], rasterizer.Triangles[r, c]);
-                    }
-                }
+            HallwayRasterizer rasterizer = new HallwayRasterizer(this.gridDim, this.subGridDim, this.boxSize, this.topLeft, this.invertTriangles);
 
-                this.rast = rasterizer;
+            foreach (MulitFloorPath p in this.paths)
+            {
+                if (p.Room1 is CircleRoom)
+                    rasterizer.RasterizeCircle((CircleRoom)p.Room1);
+                else
+                    rasterizer.RasterizeRectangle((RectangleRoom)p.Room1);
+
+                if (p.Room2 is CircleRoom)
+                    rasterizer.RasterizeCircle((CircleRoom)p.Room2);
+                else
+                    rasterizer.RasterizeRectangle((RectangleRoom)p.Room2);
+
+                rasterizer.RasterizePath(p);
+                Vector3 start = GetRoomEdgePoint(p.Room1, p);
+                Vector3 end = GetRoomEdgePoint(p.Room2, p);
+                rasterizer.MarkForKeeping(start, end, p.Width);
+                floor1.ReserveGridSquares(start, Vector3.Lerp(start, end, .02f), p.Width);
+                floor2.ReserveGridSquares(Vector3.Lerp(start, end, .98f), end, p.Width);
+                Vector3 startHeight = this.transform.InverseTransformPoint(p.Room1.transform.position);
+                Vector3 endHeight = this.transform.InverseTransformPoint(p.Room2.transform.position);
+                rasterizer.RaiseMesh(start, end, p.Width, startHeight, endHeight);
             }
+
+            rasterizer.GenerateMesh(true);
+            rasterizer.ExtrudeMesh(true);
+            for (int r = 0; r < this.gridDim.x; r++)
+            {
+                for (int c = 0; c < this.gridDim.y; c++)
+                {
+                    if (rasterizer.Triangles[r, c].Count > 0)
+                        SpawnMesh(rasterizer.Vertices[r, c], rasterizer.Triangles[r, c]);
+                }
+            }
+
+            this.rast = rasterizer;
         }
 
-        private void CompareRoom(Room r1, Room r2)
+        private void CompareRoom(Room r1, Room r2, RoomManager rooms1, RoomManager rooms2, PathManager paths1, PathManager paths2)
         {
             float gradient = GetGradient(r1, r2);
             float distance = GetDistance(r1, r2);
-            Vector3 dir = Vector3.Normalize(r1.transform.position - r2.transform.position);
-            RaycastHit[] hits = Physics.RaycastAll(r1.transform.position, dir, distance);
             bool blocked = false;
-            foreach (RaycastHit rh in hits)
+            Vector3 start = r1.OriginalPosition;
+            Vector3 end = r2.OriginalPosition;
+            Vector3 mid = Vector3.Lerp(start, end, .5f);
+
+            foreach (Room r in rooms1.Rooms)
             {
-                if (rh.collider.gameObject != r1 && rh.collider.gameObject != r2)
-                    blocked = true;
+                if (r1 != r)
+                {
+                    if (CheckIntersection(start, mid, r))
+                    {
+                        blocked = true;
+                        break;
+                    }
+                }
+            }
+
+            //if(!blocked)
+            //{
+            //    foreach(Path p in paths1.Paths)
+            //    {
+            //        foreach (Edge e in p.Edges)
+            //        {
+            //            if(Lib.LineLineIntersection(e.Start, e.End, start, mid) != Vector2.zero)
+            //            {
+            //                blocked = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            if (!blocked)
+            {
+                foreach (Room r in rooms2.Rooms)
+                {
+                    if (r2 != r)
+                    {
+                        if (CheckIntersection(end, mid, r))
+                        {
+                            blocked = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if (!blocked)
+            //{
+            //    foreach (Path p in paths2.Paths)
+            //    {
+            //        foreach (Edge e in p.Edges)
+            //        {
+            //            if (Lib.LineLineIntersection(e.Start, e.End, end, mid) != Vector2.zero)
+            //            {
+            //                blocked = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            if (!blocked)
+            {
+                foreach (MulitFloorPath p in this.paths)
+                {
+                    if (Lib.LineLineIntersection(
+                        r1.transform.position,
+                        r2.transform.position,
+                        p.Room1.transform.position,
+                        p.Room2.transform.position) != Vector2.zero)
+                    {
+                        blocked = true;
+                        break;
+                    }
+                }
             }
 
             if (!blocked)
@@ -159,12 +242,58 @@
 
             m.RecalculateNormals();
             filter.mesh = m;
-            collider.sharedMesh = m;
+            //collider.sharedMesh = m;
             mesh.transform.parent = this.gameObject.transform;
             mesh.transform.localPosition = Vector3.zero;
             mesh.transform.localRotation = Quaternion.identity;
             mesh.transform.localScale = Vector3.one;
             this.spawnedMeshes.Add(mesh);
+        }
+
+        private Vector3 GetRoomEdgePoint(Room room, MulitFloorPath p)
+        {
+            if (room is CircleRoom)
+            {
+                CircleRoom c = (CircleRoom)room;
+                return Lib.CircleLineIntersection(p.Room1.OriginalPosition, p.Room2.OriginalPosition, c.OriginalPosition, c.Radius);
+            }
+            else
+            {
+                RectangleRoom r = (RectangleRoom)room;
+                Vector3 start, end;
+                float width;
+                RasterizerUtil.GetSquareBounds(r, out start, out end, out width);
+                Vector3 es = Vector3.Normalize(start - end);
+                Vector3 left = new Vector3(-es.y, es.x, es.z);
+                Vector3 tl = start + left * width / 2f;
+                Vector3 tr = start - left * width / 2f;
+                Vector3 bl = end + left * width / 2f;
+                Vector3 br = end - left * width / 2f;
+                return Lib.BoxLineIntersection(p.Room1.OriginalPosition, p.Room2.OriginalPosition, tl, tr, bl, br);
+            }
+        }
+
+        private bool CheckIntersection(Vector3 start, Vector3 end, Room room)
+        {
+            if (room is CircleRoom)
+            {
+                CircleRoom c = (CircleRoom)room;
+                return Lib.CircleLineIntersection(start, end, c.OriginalPosition, c.Radius) != Vector2.zero;
+            }
+            else
+            {
+                RectangleRoom r = (RectangleRoom)room;
+                Vector3 s, e;
+                float width;
+                RasterizerUtil.GetSquareBounds(r, out s, out e, out width);
+                Vector3 es = Vector3.Normalize(s - e);
+                Vector3 left = new Vector3(-es.y, es.x, es.z);
+                Vector3 tl = s + left * width / 2f;
+                Vector3 tr = s - left * width / 2f;
+                Vector3 bl = e + left * width / 2f;
+                Vector3 br = e - left * width / 2f;
+                return Lib.BoxLineIntersection(start, end, tl, tr, bl, br) != Vector2.zero;
+            }
         }
     }
 }

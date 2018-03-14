@@ -127,7 +127,7 @@
 
             for (int i = 0; i < this.meshManager.Length - 1; i++)
             {
-                this.multiFloorManager.FindRoomPairs(this.roomManager[i], this.roomManager[i + 1]);
+                this.multiFloorManager.FindRoomPairs(this.roomManager[i], this.roomManager[i + 1], this.pathManager[i], this.pathManager[i + 1]);
             }
 
             for (int i = 0; i < this.meshManager.Length; i++)
@@ -206,8 +206,8 @@
             for (int i = 0; i < this.meshManager.Length - 1; i++)
             {
                 stopwatch.Start();
-                yield return StartCoroutine(this.multiFloorManager.FindRoomPairsAsync(this.roomManager[i], this.roomManager[i + 1]));
-                this.multiFloorManager.RasterizeHallways();
+                yield return StartCoroutine(this.multiFloorManager.FindRoomPairsAsync(this.roomManager[i], this.roomManager[i + 1], this.pathManager[i], this.pathManager[i + 1]));
+                this.multiFloorManager.RasterizeHallways(this.meshManager[i], this.meshManager[i + 1]);
                 stopwatch.Stop();
                 Debug.Log("finished placing multifloor paths in " + stopwatch.Elapsed);
                 stopwatch.Reset();

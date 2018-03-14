@@ -180,7 +180,7 @@
             {
                 for (int c = 0; c < this.Grids.Cols; c++)
                 {
-                    MeshGrid dupe = this.Grids.Get(r,c).Duplicate(1);
+                    MeshGrid dupe = this.Grids.Get(r,c).Duplicate(-1);
                     for (int sr = 0; sr < dupe.Rows; sr++)
                     {
                         for (int sc = 0; sc < dupe.Cols; sc++)

@@ -604,7 +604,7 @@
 
         void Update()
         {
-            if (AnyPadInput())
+            if (gamepadMapping.Length > 0 && AnyPadInput())
                 usingPad = true;
             else if (Input.anyKey)
                 usingPad = false;
