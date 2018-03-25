@@ -18,8 +18,6 @@
         private bool placeMeshOnStart = false;
         [SerializeField]
         private bool toggleRoomsOnStart = false;
-        [SerializeField]
-        private bool async = false;
 
         [SerializeField]
         private GameObject player;
@@ -42,118 +40,13 @@
 
             this.multiFloorManager.Init();
 
-            if (this.async)
-                StartCoroutine(StartUpAsync());
-            else
-                StartUp();
+            StartCoroutine(StartUpAsync());
         }
 
         private void Update()
         {
-            if (this.disableInput)
-                return;
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Circle))
-                this.roomManager[0].PlaceRoom(true);
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Rect))
-                this.roomManager[0].PlaceRoom(false);
-
-            if (CustomInput.BoolHeld(CustomInput.UserInput.DartThrow_Repulse))
-                this.roomManager[0].Repulse();
-            else if (CustomInput.BoolUp(CustomInput.UserInput.DartThrow_Repulse))
-                this.roomManager[0].Halt();
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_Jittered))
-                this.roomManager[0].PlaceRooms();
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.DartThrow_ShowObjects))
-                this.roomManager[0].ToggleRooms();
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Calculate))
-                this.pathManager[0].PlacePaths(this.roomManager[0]);
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Randomized))
-                this.pathManager[0].RandomizeExtraEdges();
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Vst_Ordered))
-                this.pathManager[0].SortExtraEdges();
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Rasterize_Rasterize))
-                this.meshManager[0].CalculateMesh(this.roomManager[0], this.pathManager[0]);
-
-            if (CustomInput.BoolFreshPress(CustomInput.UserInput.Rasterize_GenMesh))
-                this.meshManager[0].CreateMesh();
         }
-
-        private void StartUp()
-        {
-            for (int i = 0; i < this.meshManager.Length; i++)
-            {
-                if (this.placeRoomsOnStart)
-                {
-                    this.roomManager[i].PlaceRooms();
-                }
-
-                if (this.placePathsOnStart)
-                {
-                    this.pathManager[i].PlacePaths(this.roomManager[i]);
-                }
-
-                foreach (Room r in this.roomManager[i].Rooms)
-                {
-                    r.GetComponent<Collider>().enabled = false;
-                    Vector3 pos = r.transform.position;
-                    Vector3 size = r.transform.localScale;
-                    Quaternion rot = r.transform.rotation;
-                    r.transform.parent = this.meshManager[i].gameObject.transform;
-                    r.transform.localPosition = pos;
-                    r.transform.localScale = size;
-                    r.transform.localRotation = rot;
-                    r.transform.parent = null;
-                }
-
-                if (this.toggleRoomsOnStart)
-                {
-                    this.roomManager[i].ToggleRooms();
-                }
-            }
-
-            for (int i = 0; i < this.meshManager.Length; i++)
-            {
-                foreach (Room r in this.roomManager[i].Rooms)
-                    r.GetComponent<Collider>().enabled = true;
-            }
-
-            for (int i = 0; i < this.meshManager.Length - 1; i++)
-            {
-                this.multiFloorManager.FindRoomPairs(this.roomManager[i], this.roomManager[i + 1], this.pathManager[i], this.pathManager[i + 1]);
-            }
-
-            for (int i = 0; i < this.meshManager.Length; i++)
-            {
-                foreach (Room r in this.roomManager[i].Rooms)
-                    r.GetComponent<Collider>().enabled = false;
-            }
-
-            if (this.placeMeshOnStart)
-            {
-                for (int i = 0; i < this.meshManager.Length; i++)
-                {
-                    this.meshManager[i].GenerateMesh(this.roomManager[i], this.pathManager[i]);
-                }
-            }
-
-            if (placeMeshOnStart)
-            {
-                this.player.transform.parent = this.meshManager[0].gameObject.transform;
-                this.player.transform.localPosition = roomManager[0].Rooms[0].transform.position;
-                this.player.transform.parent = null;
-                this.player.transform.rotation = Quaternion.identity;
-                this.player.transform.localScale = Vector3.one;
-            }
-        }
-
+        
         private IEnumerator StartUpAsync()
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
