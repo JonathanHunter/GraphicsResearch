@@ -268,6 +268,49 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 91566827}
   m_Script: {fileID: 11500000, guid: b6964339400c2f548aace0270437e65f, type: 3}
+--- !u!1 &128903066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 128903067}
+  - component: {fileID: 128903068}
+  m_Layer: 0
+  m_Name: Layer Path Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &128903067
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 128903066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1799964057}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &128903068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 128903066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa47161c22ed855428cde4d6f245061c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gradientRange: {x: 0, y: 1111}
+  distanceRange: {x: 0, y: 1111}
+  pathsToKeep: 4
 --- !u!1 &165928985
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +442,6 @@ GameObject:
   m_Component:
   - component: {fileID: 368206219}
   - component: {fileID: 368206221}
-  - component: {fileID: 368206220}
   m_Layer: 0
   m_Name: Jittered Placement
   m_TagString: Untagged
@@ -420,21 +462,6 @@ Transform:
   m_Father: {fileID: 1799964057}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &368206220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 368206218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f37d048ef448fac46bfab86a9d459426, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawGrid: 0
-  topLeft: {fileID: 1112317327}
-  dimension: {x: 5, y: 4}
-  boxSize: {x: 4, y: 3}
 --- !u!114 &368206221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +473,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a305b85d6ba5cd746b289857d9276044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 368206220}
   circleTemplet: {fileID: 114414979735763922, guid: 2df47afb4c358204e93e99c464019e6c,
     type: 2}
   circleRadius: 0.5
@@ -455,8 +481,8 @@ MonoBehaviour:
   rectDimensions: {x: 1, y: 1}
   numberOfAttempts: 100
   onlyCircles: 0
-  rotate: 0
-  resize: 0
+  rotate: 1
+  resize: 1
   sizeBound: {x: 1, y: 3}
 --- !u!1 &617955624
 GameObject:
@@ -964,34 +990,6 @@ MonoBehaviour:
   invertTriangles: 0
   drawR: 0
   drawC: 0
---- !u!1 &1112317326
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1112317327}
-  m_Layer: 0
-  m_Name: TopLeft
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1112317327
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1112317326}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: 5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1799964057}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1252966580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,7 +1488,7 @@ Transform:
   m_Children:
   - {fileID: 368206219}
   - {fileID: 1755787460}
-  - {fileID: 1112317327}
+  - {fileID: 128903067}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1507,10 +1505,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorPrefab: {fileID: 114088334219737318, guid: aabc63f048e4a9a419e68e1797d95043,
     type: 2}
+  layerPrefab: {fileID: 114879064641278342, guid: 985380fc2145a6d438a66cc43afef0c0,
+    type: 2}
   roomGenerator: {fileID: 368206221}
+  layerPathGenerator: {fileID: 128903068}
   floorStart: {fileID: 787431425}
   placeRoomsOnStart: 1
-  numFloors: 1
+  numFloors: 2
 --- !u!1001 &1849848653
 Prefab:
   m_ObjectHideFlags: 0

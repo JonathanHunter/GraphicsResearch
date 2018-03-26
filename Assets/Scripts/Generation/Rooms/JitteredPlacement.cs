@@ -7,9 +7,6 @@
 
     public class JitteredPlacement : RoomGenerator
     {
-        /// <summary> The grid to sample over. </summary>
-        [SerializeField]
-        private SamplingGrid grid;
         /// <summary> The templet for spawning a circle room. </summary>
         [SerializeField]
         protected CircleRoom circleTemplet = null;
@@ -45,11 +42,11 @@
         protected override IEnumerator LocalPlaceRoomsAsync(Floor f)
         {
             List<Room> rooms = new List<Room>();
-            for (int r = 0; r < this.grid.Dimension.x; r++)
+            for (int r = 0; r < f.samplingGrid.Dimension.x; r++)
             {
-                for (int c = 0; c < this.grid.Dimension.y; c++)
+                for (int c = 0; c < f.samplingGrid.Dimension.y; c++)
                 {
-                    Room room = Sample(r, c);
+                    Room room = Sample(f, r, c);
                     if(room != null)
                         rooms.Add(room);
                 }
@@ -72,11 +69,11 @@
             f.Rooms = rooms;
         }
 
-        private Room Sample(int r, int c)
+        private Room Sample(Floor f, int r, int c)
         {
-            Vector2 boxCenter = this.grid.GetPos(r, c);
-            Vector2 verticalBounds = new Vector2(boxCenter.y - this.grid.BoxSize.y / 2f, boxCenter.y + this.grid.BoxSize.y / 2f);
-            Vector2 horizontalBounds = new Vector2(boxCenter.x - this.grid.BoxSize.x / 2f, boxCenter.x + this.grid.BoxSize.x / 2f);
+            Vector2 boxCenter = f.samplingGrid.GetPos(r, c);
+            Vector2 verticalBounds = new Vector2(boxCenter.y - f.samplingGrid.BoxSize.y / 2f, boxCenter.y + f.samplingGrid.BoxSize.y / 2f);
+            Vector2 horizontalBounds = new Vector2(boxCenter.x - f.samplingGrid.BoxSize.x / 2f, boxCenter.x + f.samplingGrid.BoxSize.x / 2f);
             return RayCastDart(this.onlyCircles? true : Random.Range(0f, 1f) < .5f, verticalBounds, horizontalBounds);
         }
 

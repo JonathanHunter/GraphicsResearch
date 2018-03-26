@@ -29,7 +29,7 @@
 
         public Vector2 GetPos(int r, int c)
         {
-            return Grid.GetPosition(r, c, this.topLeft.position, this.boxSize);
+            return Grid.GetPosition(r, c, this.topLeft.localPosition, this.boxSize);
         }
     }
 }
