@@ -311,6 +311,7 @@ MonoBehaviour:
   gradientRange: {x: 0, y: 1111}
   distanceRange: {x: 0, y: 1111}
   pathsToKeep: 4
+  layerPathWidth: 0.5
 --- !u!1 &165928985
 GameObject:
   m_ObjectHideFlags: 0

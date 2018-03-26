@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    public class SamplingGrid : Grid
+    public class SamplingGrid : DataGrid
     {
         [SerializeField]
         private Transform topLeft;
@@ -29,7 +29,7 @@
 
         public Vector2 GetPos(int r, int c)
         {
-            return Grid.GetPosition(r, c, this.topLeft.localPosition, this.boxSize);
+            return DataGrid.GetPosition(r, c, this.topLeft.localPosition, this.boxSize);
         }
     }
 }

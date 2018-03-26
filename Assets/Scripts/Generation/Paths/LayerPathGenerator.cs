@@ -19,26 +19,36 @@
         [SerializeField]
         private int pathsToKeep;
 
+        /// <summary> The path width for layer paths. </summary>
+        [SerializeField]
+        private float layerPathWidth;
+
         /// <summary> Finds all the allowed middle layer paths for the given floors. </summary>
         /// <param name="floor1"> The top floor. </param>
         /// <param name="floor2"> The bottom floor. </param>
         /// <param name="layer"> The layer to hold the paths. </param>
         public IEnumerator FindMiddleLayerPathsAsync(Floor floor1, Floor floor2, MiddleLayer layer)
         {
+            foreach (Room r in floor1.Rooms)
+                r.GetComponent<Collider>().enabled = true;
+
+            foreach (Room r in floor2.Rooms)
+                r.GetComponent<Collider>().enabled = true;
+
             List<LayerPath> paths = new List<LayerPath>();
             foreach (Room r1 in floor1.Rooms)
             {
                 foreach (Room r2 in floor2.Rooms)
                 {
-                    LayerPath p = CompareRoom(r1, r2, floor1, floor2, paths);
+                    LayerPath p = CompareRoom(r1, r2, floor1, floor2, this.layerPathWidth * layer.WidthScale, paths);
                     if (p != null)
                         paths.Add(p);
                 }
 
                 yield return null;
             }
-            List<LayerPath> finalPaths = new List<LayerPath>();
 
+            List<LayerPath> finalPaths = new List<LayerPath>();
             int i = 0;
             while(i < this.pathsToKeep && i < paths.Count)
             {
@@ -64,43 +74,47 @@
             }
 
             layer.Paths = finalPaths;
+
+            foreach (Room r in floor1.Rooms)
+                r.GetComponent<Collider>().enabled = false;
+
+            foreach (Room r in floor2.Rooms)
+                r.GetComponent<Collider>().enabled = false;
         }
 
-        private LayerPath CompareRoom(Room r1, Room r2, Floor floor1, Floor floor2, List<LayerPath> paths)
+        private LayerPath CompareRoom(Room r1, Room r2, Floor floor1, Floor floor2, float pathWidth, List<LayerPath> paths)
         {
             float gradient = GetGradient(r1, r2);
             float distance = GetDistance(r1, r2);
-            Vector3 start = r1.WorldPosition;
-            Vector3 end = r2.WorldPosition;
-            Vector3 mid = Vector3.Lerp(start, end, .5f);
 
-            foreach (Room r in floor1.Rooms)
+            Vector3 r12 = r2.WorldPosition- r1.WorldPosition;
+            Vector3 left = new Vector3(-r12.y, r12.x, r12.z).normalized;
+            RaycastHit[] hits = Physics.RaycastAll(r1.transform.position + left * pathWidth / 2f, r12.normalized, r12.magnitude);
+            int hitCount = hits.Length;
+            foreach (RaycastHit hit in hits)
             {
-                if (r1 != r)
-                {
-                    if (CheckIntersection(start, mid, r))
-                        return null;
-                }
+                if (hit.collider.gameObject == r1.gameObject || hit.collider.gameObject == r2.gameObject)
+                    hitCount--;
             }
 
-            foreach (Room r in floor2.Rooms)
+            hits = Physics.RaycastAll(r1.transform.position - left * pathWidth / 2f, r12.normalized, r12.magnitude);
+            hitCount += hits.Length;
+            foreach (RaycastHit hit in hits)
             {
-                if (r2 != r)
-                {
-                    if (CheckIntersection(end, mid, r))
-                        return null;
-                }
+                if (hit.collider.gameObject == r1.gameObject || hit.collider.gameObject == r2.gameObject)
+                    hitCount--;
             }
 
             if (gradient >= this.gradientRange.x && gradient <= this.gradientRange.y &&
-                distance >= this.distanceRange.x && distance <= this.distanceRange.y)
+                distance >= this.distanceRange.x && distance <= this.distanceRange.y &&
+                hitCount == 0)
             {
                 LayerPath p = new LayerPath
                 {
                     Start = r1,
                     End = r2,
                     Distance = distance,
-                    Width = 0.5f,
+                    Width = this.layerPathWidth,
                     Gradient = gradient
                 };
                 
@@ -121,31 +135,6 @@
         private float GetDistance(Room r1, Room r2)
         {
             return Vector3.Distance(r1.WorldPosition, r2.WorldPosition);
-        }
-
-        private bool CheckIntersection(Vector3 start, Vector3 end, Room room)
-        {
-            if (room is CircleRoom)
-            {
-                CircleRoom c = (CircleRoom)room;
-                return GenerationUtilityFunctions.CircleLineIntersection(start, end, c.WorldPosition, c.Radius) != Vector2.zero;
-            }
-            else
-            {
-                RectangleRoom rect = (RectangleRoom)room;
-                Vector3 s, e;
-                float width;
-                s = rect.WorldPosition + rect.transform.TransformDirection(rect.transform.forward) * rect.Dimentions.y / 2f;
-                e = rect.WorldPosition - rect.transform.TransformDirection(rect.transform.forward) * rect.Dimentions.y / 2f;
-                width = rect.Dimentions.x;
-                Vector3 es = Vector3.Normalize(s - e);
-                Vector3 left = new Vector3(-es.y, es.x, es.z);
-                Vector3 tl = s + left * width / 2f;
-                Vector3 tr = s - left * width / 2f;
-                Vector3 bl = e + left * width / 2f;
-                Vector3 br = e - left * width / 2f;
-                return GenerationUtilityFunctions.BoxLineIntersection(start, end, tl, tr, bl, br) != Vector2.zero;
-            }
         }
     }
 }

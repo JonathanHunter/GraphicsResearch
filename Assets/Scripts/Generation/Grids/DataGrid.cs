@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    public abstract class Grid : MonoBehaviour
+    public abstract class DataGrid : MonoBehaviour
     {
         [SerializeField]
         private bool drawGrid;

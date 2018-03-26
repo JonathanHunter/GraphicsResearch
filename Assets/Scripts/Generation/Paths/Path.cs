@@ -10,6 +10,6 @@
         public float Distance { get; set; }
         public float Width { get; set; }
 
-        public abstract void Draw();
+        public abstract void Draw(float widthScale);
     }
 }
