@@ -4,7 +4,7 @@
     {
         public Edge[] Edges { get; set; }
 
-        public override void Draw(float widthScale)
+        public override void Draw(float widthScale, bool drawLocal)
         {
             foreach (Edge edge in this.Edges)
             {

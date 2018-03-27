@@ -567,8 +567,8 @@ MonoBehaviour:
   rectDimensions: {x: 1, y: 1}
   numberOfAttempts: 100
   onlyCircles: 0
-  rotate: 0
-  resize: 0
+  rotate: 1
+  resize: 1
   sizeBound: {x: 1, y: 3}
 --- !u!1001 &615542501
 Prefab:

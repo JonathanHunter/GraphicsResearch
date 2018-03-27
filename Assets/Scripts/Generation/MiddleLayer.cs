@@ -7,6 +7,7 @@
     public class MiddleLayer : MonoBehaviour
     {
         public bool drawPaths;
+        public bool drawLocal;
 
         public List<LayerPath> Paths { get; set; }
 
@@ -17,7 +18,7 @@
             if (this.drawPaths && this.Paths != null)
             {
                 foreach (Path p in this.Paths)
-                    p.Draw(this.WidthScale);
+                    p.Draw(drawLocal ? 1 : this.WidthScale, this.drawLocal);
             }
         }
     }

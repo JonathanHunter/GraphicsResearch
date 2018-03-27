@@ -31,7 +31,7 @@
                 if (this.Paths != null)
                 {
                     foreach (FloorPath p in this.Paths)
-                        p.Draw(1);
+                        p.Draw(1, true);
                 }
             }
         }

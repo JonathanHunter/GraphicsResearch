@@ -49,10 +49,10 @@
             return GenerationUtility.PointInBox(center, tl, tr, bl, br);
         }
 
-        public override void Draw(float widthScale)
+        public override void Draw(float widthScale, bool drawLocal)
         {
-            Vector3 start = this.Start.WorldPosition;
-            Vector3 end = this.End.WorldPosition;
+            Vector3 start = drawLocal ? this.Start.Position : this.Start.WorldPosition;
+            Vector3 end = drawLocal ? this.End.Position : this.End.WorldPosition;
             Vector3 es = Vector3.Normalize(start - end);
             Vector3 left = new Vector3(-es.y, es.x, es.z);
             Gizmos.DrawLine(start + left * this.Width * widthScale / 2f, end + left * this.Width * widthScale / 2f);
