@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a36c5076fdc69e46a8da33ec53a60bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawSamplingGrid: 1
   roomParent: {fileID: 4956094673606084}
   samplingGrid: {fileID: 114257154048536802}
 --- !u!114 &114257154048536802
@@ -123,7 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37d048ef448fac46bfab86a9d459426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawGrid: 0
   topLeft: {fileID: 4508215673029206}
   dimension: {x: 5, y: 4}
   boxSize: {x: 4, y: 3}

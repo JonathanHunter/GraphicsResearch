@@ -4,17 +4,6 @@
 
     public abstract class DataGrid : MonoBehaviour
     {
-        [SerializeField]
-        private bool drawGrid;
-            
-        private void OnDrawGizmos()
-        {
-            if(this.drawGrid)
-            {
-                Draw();
-            }
-        }
-
         public static int GetRow(Vector2 position, Vector3 topLeft, Vector2 boxSize, int numRows)
         {
             Vector2 pos = topLeft;
@@ -45,7 +34,5 @@
         {
             return topLeft + new Vector3(boxSize.x * r, -boxSize.y * c, 0);
         }
-
-        protected abstract void Draw();
     }
 }

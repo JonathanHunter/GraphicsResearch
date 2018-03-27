@@ -8,6 +8,9 @@
 
     public class Floor : MonoBehaviour
     {
+        [SerializeField]
+        private bool drawSamplingGrid;
+
         public Transform roomParent;
 
         public SamplingGrid samplingGrid;
@@ -19,5 +22,11 @@
         public List<FloorPath> Paths { get; set; }
 
         public float WidthScale { get { return this.transform.localScale.x; } }
+
+        private void OnDrawGizmos()
+        {
+            if(this.drawSamplingGrid)
+                this.samplingGrid.Draw(this);
+        }
     }
 }

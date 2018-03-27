@@ -311,7 +311,25 @@ MonoBehaviour:
   gradientRange: {x: 0, y: 1111}
   distanceRange: {x: 0, y: 1111}
   pathsToKeep: 4
-  layerPathWidth: 0.5
+  layerPathWidth: 0
+--- !u!1 &161742485 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb,
+    type: 2}
+  m_PrefabInternal: {fileID: 1523329816}
+--- !u!114 &161742487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 161742485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39159ef603223be42965a9096a1d17e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dimentions: {x: 2, y: 3}
+  draw: 0
 --- !u!1 &165928985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,11 +1175,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -8.89
+      value: -2.29
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 5.23
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1169,19 +1187,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0.2588191
+      value: -0.07298136
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0.9659258
+      value: 0.99733335
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_RootOrder
@@ -1189,15 +1207,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalScale.y
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1559875426106740, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalScale.x
-      value: 8
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb,
         type: 2}
@@ -1212,13 +1230,19 @@ Prefab:
     - target: {fileID: 23229727791260940, guid: 255430341be06d7458c893da40f7abdb,
         type: 2}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4992786651105526, guid: 255430341be06d7458c893da40f7abdb, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 30
+      value: -8.370001
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 65434955976819670, guid: 255430341be06d7458c893da40f7abdb,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114358055616750682, guid: 255430341be06d7458c893da40f7abdb, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 255430341be06d7458c893da40f7abdb, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1578558616
@@ -1413,7 +1437,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98acf36e52aab9f469c23a660422cec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rooms1: []
+  rooms1:
+  - {fileID: 161742487}
   rooms2: []
 --- !u!1001 &1796579701
 Prefab:
@@ -1508,11 +1533,11 @@ MonoBehaviour:
     type: 2}
   layerPrefab: {fileID: 114879064641278342, guid: 985380fc2145a6d438a66cc43afef0c0,
     type: 2}
-  roomGenerator: {fileID: 368206221}
+  roomGenerator: {fileID: 1755787461}
   layerPathGenerator: {fileID: 128903068}
   floorStart: {fileID: 787431425}
   placeRoomsOnStart: 1
-  numFloors: 2
+  numFloors: 1
 --- !u!1001 &1849848653
 Prefab:
   m_ObjectHideFlags: 0

@@ -26,14 +26,17 @@
             {
                 i++;
                 foreach (Room r in this.rooms1)
-                    rooms.Add(r);
+                {
+                    rooms.Add(MakeCopy(r));
+                }
             }
             else
             {
                 i = 0;
-                foreach (Room r in this.rooms1)
-                    rooms.Add(r);
+                foreach (Room r in this.rooms2)
+                    rooms.Add(MakeCopy(r));
             }
+            yield return null;
 
             foreach (Room r in rooms)
             {
@@ -48,7 +51,32 @@
             }
 
             f.Rooms = rooms;
-            return null;
+        }
+
+        private Room MakeCopy(Room r)
+        {
+            if (r is CircleRoom)
+            {
+                CircleRoom circle = (CircleRoom)Instantiate(r);
+                circle.Init();
+                circle.transform.position = r.transform.position;
+                circle.OriginalPosition = circle.transform.position;
+                circle.transform.localScale = r.transform.localScale;
+                circle.Radius = r.transform.localScale.x / 2f;
+                r.gameObject.SetActive(false);
+                return circle;
+            }
+            else
+            {
+                RectangleRoom rect = (RectangleRoom)Instantiate(r);
+                rect.transform.position = r.transform.position;
+                rect.OriginalPosition = rect.transform.position;
+                rect.transform.rotation = r.transform.rotation;
+                rect.transform.localScale = r.transform.localScale;
+                rect.Dimentions = rect.transform.localScale;
+                r.gameObject.SetActive(false);
+                return rect;
+            }
         }
     }
 }
