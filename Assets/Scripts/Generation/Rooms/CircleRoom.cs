@@ -24,6 +24,31 @@
             Create(.5f, .5f, true);
         }
 
+        public override bool IsIntersectingLine(Vector3 begin, Vector3 end)
+        {
+            if (GenerationUtility.PointInCircle(begin, this.Position, this.Radius) ||
+                GenerationUtility.PointInCircle(end, this.Position, this.Radius))
+                return true;
+
+            return GenerationUtility.CheckCircleLineIntersection(begin, end, this.Position, this.Radius);
+        }
+
+        public override bool IsIntersectingCircle(Vector3 center, float radius)
+        {
+            float dist = Vector3.Distance(center, this.Position);
+            return dist < radius || dist < this.Radius;
+        }
+
+        public override bool IsIntersectingBox(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br)
+        {
+            bool top = GenerationUtility.CheckCircleLineIntersection(tl, tr, this.Position, this.Radius);
+            bool bottom = GenerationUtility.CheckCircleLineIntersection(bl, br, this.Position, this.Radius);
+            bool left = GenerationUtility.CheckCircleLineIntersection(tl, bl, this.Position, this.Radius);
+            bool right = GenerationUtility.CheckCircleLineIntersection(tr, br, this.Position, this.Radius);
+            bool inside = GenerationUtility.PointInBox(this.Position, tl, tr, bl, br);
+            return top || bottom || left || right || inside;
+        }
+
         private void Create(float radius, float height, bool inverted)
         {
             this.vertices = new List<Vector3>();
@@ -44,12 +69,12 @@
 
             for (int i = 1; i < this.topDisk.Count - 1; i++)
             {
-                GenerationUtilityFunctions.AddTriangle(this.faces, this.topDisk[0].VertexIndex, this.topDisk[i].VertexIndex, this.topDisk[i + 1].VertexIndex, inverted);
-                GenerationUtilityFunctions.AddTriangle(this.faces, this.bottomDisk[0].VertexIndex, this.bottomDisk[i].VertexIndex, this.bottomDisk[i + 1].VertexIndex, !inverted);
+                MeshUtility.AddTriangle(this.faces, this.topDisk[0].VertexIndex, this.topDisk[i].VertexIndex, this.topDisk[i + 1].VertexIndex, inverted);
+                MeshUtility.AddTriangle(this.faces, this.bottomDisk[0].VertexIndex, this.bottomDisk[i].VertexIndex, this.bottomDisk[i + 1].VertexIndex, !inverted);
             }
 
-            GenerationUtilityFunctions.AddTriangle(this.faces, this.topDisk[0].VertexIndex, this.topDisk[this.topDisk.Count - 1].VertexIndex, this.topDisk[1].VertexIndex, inverted);
-            GenerationUtilityFunctions.AddTriangle(this.faces, this.bottomDisk[0].VertexIndex, this.bottomDisk[this.bottomDisk.Count - 1].VertexIndex, this.bottomDisk[1].VertexIndex, !inverted);
+            MeshUtility.AddTriangle(this.faces, this.topDisk[0].VertexIndex, this.topDisk[this.topDisk.Count - 1].VertexIndex, this.topDisk[1].VertexIndex, inverted);
+            MeshUtility.AddTriangle(this.faces, this.bottomDisk[0].VertexIndex, this.bottomDisk[this.bottomDisk.Count - 1].VertexIndex, this.bottomDisk[1].VertexIndex, !inverted);
 
             int a, b, c, d;
             for (int i = 0; i < this.topDisk.Count - 2; i++)
@@ -58,14 +83,14 @@
                 b = this.walls[2 * i + 1].VertexIndex;
                 c = this.walls[2 * (i + 1)].VertexIndex;
                 d = this.walls[2 * (i + 1) + 1].VertexIndex;
-                GenerationUtilityFunctions.AddSquare(this.faces, b, d, c, a, inverted);
+                MeshUtility.AddSquare(this.faces, b, d, c, a, inverted);
             }
 
             a = this.walls[2 * (this.topDisk.Count - 2)].VertexIndex;
             b = this.walls[2 * (this.topDisk.Count - 2) + 1].VertexIndex;
             c = this.walls[0].VertexIndex;
             d = this.walls[1].VertexIndex;
-            GenerationUtilityFunctions.AddSquare(this.faces, b, d, c, a, inverted);
+            MeshUtility.AddSquare(this.faces, b, d, c, a, inverted);
 
             Mesh mesh = new Mesh();
             mesh.vertices = this.vertices.ToArray();

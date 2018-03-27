@@ -25,8 +25,15 @@
 
         private void OnDrawGizmos()
         {
-            if(this.drawSamplingGrid)
+            if (this.drawSamplingGrid)
+            {
                 this.samplingGrid.Draw(this);
+                if (this.Paths != null)
+                {
+                    foreach (FloorPath p in this.Paths)
+                        p.Draw(1);
+                }
+            }
         }
     }
 }

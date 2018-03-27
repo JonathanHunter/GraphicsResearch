@@ -56,11 +56,11 @@
                 bool blocked = false;
                 foreach (LayerPath p in finalPaths)
                 {
-                    if (GenerationUtilityFunctions.LineLineIntersection(
+                    if (GenerationUtility.CheckLineLineIntersection(
                         path.Start.Position,
                         path.End.Position,
                         p.Start.Position,
-                        p.End.Position) != Vector2.zero)
+                        p.End.Position))
                     {
                         blocked = true;
                     }

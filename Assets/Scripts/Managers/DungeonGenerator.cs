@@ -17,12 +17,18 @@
         private RoomGenerator roomGenerator;
         [SerializeField]
         private LayerPathGenerator layerPathGenerator;
+        [SerializeField]
+        private FloorPathGenerator floorPathGenerator;
 
         [SerializeField]
         private Transform floorStart;
 
         [SerializeField]
         private bool placeRoomsOnStart = false;
+        [SerializeField]
+        private bool placeEdgesOnStart = false;
+        [SerializeField]
+        private bool toggleRoomsOnStart = false;
 
         [SerializeField]
         private int numFloors;
@@ -70,14 +76,44 @@
                 Debug.Log("finished placing rooms in " + stopwatch.Elapsed);
                 stopwatch.Reset();
 
-                if (this.layers.Length > 0)
+                if (this.placeEdgesOnStart)
                 {
+                    if (this.layers.Length > 0)
+                    {
+                        stopwatch.Start();
+                        for (int i = 0; i < this.layers.Length; i++)
+                            yield return StartCoroutine(this.layerPathGenerator.FindMiddleLayerPathsAsync(this.floors[i], this.floors[i + 1], this.layers[i]));
+                        stopwatch.Stop();
+                        Debug.Log("finished finding layer paths in " + stopwatch.Elapsed);
+                        stopwatch.Reset();
+                    }
+                    
                     stopwatch.Start();
-                    for (int i = 0; i < this.layers.Length; i++)
-                        yield return StartCoroutine(this.layerPathGenerator.FindMiddleLayerPathsAsync(this.floors[i], this.floors[i + 1], this.layers[i]));
+                    for (int i = 0; i < this.floors.Length; i++)
+                    {
+                        MiddleLayer up = null, down = null;
+                        if(this.layers.Length > 0)
+                        {
+                            if (i > 0)
+                                up = this.layers[i - 1];
+                            if (i < this.floors.Length - 1)
+                                down = this.layers[i];
+                        }
+
+                        yield return StartCoroutine(this.floorPathGenerator.FindFloorPathsAsync(this.floors[i], up, down));
+                    }
                     stopwatch.Stop();
-                    Debug.Log("finished finding layer paths in " + stopwatch.Elapsed);
+                    Debug.Log("finished finding floor paths in " + stopwatch.Elapsed);
                     stopwatch.Reset();
+                }
+
+                if(this.toggleRoomsOnStart)
+                {
+                    foreach(Floor f in this.floors)
+                    {
+                        foreach (Room r in f.Rooms)
+                            r.gameObject.SetActive(false);
+                    }
                 }
             }
         }

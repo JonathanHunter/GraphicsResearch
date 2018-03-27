@@ -13,6 +13,9 @@
 
         [SerializeField]
         private Vector2 boxSize;
+
+        [SerializeField]
+        private bool showRooms;
         
         public Vector2Int Dimension { get { return this.dimension; } }
         public Vector2 BoxSize { get { return this.boxSize; } }
@@ -27,19 +30,22 @@
                 }
             }
 
-            foreach(Room r in f.Rooms)
+            if (this.showRooms)
             {
-                if (r is CircleRoom)
-                    Gizmos.DrawWireSphere(r.Position, ((CircleRoom)r).Radius);
-                else
+                foreach (Room r in f.Rooms)
                 {
-                    RectangleRoom rect = (RectangleRoom)r;
-                    Vector3 s = rect.Position + rect.transform.parent.InverseTransformDirection(rect.transform.up) * rect.Dimentions.y / 2f;
-                    Vector3 e = rect.Position - rect.transform.parent.InverseTransformDirection(rect.transform.up) * rect.Dimentions.y / 2f;
-                    Gizmos.DrawLine(s, e);
-                    Gizmos.matrix = Matrix4x4.TRS(r.Position, r.transform.localRotation, r.transform.localScale);
-                    Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
-                    Gizmos.matrix = Matrix4x4.identity;
+                    if (r is CircleRoom)
+                        Gizmos.DrawWireSphere(r.Position, ((CircleRoom)r).Radius);
+                    else
+                    {
+                        RectangleRoom rect = (RectangleRoom)r;
+                        Vector3 s = rect.Position + rect.transform.parent.InverseTransformDirection(rect.transform.up) * rect.Dimentions.y / 2f;
+                        Vector3 e = rect.Position - rect.transform.parent.InverseTransformDirection(rect.transform.up) * rect.Dimentions.y / 2f;
+                        Gizmos.DrawLine(s, e);
+                        Gizmos.matrix = Matrix4x4.TRS(r.Position, r.transform.localRotation, r.transform.localScale);
+                        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+                        Gizmos.matrix = Matrix4x4.identity;
+                    }
                 }
             }
         }
