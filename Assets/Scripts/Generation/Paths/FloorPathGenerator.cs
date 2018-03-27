@@ -31,7 +31,10 @@
             {
                 foreach (Room r2 in floor.Rooms)
                 {
-                    TryAddPath(r1, r2, basePaths, floor, upperLayer, lowerLayer);
+                    if (r1 != r2)
+                    {
+                        TryAddPath(r1, r2, basePaths, floor, upperLayer, lowerLayer);
+                    }
                 }
 
                 objects.Add(r1);
@@ -43,37 +46,33 @@
 
         private void TryAddPath(Room r1, Room r2, List<FloorPath> basePaths, Floor floor, MiddleLayer upperLayer, MiddleLayer lowerLayer)
         {
-            if (r1 != r2)
+            if (!CheckPathBlocked(r1.Position, r2.Position, r1, r2, 0, floor, upperLayer, lowerLayer))
             {
-                if (!CheckPathBlocked(r1.Position, r2.Position, r1, r2, 0, floor, upperLayer, lowerLayer))
+                bool duplicate = false;
+                foreach (FloorPath e in basePaths)
                 {
-                    bool duplicate = false;
-                    foreach (Path e in basePaths)
+                    if ((e.Start == r1 || e.End == r1) && (e.Start == r2 || e.End == r2))
+                        duplicate = true;
+                }
+
+                if (!duplicate)
+                {
+                    List<Edge> edges = FindPath(
+                        r1.Position, r2.Position, r1, r2, new List<Edge>(), 0, floor, upperLayer, lowerLayer);
+                    float dist = 0;
+                    foreach (Edge e in edges)
+                        dist += e.Distance;
+
+                    FloorPath path = new FloorPath
                     {
-                        if ((e.Start == r1 && e.End == r2) ||
-                            (e.End == r2 && e.End == r1))
-                            duplicate = true;
-                    }
+                        Start = r1,
+                        End = r2,
+                        Distance = dist,
+                        Width = this.pathWidth,
+                        Edges = edges.ToArray()
+                    };
 
-                    if (!duplicate)
-                    {
-                        List<Edge> edges = FindPath(
-                            r1.Position, r2.Position, r1, r2, new List<Edge>(), 0, floor, upperLayer, lowerLayer);
-                        float dist = 0;
-                        foreach (Edge e in edges)
-                            dist += e.Distance;
-
-                        FloorPath path = new FloorPath
-                        {
-                            Start = r1,
-                            End = r2,
-                            Distance = dist,
-                            Width = this.pathWidth,
-                            Edges = edges.ToArray()
-                        };
-
-                        basePaths.Add(path);
-                    }
+                    basePaths.Add(path);
                 }
             }
         }
@@ -107,7 +106,8 @@
                     if (edges == null)
                         return null;
 
-                    return FindPath(center, point2, null, room2, edges, depth + 1, floor, upperLayer, lowerLayer);
+                    edges = FindPath(center, point2, null, room2, edges, depth + 1, floor, upperLayer, lowerLayer);
+                    return edges;
                 }
                 else
                     return null;
@@ -142,7 +142,8 @@
                     if (blocked)
                         return true;
 
-                    return CheckPathBlocked(center, point2, null, room2, depth + 1, floor, upperLayer, lowerLayer);
+                    blocked = CheckPathBlocked(center, point2, null, room2, depth + 1, floor, upperLayer, lowerLayer);
+                    return blocked;
                 }
                 else
                     return true;
@@ -162,7 +163,6 @@
         {
             Vector3 tl, tr, bl, br;
             GenerationUtility.BoxBounds(begin, end, this.pathWidth, out tl, out tr, out bl, out br);
-
             foreach(Room r in floor.Rooms)
             {
                 if(r != r1 && r != r2)
@@ -198,7 +198,7 @@
                         return true;
                 }
             }
-
+            
             return false;
         }
 

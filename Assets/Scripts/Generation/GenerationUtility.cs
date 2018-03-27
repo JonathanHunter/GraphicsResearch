@@ -81,15 +81,7 @@
             float y = ((p1.x * p2.y - p1.y * p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x * p4.y - p3.y * p4.x)) /
                 ((p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x));
 
-            Vector2 ret = new Vector2(x, y);
-
-            float dist = Vector2.Distance(p1, p2);
-
-            if (Vector2.Distance(p1, ret) <= dist &&
-                Vector2.Distance(p2, ret) <= dist)
-                return ret;
-
-            return Vector2.zero;
+            return new Vector2(x, y);
         }
 
         public static bool PointInCircle(Vector3 point, Vector3 center, float radius)
@@ -130,7 +122,24 @@
             if (incedent < 0)
                 return false;
 
-            return true;
+            float rx1 = (D * dy + Mathf.Sign(dy) * dx * Mathf.Sqrt(incedent)) / (dr * dr) + center.x;
+            float ry1 = (-D * dx + Mathf.Abs(dy) * Mathf.Sqrt(incedent)) / (dr * dr) + center.y;
+            float rx2 = (D * dy - Mathf.Sign(dy) * dx * Mathf.Sqrt(incedent)) / (dr * dr) + center.x;
+            float ry2 = (-D * dx - Mathf.Abs(dy) * Mathf.Sqrt(incedent)) / (dr * dr) + center.y;
+
+            Vector2 centerPoint = Vector2.Lerp(begin, end, .5f);
+            Vector2 a = new Vector2(rx1, ry1);
+            Vector2 b = new Vector2(rx2, ry2);
+            float dist = Vector2.Distance(begin, end);
+            if (Vector2.Distance(begin, a) <= dist &&
+                Vector2.Distance(end, a) <= dist)
+                return true;
+
+            if (Vector2.Distance(begin, b) <= dist &&
+                Vector2.Distance(end, b) <= dist)
+                return true;
+
+            return false;
         }
 
         /// <summary> Checks if the given line and hollow box are intersecting. </summary>
@@ -177,9 +186,12 @@
             Vector2 ret = new Vector2(x, y);
 
             float dist = Vector2.Distance(p1, p2);
+            float dist2 = Vector2.Distance(p3, p4);
 
             if (Vector2.Distance(p1, ret) <= dist &&
-                Vector2.Distance(p2, ret) <= dist)
+                Vector2.Distance(p2, ret) <= dist &&
+                Vector2.Distance(p3, ret) <= dist2 &&
+                Vector2.Distance(p4, ret) <= dist2)
                 return true;
 
             return false;

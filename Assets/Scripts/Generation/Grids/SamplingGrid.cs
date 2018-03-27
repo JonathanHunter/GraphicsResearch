@@ -25,15 +25,18 @@
             for (int r = 0; r < this.dimension.x; r++)
             {
                 for (int c = 0; c < this.dimension.y; c++)
-                { 
+                {
+                    Gizmos.color = Color.gray;
                     Gizmos.DrawWireCube(this.GetPos(r, c), this.boxSize);
+                    Gizmos.color = Color.white;
                 }
             }
 
-            if (this.showRooms)
+            if (this.showRooms && f.Rooms != null)
             {
                 foreach (Room r in f.Rooms)
                 {
+                    Gizmos.color = Color.red;
                     if (r is CircleRoom)
                         Gizmos.DrawWireSphere(r.Position, ((CircleRoom)r).Radius);
                     else
@@ -46,6 +49,7 @@
                         Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
                         Gizmos.matrix = Matrix4x4.identity;
                     }
+                    Gizmos.color = Color.white;
                 }
             }
         }

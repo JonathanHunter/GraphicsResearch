@@ -127,3 +127,4 @@ MonoBehaviour:
   topLeft: {fileID: 4508215673029206}
   dimension: {x: 5, y: 4}
   boxSize: {x: 4, y: 3}
+  showRooms: 1

@@ -36,7 +36,7 @@
         public override bool IsIntersectingCircle(Vector3 center, float radius)
         {
             float dist = Vector3.Distance(center, this.Position);
-            return dist < radius || dist < this.Radius;
+            return dist < radius + this.Radius;
         }
 
         public override bool IsIntersectingBox(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br)
