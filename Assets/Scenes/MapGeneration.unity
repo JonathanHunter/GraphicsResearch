@@ -1360,6 +1360,46 @@ Transform:
   m_Father: {fileID: 221739659}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1378589687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1378589688}
+  - component: {fileID: 1378589689}
+  m_Layer: 0
+  m_Name: Floor Rasterizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1378589688
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1378589687}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1799964057}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1378589689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1378589687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f30dd8d5b1cdb4db532ff92aae3eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1578558616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,12 +1610,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e4e9e1fdbb47f5448fb8032cdde3b6c, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &1674616893 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114234206020725446, guid: 9e4e9e1fdbb47f5448fb8032cdde3b6c,
-    type: 2}
-  m_PrefabInternal: {fileID: 1674616892}
-  m_Script: {fileID: 11500000, guid: 39159ef603223be42965a9096a1d17e1, type: 3}
 --- !u!1 &1755787459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1617,8 +1651,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rooms1:
-  - {fileID: 1881194763}
-  - {fileID: 1674616893}
   - {fileID: 704699634}
   rooms2: []
 --- !u!1001 &1796579701
@@ -1697,6 +1729,7 @@ Transform:
   - {fileID: 1755787460}
   - {fileID: 128903067}
   - {fileID: 129562317}
+  - {fileID: 1378589688}
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1718,11 +1751,13 @@ MonoBehaviour:
   roomGenerator: {fileID: 368206221}
   layerPathGenerator: {fileID: 128903068}
   floorPathGenerator: {fileID: 129562318}
+  floorRasterizer: {fileID: 1378589689}
   floorStart: {fileID: 787431425}
   placeRoomsOnStart: 1
-  placeEdgesOnStart: 1
+  placePathsOnStart: 1
+  rasterizeOnStart: 1
   toggleRoomsOnStart: 1
-  numFloors: 2
+  numFloors: 1
 --- !u!1 &1851636388
 GameObject:
   m_ObjectHideFlags: 0
@@ -1835,12 +1870,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e4e9e1fdbb47f5448fb8032cdde3b6c, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &1881194763 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114234206020725446, guid: 9e4e9e1fdbb47f5448fb8032cdde3b6c,
-    type: 2}
-  m_PrefabInternal: {fileID: 1881194762}
-  m_Script: {fileID: 11500000, guid: 39159ef603223be42965a9096a1d17e1, type: 3}
 --- !u!1 &1897790638
 GameObject:
   m_ObjectHideFlags: 0

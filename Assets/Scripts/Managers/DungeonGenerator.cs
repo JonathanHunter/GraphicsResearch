@@ -3,8 +3,9 @@
     using System.Collections;
     using UnityEngine;
     using Generation;
-    using Generation.Rooms;
+    using Generation.Meshes;
     using Generation.Paths;
+    using Generation.Rooms;
 
     public class DungeonGenerator : MonoBehaviour
     {
@@ -19,6 +20,8 @@
         private LayerPathGenerator layerPathGenerator;
         [SerializeField]
         private FloorPathGenerator floorPathGenerator;
+        [SerializeField]
+        private FloorRasterizer floorRasterizer;
 
         [SerializeField]
         private Transform floorStart;
@@ -26,7 +29,9 @@
         [SerializeField]
         private bool placeRoomsOnStart = false;
         [SerializeField]
-        private bool placeEdgesOnStart = false;
+        private bool placePathsOnStart = false;
+        [SerializeField]
+        private bool rasterizeOnStart = false;
         [SerializeField]
         private bool toggleRoomsOnStart = false;
 
@@ -76,7 +81,7 @@
                 Debug.Log("finished placing rooms in " + stopwatch.Elapsed);
                 stopwatch.Reset();
 
-                if (this.placeEdgesOnStart)
+                if (this.placePathsOnStart)
                 {
                     if (this.layers.Length > 0)
                     {
@@ -105,6 +110,16 @@
                     stopwatch.Stop();
                     Debug.Log("finished finding floor paths in " + stopwatch.Elapsed);
                     stopwatch.Reset();
+
+                    if(this.rasterizeOnStart)
+                    {
+                        stopwatch.Start();
+                        for (int i = 0; i < this.floors.Length; i++)
+                            yield return StartCoroutine(this.floorRasterizer.RasterizeFloor(this.floors[i]));
+                        stopwatch.Stop();
+                        Debug.Log("finished rasterizing floors in " + stopwatch.Elapsed);
+                        stopwatch.Reset();
+                    }
                 }
 
                 if(this.toggleRoomsOnStart)
