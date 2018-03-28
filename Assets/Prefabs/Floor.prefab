@@ -140,8 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a36c5076fdc69e46a8da33ec53a60bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawSamplingGrid: 1
-  drawRasterizationGrid: 1
+  drawSamplingGrid: 0
+  drawRasterizationGrid: 0
   rasterizationGridFocus: {x: 0, y: 0}
   roomParent: {fileID: 4956094673606084}
   samplingGrid: {fileID: 114257154048536802}

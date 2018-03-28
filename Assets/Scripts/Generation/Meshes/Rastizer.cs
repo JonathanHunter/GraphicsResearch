@@ -5,7 +5,61 @@
 
     public class Rasterizer : MonoBehaviour
     {
-        public static void RasterizeCircle(Square[,,,] squares, RasterizationGrid rast, Vector3 center, float radius)
+        public Square[,,,] InitialzeGrid(RasterizationGrid rast)
+        {
+            Vector2Int sectors = rast.SectorDimension;
+            Vector2Int grids = rast.GridDimension;
+            Square[,,,] squares = new Square[sectors.x, sectors.y, grids.x, grids.y];
+            for (int sr = 0; sr < sectors.x; sr++)
+            {
+                for (int sc = 0; sc < sectors.y; sc++)
+                {
+                    Vector2Int sector = new Vector2Int(sr, sc);
+                    for (int gr = 0; gr < grids.x; gr++)
+                    {
+                        for (int gc = 0; gc < grids.y; gc++)
+                        {
+                            Vector3 pos = rast.GridCenter(sector, new Vector2Int(gr, gc));
+                            Vector2 size = rast.GridSize;
+                            Square square = new Square(pos, size);
+                            squares[sr, sc, gr, gc] = square;
+
+                            if (gc == 0)
+                            {
+                                square.TopLeft = new Corner(new Vector3(pos.x - size.x / 2f, pos.y + size.y / 2f));
+                                square.TopRight = new Corner(new Vector3(pos.x + size.x / 2f, pos.y + size.y / 2f));
+                                square.Top = new Corner(Vector3.zero);
+                            }
+                            else
+                            {
+                                square.TopLeft = squares[sr, sc, gr, gc - 1].BottomLeft;
+                                square.TopRight = squares[sr, sc, gr, gc - 1].BottomRight;
+                                square.Top = squares[sr, sc, gr, gc - 1].Bottom;
+                            }
+
+                            if (gr == 0)
+                            {
+                                square.BottomLeft = new Corner(new Vector3(pos.x - size.x / 2f, pos.y - size.y / 2f));
+                                square.Left = new Corner(Vector3.zero);
+                            }
+                            else
+                            {
+                                square.BottomLeft = squares[sr, sc, gr - 1, gc].BottomRight;
+                                square.Left = squares[sr, sc, gr - 1, gc].Right;
+                            }
+
+                            square.BottomRight = new Corner(new Vector3(pos.x + size.x / 2f, pos.y - size.y / 2f));
+                            square.Right = new Corner(Vector3.zero);
+                            square.Bottom = new Corner(Vector3.zero);
+                        }
+                    }
+                }
+            }
+
+            return squares;
+        }
+
+        public void RasterizeCircle(Square[,,,] squares, RasterizationGrid rast, Vector3 center, float radius)
         {
             Vector2 topLeft = new Vector2(center.x - radius, center.y + radius);
             Vector2 bottomRight = new Vector2(center.x + radius, center.y - radius);
@@ -33,7 +87,7 @@
             }
         }
 
-        public static void RasterizeBox(Square[,,,] squares, RasterizationGrid rast, Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br)
+        public void RasterizeBox(Square[,,,] squares, RasterizationGrid rast, Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br)
         {
             float left = Mathf.Min(tl.x, tr.x, bl.x, br.x);
             float right = Mathf.Max(tl.x, tr.x, bl.x, br.x);

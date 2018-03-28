@@ -1730,6 +1730,7 @@ Transform:
   - {fileID: 128903067}
   - {fileID: 129562317}
   - {fileID: 1378589688}
+  - {fileID: 1998450251}
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1752,11 +1753,12 @@ MonoBehaviour:
   layerPathGenerator: {fileID: 128903068}
   floorPathGenerator: {fileID: 129562318}
   floorRasterizer: {fileID: 1378589689}
+  layerRasterizer: {fileID: 1998450250}
   floorStart: {fileID: 787431425}
   placeRoomsOnStart: 1
   placePathsOnStart: 1
   rasterizeOnStart: 1
-  toggleRoomsOnStart: 1
+  toggleRoomsOnStart: 0
   numFloors: 1
 --- !u!1 &1851636388
 GameObject:
@@ -1952,4 +1954,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 221739659}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1998450249
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1998450251}
+  - component: {fileID: 1998450250}
+  m_Layer: 0
+  m_Name: Layer Rasterizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1998450250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1998450249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a516b03bef1251143b1305164a12ddfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1998450251
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1998450249}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1799964057}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -2,14 +2,29 @@
 {
     using System.Collections.Generic;
     using UnityEngine;
+    using Grids;
+    using Meshes;
     using Paths;
 
     public class MiddleLayer : MonoBehaviour
     {
-        public bool drawPaths;
-        public bool drawLocal;
+        [SerializeField]
+        private bool drawPaths;
+
+        [SerializeField]
+        private bool drawLocal;
+
+        [SerializeField]
+        private bool drawRasterizationGrid;
+
+        [SerializeField]
+        private Vector2Int rasterizationGridFocus;
+
+        public RasterizationGrid rasterizationGrid;
 
         public List<LayerPath> Paths { get; set; }
+
+        public Square[,,,] Squares { get; set; }
 
         public float WidthScale { get { return this.transform.localScale.x; } }
 

@@ -27,6 +27,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1505769560148188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4864044960717310}
+  - component: {fileID: 114887666366781054}
+  m_Layer: 0
+  m_Name: Rasterization Grid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &4143266405902076
 Transform:
   m_ObjectHideFlags: 1
@@ -36,8 +52,22 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4864044960717310}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4864044960717310
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1505769560148188}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4143266405902076}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114879064641278342
@@ -51,4 +81,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e51e8d86899364dae7eb0e785f0600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawPaths: 1
+  drawPaths: 0
+  drawLocal: 0
+  drawRasterizationGrid: 0
+  rasterizationGridFocus: {x: 0, y: 0}
+  rasterizationGrid: {fileID: 114887666366781054}
+--- !u!114 &114887666366781054
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1505769560148188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c827d81e7c46274397f3804cff35d9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topLeft: {fileID: 4054469243219646, guid: aabc63f048e4a9a419e68e1797d95043, type: 2}
+  sectorDimension: {x: 22, y: 14}
+  gridDimension: {x: 10, y: 10}
+  gridSize: {x: 0.1, y: 0.1}

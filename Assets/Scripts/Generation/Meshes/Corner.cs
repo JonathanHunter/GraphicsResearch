@@ -36,5 +36,10 @@
 
             return this.VertexIndex;
         }
+        
+        public void SetZ(float z)
+        {
+            this.Position = new Vector3(this.Position.x, this.Position.y, z);
+        }
     }
 }

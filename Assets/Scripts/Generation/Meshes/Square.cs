@@ -12,7 +12,7 @@
         /// <summary> True if this square has something in it. </summary>
         public bool Filled { get { return this.filled || this.Reserved; } set { this.filled = value; } }
         /// <summary> True if this square was marked. </summary>
-        public bool Marked { get; private set; }
+        public bool Marked { get; set; }
         /// <summary> True if this square was reserved. </summary>
         public bool Reserved { get; set; }
 
@@ -142,6 +142,18 @@
                 this.Right.SetPosition(
                     GenerationUtility.BoxLineIntersection(this.TopRight.Position, this.BottomRight.Position, tl, tr, bl, br));
             }
+        }
+        
+        public void SetZHeight(Vector3 startHeight, Vector3 endHeight)
+        {
+            TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, TopLeft.Position)).z);
+            TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, TopRight.Position)).z);
+            BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, BottomLeft.Position)).z);
+            BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, BottomRight.Position)).z);
+            Top.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Top.Position)).z);
+            Left.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Left.Position)).z);
+            Right.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Right.Position)).z);
+            Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Bottom.Position)).z);
         }
     }
 }
