@@ -39,7 +39,7 @@
                     rect.BoxBounds(out tl, out tr, out bl, out br);
                     RasterizeBox(squares, l.rasterizationGrid, tl, tr, bl, br);
                 }
-    
+
                 GenerationUtility.BoxBounds(p.Start.Position, p.End.Position, p.Width, out tl, out tr, out bl, out br);
                 RasterizeBox(squares, l.rasterizationGrid, tl, tr, bl, br);
 
@@ -67,7 +67,7 @@
             else
             {
                 Vector3 tl, tr, bl, br;
-                RectangleRoom rect = (RectangleRoom)p.End;
+                RectangleRoom rect = (RectangleRoom)room;
                 rect.BoxBounds(out tl, out tr, out bl, out br);
                 return GenerationUtility.BoxLineIntersection(p.Start.Position, p.End.Position, tl, tr, bl, br);
             }

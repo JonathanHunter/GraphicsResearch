@@ -297,7 +297,7 @@ MonoBehaviour:
   gradientRange: {x: 0, y: 1111}
   distanceRange: {x: 0, y: 1111}
   pathsToKeep: 4
-  layerPathWidth: 0
+  layerPathWidth: 0.5
 --- !u!1 &129562316
 GameObject:
   m_ObjectHideFlags: 0
@@ -1758,8 +1758,8 @@ MonoBehaviour:
   placeRoomsOnStart: 1
   placePathsOnStart: 1
   rasterizeOnStart: 1
-  toggleRoomsOnStart: 0
-  numFloors: 1
+  toggleRoomsOnStart: 1
+  numFloors: 2
 --- !u!1 &1851636388
 GameObject:
   m_ObjectHideFlags: 0

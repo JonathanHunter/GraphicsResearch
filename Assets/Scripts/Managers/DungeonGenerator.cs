@@ -115,15 +115,15 @@
 
                     if(this.rasterizeOnStart)
                     {
-                        //if (this.layers.Length > 0)
-                        //{
-                        //    stopwatch.Start();
-                        //    for (int i = 0; i < this.layers.Length; i++)
-                        //        yield return StartCoroutine(this.layerRasterizer.RasterizeLayer(this.layers[i], this.floors[i], this.floors[i + 1]));
-                        //    stopwatch.Stop();
-                        //    Debug.Log("finished rasterizing layer paths in " + stopwatch.Elapsed);
-                        //    stopwatch.Reset();
-                        //}
+                        if (this.layers.Length > 0)
+                        {
+                            stopwatch.Start();
+                            for (int i = 0; i < this.layers.Length; i++)
+                                yield return StartCoroutine(this.layerRasterizer.RasterizeLayer(this.layers[i], this.floors[i], this.floors[i + 1]));
+                            stopwatch.Stop();
+                            Debug.Log("finished rasterizing layer paths in " + stopwatch.Elapsed);
+                            stopwatch.Reset();
+                        }
 
                         stopwatch.Start();
                         for (int i = 0; i < this.floors.Length; i++)

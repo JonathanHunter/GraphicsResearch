@@ -59,6 +59,44 @@
             }
         }
 
+        public void Draw(MiddleLayer l, Vector2Int draw)
+        {
+            for (int r = 0; r < this.SectorDimension.x; r++)
+            {
+                for (int c = 0; c < this.SectorDimension.y; c++)
+                {
+                    Vector2 boxCenter = GetPosition(r, c, this.topLeft.localPosition, this.SectorSize);
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireCube(boxCenter, this.SectorSize);
+                    Gizmos.color = Color.white;
+                }
+            }
+
+            Vector3 sectorTopLeft = SectorTopLeft(draw);
+
+            for (int r = 0; r < this.GridDimension.x; r++)
+            {
+                for (int c = 0; c < this.GridDimension.y; c++)
+                {
+                    if (l.Squares != null)
+                    {
+                        if (l.Squares[draw.x, draw.y, r, c].Reserved)
+                            Gizmos.color = Color.blue;
+                        if (l.Squares[draw.x, draw.y, r, c].Marked)
+                            Gizmos.color = Color.green;
+                    }
+
+                    Vector3 center = GetPosition(r, c, sectorTopLeft, this.gridSize);
+                    Gizmos.DrawWireCube(center, this.gridSize);
+
+                    if (l.Squares != null && l.Squares[draw.x, draw.y, r, c].Filled)
+                        Gizmos.DrawCube(center, this.GridSize / 2f);
+
+                    Gizmos.color = Color.white;
+                }
+            }
+        }
+
         public Vector3 SectorCenter(Vector2Int sector)
         {
             return GetPosition(sector.x, sector.y, this.topLeft.localPosition, this.SectorSize);

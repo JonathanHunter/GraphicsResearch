@@ -35,6 +35,11 @@
                 foreach (Path p in this.Paths)
                     p.Draw(drawLocal ? 1 : this.WidthScale, this.drawLocal);
             }
+
+            if (this.drawRasterizationGrid)
+            {
+                this.rasterizationGrid.Draw(this, rasterizationGridFocus);
+            }
         }
     }
 }
