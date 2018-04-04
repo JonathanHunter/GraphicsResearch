@@ -29,15 +29,18 @@
             }
             yield return null;
 
-            foreach(FloorPath p in f.Paths)
+            if (f.Paths != null)
             {
-                foreach (Edge e in p.Edges)
+                foreach (FloorPath p in f.Paths)
                 {
-                    Vector3 tl, tr, bl, br;
-                    GenerationUtility.BoxBounds(e.Start, e.End, e.Width, out tl, out tr, out bl, out br);
-                    RasterizeBox(squares, f.rasterizationGrid, tl, tr, bl, br);
-                    if (!e.TailEdge)
-                        RasterizeCircle(squares, f.rasterizationGrid, e.End, e.Width / 2f);
+                    foreach (Edge e in p.Edges)
+                    {
+                        Vector3 tl, tr, bl, br;
+                        GenerationUtility.BoxBounds(e.Start, e.End, e.Width, out tl, out tr, out bl, out br);
+                        RasterizeBox(squares, f.rasterizationGrid, tl, tr, bl, br);
+                        if (!e.TailEdge)
+                            RasterizeCircle(squares, f.rasterizationGrid, e.End, e.Width / 2f);
+                    }
                 }
             }
 

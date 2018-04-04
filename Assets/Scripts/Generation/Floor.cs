@@ -18,7 +18,12 @@
         [SerializeField]
         private Vector2Int rasterizationGridFocus;
 
+        [SerializeField]
+        private Vector2Int rasterizationGridDetail;
+
         public Transform roomParent;
+
+        public Transform meshParent;
 
         public SamplingGrid samplingGrid;
 
@@ -48,7 +53,7 @@
 
             if(this.drawRasterizationGrid)
             {
-                this.rasterizationGrid.Draw(this, rasterizationGridFocus);
+                this.rasterizationGrid.Draw(this, this.rasterizationGridFocus, this.rasterizationGridDetail);
             }
         }
     }

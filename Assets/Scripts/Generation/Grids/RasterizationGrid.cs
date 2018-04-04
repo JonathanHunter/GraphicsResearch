@@ -1,6 +1,7 @@
 ﻿namespace GraphicsResearch.Generation.Grids
 {
     using UnityEngine;
+    using Meshes;
 
     public class RasterizationGrid : DataGrid
     {
@@ -21,7 +22,7 @@
         public Vector2 SectorSize { get { return Vector2.Scale(this.gridSize, this.gridDimension); } }
         public Vector2 GridSize { get { return this.gridSize; } }
         
-        public void Draw(Floor f, Vector2Int draw)
+        public void Draw(Floor f, Vector2Int draw, Vector2Int detail)
         {
             for (int r = 0; r < this.SectorDimension.x; r++)
             {
@@ -52,7 +53,23 @@
                     Gizmos.DrawWireCube(center, this.gridSize);
 
                     if (f.Squares != null && f.Squares[draw.x, draw.y, r, c].Filled)
+                    {
+                        if (r == detail.x && c == detail.y)
+                        {
+                            Square s = f.Squares[draw.x, draw.y, r, c];
+                            Gizmos.color = Color.red;
+                            Gizmos.DrawSphere(s.Top.Position, GridSize.x / 10f);
+                            Gizmos.color = Color.blue;
+                            Gizmos.DrawSphere(s.Bottom.Position, GridSize.x / 10f);
+                            Gizmos.color = Color.green;
+                            Gizmos.DrawSphere(s.Left.Position, GridSize.x / 10f);
+                            Gizmos.color = Color.yellow;
+                            Gizmos.DrawSphere(s.Right.Position, GridSize.x / 10f);
+                            Gizmos.color = Color.black;
+                        }
+
                         Gizmos.DrawCube(center, this.GridSize / 2f);
+                    }
 
                     Gizmos.color = Color.white;
                 }

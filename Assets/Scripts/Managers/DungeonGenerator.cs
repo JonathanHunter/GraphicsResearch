@@ -24,6 +24,8 @@
         private FloorRasterizer floorRasterizer;
         [SerializeField]
         private LayerRasterizer layerRasterizer;
+        [SerializeField]
+        private MeshGenerator meshGenerator;
 
         [SerializeField]
         private Transform floorStart;
@@ -34,6 +36,8 @@
         private bool placePathsOnStart = false;
         [SerializeField]
         private bool rasterizeOnStart = false;
+        [SerializeField]
+        private bool generateMeshOnStart = false;
         [SerializeField]
         private bool toggleRoomsOnStart = false;
 
@@ -112,29 +116,49 @@
                     stopwatch.Stop();
                     Debug.Log("finished finding floor paths in " + stopwatch.Elapsed);
                     stopwatch.Reset();
+                }
+                
+                if (this.rasterizeOnStart)
+                {
+                    if (this.layers.Length > 0)
+                    {
+                        stopwatch.Start();
+                        for (int i = 0; i < this.layers.Length; i++)
+                            yield return StartCoroutine(this.layerRasterizer.RasterizeLayer(this.layers[i], this.floors[i], this.floors[i + 1]));
+                        stopwatch.Stop();
+                        Debug.Log("finished rasterizing layer paths in " + stopwatch.Elapsed);
+                        stopwatch.Reset();
+                    }
 
-                    if(this.rasterizeOnStart)
+                    stopwatch.Start();
+                    for (int i = 0; i < this.floors.Length; i++)
+                        yield return StartCoroutine(this.floorRasterizer.RasterizeFloor(this.floors[i]));
+                    stopwatch.Stop();
+                    Debug.Log("finished rasterizing floors in " + stopwatch.Elapsed);
+                    stopwatch.Reset();
+
+                    if (this.generateMeshOnStart)
                     {
                         if (this.layers.Length > 0)
                         {
                             stopwatch.Start();
                             for (int i = 0; i < this.layers.Length; i++)
-                                yield return StartCoroutine(this.layerRasterizer.RasterizeLayer(this.layers[i], this.floors[i], this.floors[i + 1]));
+                                yield return StartCoroutine(this.meshGenerator.GenerateMesh(this.layers[i]));
                             stopwatch.Stop();
-                            Debug.Log("finished rasterizing layer paths in " + stopwatch.Elapsed);
+                            Debug.Log("finished generating layer mashes in " + stopwatch.Elapsed);
                             stopwatch.Reset();
                         }
 
                         stopwatch.Start();
                         for (int i = 0; i < this.floors.Length; i++)
-                            yield return StartCoroutine(this.floorRasterizer.RasterizeFloor(this.floors[i]));
+                            yield return StartCoroutine(this.meshGenerator.GenerateMesh(this.floors[i]));
                         stopwatch.Stop();
-                        Debug.Log("finished rasterizing floors in " + stopwatch.Elapsed);
+                        Debug.Log("finished generating floor meshs in " + stopwatch.Elapsed);
                         stopwatch.Reset();
                     }
                 }
 
-                if(this.toggleRoomsOnStart)
+                if (this.toggleRoomsOnStart)
                 {
                     foreach(Floor f in this.floors)
                     {

@@ -20,6 +20,8 @@
         [SerializeField]
         private Vector2Int rasterizationGridFocus;
 
+        public Transform meshParent;
+
         public RasterizationGrid rasterizationGrid;
 
         public List<LayerPath> Paths { get; set; }

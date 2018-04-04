@@ -81,7 +81,18 @@
             float y = ((p1.x * p2.y - p1.y * p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x * p4.y - p3.y * p4.x)) /
                 ((p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x));
 
-            return new Vector2(x, y);
+            Vector2 ret = new Vector2(x, y);
+
+            float dist = Vector2.Distance(p1, p2);
+            float dist2 = Vector2.Distance(p3, p4);
+
+            if (Vector2.Distance(p1, ret) <= dist &&
+                Vector2.Distance(p2, ret) <= dist &&
+                Vector2.Distance(p3, ret) <= dist2 &&
+                Vector2.Distance(p4, ret) <= dist2)
+                return ret;
+
+            return Vector2.zero;
         }
 
         public static bool PointInCircle(Vector3 point, Vector3 center, float radius)

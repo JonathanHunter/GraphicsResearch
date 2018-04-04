@@ -74,6 +74,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1852432844065812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4578203412661508}
+  m_Layer: 0
+  m_Name: Meshes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &4054469243219646
 Transform:
   m_ObjectHideFlags: 1
@@ -85,7 +100,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4802165207214484}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4508215673029206
 Transform:
@@ -95,6 +110,19 @@ Transform:
   m_GameObject: {fileID: 1703300271981302}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9, y: 5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4802165207214484}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4578203412661508
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1852432844065812}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4802165207214484}
@@ -111,6 +139,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4956094673606084}
+  - {fileID: 4578203412661508}
   - {fileID: 4508215673029206}
   - {fileID: 4054469243219646}
   m_Father: {fileID: 0}
@@ -143,7 +172,9 @@ MonoBehaviour:
   drawSamplingGrid: 0
   drawRasterizationGrid: 0
   rasterizationGridFocus: {x: 0, y: 0}
+  rasterizationGridDetail: {x: 0, y: 0}
   roomParent: {fileID: 4956094673606084}
+  meshParent: {fileID: 4578203412661508}
   samplingGrid: {fileID: 114257154048536802}
   rasterizationGrid: {fileID: 114089797062148374}
 --- !u!114 &114089797062148374
