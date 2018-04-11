@@ -611,8 +611,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshPrefab: {fileID: 1754403301970656, guid: b7dda6b7ad59d7c46b5035fcbc1ad3d5, type: 2}
-  extrudeMesh: 0
+  extrudeMesh: 1
   invertTriangles: 1
+  zOffset: -1
 --- !u!1001 &615542501
 Prefab:
   m_ObjectHideFlags: 0

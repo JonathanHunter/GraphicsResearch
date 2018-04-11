@@ -322,7 +322,7 @@
             return ret;
         }
 
-        public List<int> GetWallPoints(bool[,] neighbors)
+        public List<int> GetWallPoints(bool up, bool down, bool left, bool right)
         {
             List<int> ret = new List<int>();
             if (this.Reserved)
@@ -348,13 +348,13 @@
                 ret.Add(b);
                 ret.Add(r);
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(r);
                     ret.Add(br);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(b);
@@ -369,13 +369,13 @@
                 ret.Add(l);
                 ret.Add(b);
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(l);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(b);
                     ret.Add(bl);
@@ -391,19 +391,19 @@
                 ret.Add(l);
                 ret.Add(r);
                 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(l);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(bl);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(r);
                     ret.Add(br);
@@ -418,13 +418,13 @@
                 ret.Add(r);
                 ret.Add(t);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(t);
                     ret.Add(tr);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(tr);
                     ret.Add(r);
@@ -440,19 +440,19 @@
                 ret.Add(b);
                 ret.Add(t);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(t);
                     ret.Add(tr);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(tr);
                     ret.Add(br);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(b);
@@ -472,25 +472,25 @@
 
                 ret.Add(l);
                 ret.Add(b);
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(t);
                     ret.Add(tr);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(tr);
                     ret.Add(r);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(b);
                     ret.Add(bl);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(l);
@@ -507,25 +507,25 @@
                 ret.Add(l);
                 ret.Add(t);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(t);
                     ret.Add(tr);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(tr);
                     ret.Add(br);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(bl);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(l);
@@ -540,13 +540,13 @@
                 ret.Add(t);
                 ret.Add(l);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(tl);
                     ret.Add(t);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(l);
                     ret.Add(tl);
@@ -567,25 +567,25 @@
                 ret.Add(b);
                 ret.Add(r);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(tl);
                     ret.Add(t);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(r);
                     ret.Add(br);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(b);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(l);
                     ret.Add(tl);
@@ -601,19 +601,19 @@
                 ret.Add(t);
                 ret.Add(b);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(tl);
                     ret.Add(t);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(b);
                     ret.Add(bl);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(tl);
@@ -630,96 +630,159 @@
                 ret.Add(t);
                 ret.Add(r);
 
-                if(!neighbors[1,0])
+                if(up)
                 {
                     ret.Add(tl);
                     ret.Add(t);
                 }
 
-                if(!neighbors[2,1])
+                if(right)
                 {
                     ret.Add(r);
                     ret.Add(br);
                 }
 
-                if(!neighbors[1,2])
+                if(down)
                 {
                     ret.Add(br);
                     ret.Add(bl);
                 }
 
-                if(!neighbors[0,1])
+                if(left)
                 {
                     ret.Add(bl);
                     ret.Add(tl);
                 }
             }
             // 1100
-            //else if (state == 12)
-            //{
-            //    int l = this.Left.VertexIndex;
-            //    int r = this.Right.VertexIndex;
-            //    ret.Add(r);
-            //    ret.Add(l);
-            //}
-            //// 1101
-            //else if (state == 13)
-            //{
-            //    int b = this.Bottom.VertexIndex;
-            //    if (direction == Lib.Direction.Down)
-            //    {
-            //        int br = this.BottomRight.VertexIndex;
-            //        ret.Add(br);
-            //        ret.Add(b);
-            //    }
+            else if (state == 12)
+            {
+                int l = this.Left.VertexIndex;
+                int r = this.Right.VertexIndex;
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                ret.Add(r);
+                ret.Add(l);
 
-            //    int l = this.Left.VertexIndex;
-            //    ret.Add(b);
-            //    ret.Add(l);
-            //}
-            //// 1110
-            //else if (state == 14)
-            //{
-            //    int b = this.Bottom.VertexIndex;
-            //    if (direction == Lib.Direction.Down)
-            //    {
-            //        int bl = this.BottomLeft.VertexIndex;
-            //        ret.Add(bl);
-            //        ret.Add(b);
-            //    }
+                if (up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
 
-            //    int r = this.Right.VertexIndex;
-            //    ret.Add(r);
-            //    ret.Add(b);
-            //}
-            //// 1111
-            //else if (state == 15)
-            //{
-            //    int tl = this.TopLeft.VertexIndex;
-            //    int tr = this.TopRight.VertexIndex;
-            //    int bl = this.BottomLeft.VertexIndex;
-            //    int br = this.BottomRight.VertexIndex;
-            //    if (direction == Lib.Direction.Up)
-            //    {
-            //        ret.Add(tl);
-            //        ret.Add(tr);
-            //    }
-            //    else if (direction == Lib.Direction.Down)
-            //    {
-            //        ret.Add(br);
-            //        ret.Add(bl);
-            //    }
-            //    else if (direction == Lib.Direction.Left)
-            //    {
-            //        ret.Add(bl);
-            //        ret.Add(tl);
-            //    }
-            //    else if (direction == Lib.Direction.Right)
-            //    {
-            //        ret.Add(tr);
-            //        ret.Add(br);
-            //    }
-            //}
+                if(right)
+                {
+                    ret.Add(tr);
+                    ret.Add(r);
+                }
+
+                if(left)
+                {
+                    ret.Add(l);
+                    ret.Add(tl);
+                }
+            }
+            // 1101
+            else if (state == 13)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int l = this.Left.VertexIndex;
+                ret.Add(b);
+                ret.Add(l);
+
+                if(up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+
+                if(right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+
+                if(down)
+                {
+                    ret.Add(br);
+                    ret.Add(b);
+                }
+
+                if(left)
+                {
+                    ret.Add(l);
+                    ret.Add(tl);
+                }
+            }
+            // 1110
+            else if (state == 14)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int r = this.Right.VertexIndex;
+                int b = this.Bottom.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                ret.Add(r);
+                ret.Add(b);
+
+                if(up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+
+                if(right)
+                {
+                    ret.Add(tr);
+                    ret.Add(r);
+                }
+
+                if(down)
+                {
+                    ret.Add(b);
+                    ret.Add(bl);
+                }
+
+                if(left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+            }
+            // 1111
+            else if (state == 15)
+            {
+                int tl = this.TopLeft.VertexIndex;
+                int tr = this.TopRight.VertexIndex;
+                int bl = this.BottomLeft.VertexIndex;
+                int br = this.BottomRight.VertexIndex;
+                if (up)
+                {
+                    ret.Add(tl);
+                    ret.Add(tr);
+                }
+
+                if (right)
+                {
+                    ret.Add(tr);
+                    ret.Add(br);
+                }
+
+                if (down)
+                {
+                    ret.Add(br);
+                    ret.Add(bl);
+                }
+
+                if (left)
+                {
+                    ret.Add(bl);
+                    ret.Add(tl);
+                }
+            }
 
             return ret;
         }
