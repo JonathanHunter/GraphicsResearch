@@ -31,7 +31,7 @@
                 {
                     verts[r, c] = new List<Vector3>();
                     tris[r, c] = new List<int>();
-                    EvaluateGrid(new Vector2Int(r, c), f.Squares, f.rasterizationGrid, verts[r, c], tris[r, c]);
+                    EvaluateGrid(new Vector2Int(r, c), f.Squares, f.rasterizationGrid, verts[r, c], tris[r, c], false);
                     GameObject mesh = SpawnMesh(verts[r, c], tris[r, c]);
                     Vector3 pos = mesh.transform.position;
                     Quaternion rot = mesh.transform.rotation;
@@ -55,7 +55,7 @@
                 {
                     verts[r, c] = new List<Vector3>();
                     tris[r, c] = new List<int>();
-                    EvaluateGrid(new Vector2Int(r, c), l.Squares, l.rasterizationGrid, verts[r, c], tris[r, c]);
+                    EvaluateGrid(new Vector2Int(r, c), l.Squares, l.rasterizationGrid, verts[r, c], tris[r, c], true);
                     GameObject mesh = SpawnMesh(verts[r, c], tris[r, c]);
                     Vector3 pos = mesh.transform.position;
                     Quaternion rot = mesh.transform.rotation;
@@ -69,13 +69,14 @@
             }
         }
 
-        private void EvaluateGrid(Vector2Int sector, Square[,,,] squares, RasterizationGrid grid, List<Vector3> vert, List<int> tri)
+        private void EvaluateGrid(
+            Vector2Int sector, Square[,,,] squares, RasterizationGrid grid, List<Vector3> vert, List<int> tri, bool onlyMarked)
         {
             for (int r = 0; r < grid.GridDimension.x; r++)
             {
                 for (int c = 0; c < grid.GridDimension.y; c++)
                 {
-                    if (squares[sector.x, sector.y, r, c].Filled)
+                    if (squares[sector.x, sector.y, r, c].Filled && (!onlyMarked || squares[sector.x, sector.y, r, c].Marked))
                     {
                         List<int> triangles = squares[sector.x, sector.y, r, c].GetTriangles(vert, this.InvertTriangles);
                         foreach (int i in triangles)
@@ -110,7 +111,7 @@
                 {
                     for (int c = 0; c < grid.GridDimension.y; c++)
                     {
-                        if (squares[sector.x, sector.y, r, c].Filled)
+                        if (squares[sector.x, sector.y, r, c].Filled && (!onlyMarked || squares[sector.x, sector.y, r, c].Marked))
                         {
                             AddWalls(sector, new Vector2Int(r, c), squares, grid, vert, tri, oldVerts);
                         }

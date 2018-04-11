@@ -10,6 +10,9 @@
     public class DungeonGenerator : MonoBehaviour
     {
         [SerializeField]
+        private int seed;
+
+        [SerializeField]
         private Floor floorPrefab;
         [SerializeField]
         private MiddleLayer layerPrefab;
@@ -49,6 +52,7 @@
 
         private void Start()
         {
+            Random.InitState(this.seed);
             this.floors = new Floor[this.numFloors];
             this.layers = new MiddleLayer[this.numFloors - 1];
             for (int i = 0; i < this.numFloors; i++)
@@ -57,6 +61,7 @@
                 f.transform.position = new Vector3(this.floorStart.position.x, this.floorStart.position.y - 20 * i, this.floorStart.position.z);
                 f.transform.rotation = this.floorStart.rotation;
                 f.transform.localScale = this.floorStart.localScale;
+                f.Squares = this.floorRasterizer.InitialzeGrid(f.rasterizationGrid);
                 this.floors[i] = f;
             }
             
@@ -66,6 +71,7 @@
                 l.transform.position = new Vector3(this.floorStart.position.x, this.floorStart.position.y - 20 * (i + 1), this.floorStart.position.z);
                 l.transform.rotation = this.floorStart.rotation;
                 l.transform.localScale = this.floorStart.localScale;
+                l.Squares = this.layerRasterizer.InitialzeGrid(l.rasterizationGrid);
                 this.layers[i] = l;
             }
             StartCoroutine(StartUpAsync());

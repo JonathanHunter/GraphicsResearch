@@ -255,9 +255,9 @@
                 int t = this.Top.AssignVertex(vertices);
                 MeshUtility.AddTriangle(ret, l, tl, t, inverted);
 
-                int r = this.Left.AssignVertex(vertices);
-                int br = this.TopLeft.AssignVertex(vertices);
-                int b = this.Top.AssignVertex(vertices);
+                int r = this.Right.AssignVertex(vertices);
+                int br = this.BottomRight.AssignVertex(vertices);
+                int b = this.Bottom.AssignVertex(vertices);
                 MeshUtility.AddTriangle(ret, r, br, b, inverted);
             }
             // 1010

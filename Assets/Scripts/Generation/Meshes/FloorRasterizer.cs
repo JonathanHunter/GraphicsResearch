@@ -9,8 +9,7 @@
     {
         public IEnumerator RasterizeFloor(Floor f)
         {
-            Square[,,,] squares = InitialzeGrid(f.rasterizationGrid);
-            yield return null;
+            Square[,,,] squares = f.Squares;
 
             foreach (Room room in f.Rooms)
             {
