@@ -20,11 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4461314057040506}
   - component: {fileID: 33700103445680196}
-  - component: {fileID: 135195470356525032}
   - component: {fileID: 23962407555592736}
-  - component: {fileID: 114194699498897538}
+  - component: {fileID: 135195470356525032}
   - component: {fileID: 54840643269047772}
-  - component: {fileID: 114089787021848476}
+  - component: {fileID: 114414979735763922}
   m_Layer: 0
   m_Name: CircleRoom
   m_TagString: Untagged
@@ -101,7 +100,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 56
   m_CollisionDetection: 0
---- !u!114 &114089787021848476
+--- !u!114 &114414979735763922
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -109,23 +108,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1003191351777658}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaa181b5f4d7f3942bbc5afc878fb8c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshFilter: {fileID: 33700103445680196}
---- !u!114 &114194699498897538
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1003191351777658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6964339400c2f548aace0270437e65f, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a94a1013ae970e4ea59f5d31168e6c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0
-  circle: {fileID: 114089787021848476}
+  meshFilter: {fileID: 33700103445680196}
 --- !u!135 &135195470356525032
 SphereCollider:
   m_ObjectHideFlags: 1

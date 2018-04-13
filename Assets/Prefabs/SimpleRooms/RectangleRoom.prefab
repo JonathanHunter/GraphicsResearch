@@ -20,10 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4992786651105526}
   - component: {fileID: 33210484278646638}
-  - component: {fileID: 65434955976819670}
   - component: {fileID: 23229727791260940}
-  - component: {fileID: 114358055616750682}
+  - component: {fileID: 65434955976819670}
   - component: {fileID: 54282360063338324}
+  - component: {fileID: 114234206020725446}
   m_Layer: 0
   m_Name: RectangleRoom
   m_TagString: Untagged
@@ -112,7 +112,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114358055616750682
+--- !u!114 &114234206020725446
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -120,7 +120,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1559875426106740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d17122e6762c0f44bbd14bab969a511, type: 3}
+  m_Script: {fileID: 11500000, guid: 39159ef603223be42965a9096a1d17e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dimentions: {x: 0, y: 0}
+  draw: 0
