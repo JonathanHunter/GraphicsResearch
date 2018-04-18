@@ -143,17 +143,57 @@
                     GenerationUtility.BoxLineIntersection(this.TopRight.Position, this.BottomRight.Position, tl, tr, bl, br));
             }
         }
-        
+
         public void SetZHeight(Vector3 startHeight, Vector3 endHeight)
         {
-            TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, TopLeft.Position)).z);
-            TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, TopRight.Position)).z);
-            BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, BottomLeft.Position)).z);
-            BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, BottomRight.Position)).z);
-            Top.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Top.Position)).z);
-            Left.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Left.Position)).z);
-            Right.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Right.Position)).z);
-            Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, GenerationUtility.PercentBetween(startHeight, endHeight, Bottom.Position)).z);
+            float percent;
+            if (this.TopLeft.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, TopLeft.Position);
+                TopLeft.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.TopRight.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, TopRight.Position);
+                TopRight.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.BottomLeft.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, BottomLeft.Position);
+                BottomLeft.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if(this.BottomRight.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, BottomRight.Position);
+                BottomRight.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.Top.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, Top.Position);
+                Top.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.Left.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, Left.Position);
+                Left.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.Right.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, Right.Position);
+                Right.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
+
+            if (this.Bottom.Filled)
+            {
+                percent = GenerationUtility.PercentBetween(startHeight, endHeight, Bottom.Position);
+                Bottom.SetZ(Vector3.Lerp(startHeight, endHeight, percent).z);
+            }
         }
 
         public List<int> GetTriangles(List<Vector3> vertices, bool inverted)

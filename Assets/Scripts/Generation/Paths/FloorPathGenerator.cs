@@ -180,10 +180,20 @@
                 foreach (LayerPath l in upperLayer.Paths)
                 {
                     if (l.IsIntersectingLine(tl, bl))
-                        return true;
+                    {
+                        Vector3 pos = GenerationUtility.LineLineIntersection(tl, bl, l.Start.Position, l.End.Position);
+                        bool inRoom = IsInRoom(pos, l.Start, l.End);
+                        if(!inRoom)
+                            return true;
+                    }
 
                     if (l.IsIntersectingLine(tr, br))
-                        return true;
+                    {
+                        Vector3 pos = GenerationUtility.LineLineIntersection(tr, br, l.Start.Position, l.End.Position);
+                        bool inRoom = IsInRoom(pos, l.Start, l.End);
+                        if (!inRoom)
+                            return true;
+                    }
                 }
             }
 
@@ -192,13 +202,55 @@
                 foreach (LayerPath l in lowerLayer.Paths)
                 {
                     if (l.IsIntersectingLine(tl, bl))
-                        return true;
+                    {
+                        Vector3 pos = GenerationUtility.LineLineIntersection(tl, bl, l.Start.Position, l.End.Position);
+                        bool inRoom = IsInRoom(pos, l.Start, l.End);
+                        if (!inRoom)
+                            return true;
+                    }
 
                     if (l.IsIntersectingLine(tr, br))
-                        return true;
+                    {
+                        Vector3 pos = GenerationUtility.LineLineIntersection(tr, br, l.Start.Position, l.End.Position);
+                        bool inRoom = IsInRoom(pos, l.Start, l.End);
+                        if (!inRoom)
+                            return true;
+                    }
                 }
             }
             
+            return false;
+        }
+            
+        private bool IsInRoom(Vector3 pos, Room r1, Room r2)
+        {
+            Vector3 tl, tr, bl, br;
+            if (r1 is CircleRoom)
+            {
+                if (GenerationUtility.PointInCircle(pos, r1.Position, ((CircleRoom)r1).Radius))
+                    return true;
+            }
+            else
+            {
+                RectangleRoom rect = (RectangleRoom)r1;
+                rect.BoxBounds(out tl, out tr, out bl, out br);
+                if (GenerationUtility.PointInBox(pos, tl, tr, bl, br))
+                    return true;
+            }
+
+            if (r2 is CircleRoom)
+            {
+                if (GenerationUtility.PointInCircle(pos, r2.Position, ((CircleRoom)r2).Radius))
+                    return true;
+            }
+            else
+            {
+                RectangleRoom rect = (RectangleRoom)r2;
+                rect.BoxBounds(out tl, out tr, out bl, out br);
+                if (GenerationUtility.PointInBox(pos, tl, tr, bl, br))
+                    return true;
+            }
+
             return false;
         }
 
