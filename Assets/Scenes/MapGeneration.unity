@@ -208,8 +208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa47161c22ed855428cde4d6f245061c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gradientRange: {x: 0, y: 50}
-  distanceRange: {x: 20, y: 90}
+  gradientRange: {x: 0, y: 60}
+  distanceRange: {x: 10, y: 90}
   pathsToKeep: 4
   layerPathWidth: 0.5
 --- !u!1 &129562316
@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a046e8de8009ed4bb3a8e75ba713167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 1
+  seed: 999
   floorPrefab: {fileID: 114088334219737318, guid: aabc63f048e4a9a419e68e1797d95043,
     type: 2}
   layerPrefab: {fileID: 114879064641278342, guid: 985380fc2145a6d438a66cc43afef0c0,
